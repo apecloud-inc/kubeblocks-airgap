@@ -84,9 +84,9 @@ tar_charts_package() {
             echo "fetch chart $chart_tmp"
             for j in {1..10}; do
                 if [[ $ent_flag -eq 1 ]]; then
-                    helm pull -d ${KB_CHART_NAME} ${ENT_REPO_NAME}/${$chart_tmp} --version ${chart_version}
+                    helm pull -d ${KB_CHART_NAME} ${ENT_REPO_NAME}/${chart_tmp} --version ${chart_version}
                 else
-                    helm fetch -d ${KB_CHART_NAME} "$REPO_URL/${$chart_tmp}/${$chart_tmp}.tgz"
+                    helm fetch -d ${KB_CHART_NAME} "$REPO_URL/${chart_tmp}/${chart_tmp}.tgz"
                 fi
                 ret_msg=$?
                 if [[ $ret_msg -eq 0 ]]; then
