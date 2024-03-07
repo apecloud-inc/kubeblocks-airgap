@@ -24,9 +24,7 @@ infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/gemini:0.4.1
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/oteld:0.4.1
 docker.io/apecloud/cubetran-platform:0.1.6
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mongo-5.0
-#infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mongo-latest
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mysql-8.0
-#infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mysql-latest
 # apecloud v0.14.0-alpha.7
 docker.io/apecloud/openconsole:v0.14.0-alpha.7
 docker.io/apecloud/prompt:v0.14.0-alpha.7
