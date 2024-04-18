@@ -58,12 +58,13 @@ tar_charts_package() {
         echo "no found tar charts file"
         return
     fi
-    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list
+    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps
 
     echo "copy image-list.txt"
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" ]]; then
-        echo
         cp -r .github/images/*.txt ${KB_CHART_NAME}/kubeblocks-image-list/
+        echo "copy apps yaml "
+        cp -r .github/images/apps/* ${KB_CHART_NAME}/apps/
     else
         cp -r .github/images/${APP_NAME}.txt ${KB_CHART_NAME}/kubeblocks-image-list/
     fi
