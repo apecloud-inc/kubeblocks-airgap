@@ -64,7 +64,7 @@ tar_charts_package() {
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" ]]; then
         cp -r .github/images/*.txt ${KB_CHART_NAME}/kubeblocks-image-list/
         echo "copy apps yaml "
-        cp -r .github/images/apps/* ${KB_CHART_NAME}/apps/
+        cp -r .github/apps/* ${KB_CHART_NAME}/apps/
     else
         cp -r .github/images/${APP_NAME}.txt ${KB_CHART_NAME}/kubeblocks-image-list/
     fi
