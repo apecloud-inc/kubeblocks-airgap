@@ -34,12 +34,12 @@ docker.io/apecloud/kubeviewer:0.1.9
 docker.io/prom/alertmanager:v0.25.0
 docker.io/jimmidyson/configmap-reload:v0.5.0
 # kubeblocks-cloud v0.20.15
+# docker.io/apecloud/prompt:v0.20.15
+# docker.io/apecloud/relay:v0.20.15
+# docker.io/apecloud/sentry:v0.20.15
+# docker.io/apecloud/sentry-init:v0.20.15
 docker.io/apecloud/openconsole:v0.20.15
-docker.io/apecloud/prompt:v0.20.15
 docker.io/apecloud/apiserver:v0.20.15
-docker.io/apecloud/relay:v0.20.15
-docker.io/apecloud/sentry:v0.20.15
-docker.io/apecloud/sentry-init:v0.20.15
 docker.io/apecloud/task-manager:v0.20.15
 docker.io/apecloud/cubetran-front:v0.20.15
 docker.io/apecloud/apecloud-charts:v0.20.15
