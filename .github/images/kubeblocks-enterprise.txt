@@ -34,17 +34,17 @@ docker.io/apecloud/cubetran-sidecar:0.1.1
 docker.io/apecloud/servicemirror:0.2.11
 docker.io/prom/alertmanager:v0.25.0
 docker.io/jimmidyson/configmap-reload:v0.5.0
-# kubeblocks-cloud v0.21.15
-# docker.io/apecloud/prompt:v0.21.15
-# docker.io/apecloud/relay:v0.21.15
-# docker.io/apecloud/sentry:v0.21.15
-# docker.io/apecloud/sentry-init:v0.21.15
-docker.io/apecloud/openconsole:v0.21.15
-docker.io/apecloud/apiserver:v0.21.15
-docker.io/apecloud/task-manager:v0.21.15
-docker.io/apecloud/cubetran-front:v0.21.15
-docker.io/apecloud/apecloud-charts:v0.21.15
-docker.io/apecloud/cr4w:v0.21.15
+# kubeblocks-cloud v0.22.0-alpha.30
+# docker.io/apecloud/prompt:v0.22.0-alpha.30
+# docker.io/apecloud/relay:v0.22.0-alpha.30
+# docker.io/apecloud/sentry:v0.22.0-alpha.30
+# docker.io/apecloud/sentry-init:v0.22.0-alpha.30
+docker.io/apecloud/openconsole:v0.22.0-alpha.30
+docker.io/apecloud/apiserver:v0.22.0-alpha.30
+docker.io/apecloud/task-manager:v0.22.0-alpha.30
+docker.io/apecloud/cubetran-front:v0.22.0-alpha.30
+docker.io/apecloud/apecloud-charts:v0.22.0-alpha.30
+docker.io/apecloud/cr4w:v0.22.0-alpha.30
 docker.io/apecloud/redis:7.0.5
 docker.io/grafana/grafana:10.1.1
 docker.io/bats/bats:v1.4.1
