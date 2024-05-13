@@ -19,7 +19,7 @@ infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mysql-8.0
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g-mysql:2.0.1-1-ubuntu
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-tools:0.8.2
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/cubetran-platform:0.5.1
-docker.io/apecloud/kubeviewer:0.1.13
+docker.io/apecloud/kubeviewer:0.1.14
 docker.io/apecloud/cubetran-sidecar:0.1.0
 docker.io/library/mysql:8.0
 docker.io/library/redis:7.0.5
