@@ -2,7 +2,7 @@ kubeblocks:0.8.3-beta.17
 gemini:0.6.0-alpha.3
 gemini-monitor:0.6.0-alpha.3
 logto:0.1.3
-kubeblocks-cloud:v0.22.18
+kubeblocks-cloud:v0.22.19
 starrocks:0.8.0
 oceanbase:0.8.3
 ingress-nginx:4.8.4
