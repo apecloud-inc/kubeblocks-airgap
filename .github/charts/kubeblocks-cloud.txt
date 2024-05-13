@@ -1,1 +1,1 @@
-kubeblocks-cloud:v0.22.20
+kubeblocks-cloud:v0.22.21
