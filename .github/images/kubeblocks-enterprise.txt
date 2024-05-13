@@ -12,6 +12,7 @@ infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/logto:1.12
 # gemini v0.6.0-alpha.3
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/gemini:0.6.0-alpha.3
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/easymetrics:0.6.0-alpha.3
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/oteld:0.5.2-k8s21
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/oteld:0.6.0-alpha.1
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mongo-5.0
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mysql-8.0
