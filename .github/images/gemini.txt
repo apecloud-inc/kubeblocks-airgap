@@ -1,8 +1,8 @@
-# gemini v0.6.0-alpha.3
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/gemini:0.6.0-alpha.3
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/easymetrics:0.6.0-alpha.3
+# gemini v0.6.0-alpha.6
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/gemini:0.6.0-alpha.6
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/easymetrics:0.6.0-alpha.6
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/oteld:0.5.2-k8s21
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/oteld:0.6.0-alpha.1
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/oteld:0.6.0-alpha.2
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mongo-5.0
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g:mysql-8.0
 infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/wal-g-mysql:2.0.1-1-ubuntu
