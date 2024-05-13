@@ -21,6 +21,6 @@ docker.io/victoriametrics/vmselect:v1.95.1-cluster
 docker.io/victoriametrics/vmstorage:v1.95.1-cluster
 docker.io/victoriametrics/vmalert:v1.95.1
 docker.io/apecloud/cubetran-sidecar:0.1.1
-docker.io/apecloud/servicemirror:0.2.11
+docker.io/apecloud/servicemirror:0.2.15
 docker.io/prom/alertmanager:v0.25.0
 docker.io/jimmidyson/configmap-reload:v0.5.0
