@@ -1,4 +1,4 @@
-kubeblocks:0.8.3-beta.18
+kubeblocks:0.8.3-beta.19
 gemini:0.6.0-beta.0
 gemini-monitor:0.6.0-beta.0
 logto:0.1.3
