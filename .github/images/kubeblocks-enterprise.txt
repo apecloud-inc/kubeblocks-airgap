@@ -1,9 +1,9 @@
-# kubeblocks v0.8.3-beta.19
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks:0.8.3-beta.19
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-dataprotection:0.8.3-beta.19
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-datascript:0.8.3-beta.19
-infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-tools:0.8.3-beta.19
-docker.io/apecloud/kubeblocks-charts:0.8.3-beta.19
+# kubeblocks v0.8.3-beta.22
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks:0.8.3-beta.22
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-dataprotection:0.8.3-beta.22
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-datascript:0.8.3-beta.22
+infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/apecloud/kubeblocks-tools:0.8.3-beta.22
+docker.io/apecloud/kubeblocks-charts:0.8.3-beta.22
 docker.io/apecloud/datasafed:0.1.0
 docker.io/apecloud/snapshot-controller:v6.2.1
 docker.io/library/busybox:latest
@@ -35,17 +35,17 @@ docker.io/apecloud/cubetran-sidecar:0.1.1
 docker.io/apecloud/servicemirror:0.2.15
 docker.io/prom/alertmanager:v0.25.0
 docker.io/jimmidyson/configmap-reload:v0.5.0
-# kubeblocks-cloud v0.22.22
-# docker.io/apecloud/prompt:v0.22.22
-# docker.io/apecloud/relay:v0.22.22
-# docker.io/apecloud/sentry:v0.22.22
-# docker.io/apecloud/sentry-init:v0.22.22
-docker.io/apecloud/openconsole:v0.22.22
-docker.io/apecloud/apiserver:v0.22.22
-docker.io/apecloud/task-manager:v0.22.22
-docker.io/apecloud/cubetran-front:v0.22.22
-docker.io/apecloud/apecloud-charts:v0.22.22
-docker.io/apecloud/cr4w:v0.22.22
+# kubeblocks-cloud v0.22.23
+# docker.io/apecloud/prompt:v0.22.23
+# docker.io/apecloud/relay:v0.22.23
+# docker.io/apecloud/sentry:v0.22.23
+# docker.io/apecloud/sentry-init:v0.22.23
+docker.io/apecloud/openconsole:v0.22.23
+docker.io/apecloud/apiserver:v0.22.23
+docker.io/apecloud/task-manager:v0.22.23
+docker.io/apecloud/cubetran-front:v0.22.23
+docker.io/apecloud/apecloud-charts:v0.22.23
+docker.io/apecloud/cr4w:v0.22.23
 docker.io/apecloud/redis:7.0.5
 docker.io/grafana/grafana:10.1.1
 docker.io/bats/bats:v1.4.1
