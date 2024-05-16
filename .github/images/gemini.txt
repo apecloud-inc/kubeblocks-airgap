@@ -25,3 +25,4 @@ docker.io/apecloud/servicemirror:0.2.15
 docker.io/prom/alertmanager:v0.25.0
 docker.io/jimmidyson/configmap-reload:v0.5.0
 quay.io/minio/minio:RELEASE.2022-09-17T00-09-45Z
+quay.io/minio/mc:RELEASE.2022-09-16T09-16-47Z
