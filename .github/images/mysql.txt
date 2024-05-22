@@ -1,4 +1,4 @@
-# apecloud-mysql v0.8.1
+# mysql v0.8.1
 docker.io/apecloud/agamotto:0.1.2-beta.1
 docker.io/library/mysql:8.0.33
 docker.io/library/mysql:5.7.42
