@@ -20,6 +20,7 @@ on:
           - clickhouse
           - oceanbase
           - mysql
+          - elasticsearch
           - kubeblocks
           - kubeblocks-cloud
           - gemini
