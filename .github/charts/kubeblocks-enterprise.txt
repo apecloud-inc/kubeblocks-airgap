@@ -1,9 +1,9 @@
-kubeblocks:0.8.3
+kubeblocks:0.8.4-beta.4
 gemini:0.6.0-beta.0
 gemini-monitor:0.6.0-beta.0
 logto:0.1.3
-kubeblocks-cloud:v0.24.0
-kb-cloud-installer:0.24.0
+kubeblocks-cloud:v0.24.10
+kb-cloud-installer:0.24.10
 starrocks:0.8.0
 oceanbase:0.8.3
 ingress-nginx:4.8.4
