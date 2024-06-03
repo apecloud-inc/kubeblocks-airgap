@@ -63,6 +63,7 @@ tar_charts_package() {
     mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps
 
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" ]]; then
+        IMAGE_FILE_PATH=.github/images/${APP_NAME}.txt
         sed -i "s/^# kubeblocks-cloud .*/# kubeblocks-cloud :${APP_VERSION}/" $IMAGE_FILE_PATH
         sed -i "s/^docker.io\/apecloud\/openconsole:.*/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
         sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}-jni/" $IMAGE_FILE_PATH
