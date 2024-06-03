@@ -64,7 +64,32 @@ save_images_package() {
         echo "no found save images file"
         return
     fi
-
+    
+#    if [[ "${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" ]]; then
+#        APP_VERSION_TEMP=${APP_VERSION}
+#        if [[ "${APP_VERSION}" == "v"* ]]; then
+#            APP_VERSION_TEMP="${APP_VERSION/v/}"
+#        fi
+#        # kubeblocks-cloud v0.24.48
+#        docker.io/apecloud/openconsole:v0.24.48
+#        docker.io/apecloud/apiserver:v0.24.48
+#        docker.io/apecloud/apiserver:v0.24.48-jni
+#        docker.io/apecloud/task-manager:v0.24.48
+#        docker.io/apecloud/cubetran-front:v0.24.48
+#        docker.io/apecloud/apecloud-charts:v0.24.48
+#        docker.io/apecloud/cr4w:v0.24.48
+#        docker.io/apecloud/prompt:v0.24.48
+#        docker.io/apecloud/relay:v0.24.48
+#        docker.io/apecloud/sentry:v0.24.48
+#        docker.io/apecloud/sentry-init:v0.24.48
+#        docker.io/apecloud/kb-cloud-installer:v0.24.48
+#        sed -i "s/^docker.io/apecloud/openconsole:.*/docker.io/apecloud/openconsole:\"${APP_VERSION}\"/" $IMAGE_FILE_PATH
+#        sed -i "s/^docker.io/apecloud/apiserver:.*/docker.io/apecloud/apiserver:\"${APP_VERSION}\"/" $IMAGE_FILE_PATH
+#        sed -i "s/^docker.io/apecloud/apiserver:.*/docker.io/apecloud/apiserver:\"${APP_VERSION}\"/" $IMAGE_FILE_PATH
+#        sed -i "s/^docker.io/apecloud/openconsole:.*/docker.io/apecloud/openconsole:\"${APP_VERSION}\"/" $IMAGE_FILE_PATH
+#        sed -i "s/^docker.io/apecloud/openconsole:.*/docker.io/apecloud/openconsole:\"${APP_VERSION}\"/" $IMAGE_FILE_PATH
+#        sed -i "s/^kb-cloud-installer:.*/kb-cloud-installer:\"${APP_VERSION_TEMP}\"/" $IMAGE_FILE_PATH
+#    fi
     app_package_name=${APP_NAME}-${APP_VERSION}.tar.gz
     save_flag=0
     for i in {1..10}; do

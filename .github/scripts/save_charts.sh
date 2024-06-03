@@ -76,6 +76,14 @@ tar_charts_package() {
         mv kubeblocks_crds.yaml ${KB_CHART_NAME}
     fi
 
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" ]]; then
+        APP_VERSION_TEMP=${APP_VERSION}
+        if [[ "${APP_VERSION}" == "v"* ]]; then
+            APP_VERSION_TEMP="${APP_VERSION/v/}"
+        fi
+        sed -i "s/^kubeblocks-cloud:.*/kubeblocks-cloud:\"${APP_VERSION}\"/" $CHART_FILE_PATH
+        sed -i "s/^kb-cloud-installer:.*/kb-cloud-installer:\"${APP_VERSION_TEMP}\"/" $CHART_FILE_PATH
+    fi
     tar_flag=0
     for i in {1..10}; do
         while read -r chart
