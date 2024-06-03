@@ -1,7 +1,7 @@
 # kubeblocks-cloud v0.24.48
 docker.io/apecloud/openconsole:v0.24.48
-docker.io/apecloud/apiserver:v0.24.48
 docker.io/apecloud/apiserver:v0.24.48-jni
+# docker.io/apecloud/apiserver:v0.24.48
 docker.io/apecloud/task-manager:v0.24.48
 docker.io/apecloud/cubetran-front:v0.24.48
 docker.io/apecloud/apecloud-charts:v0.24.48
