@@ -1,5 +1,6 @@
 # gemini v0.6.0-beta.4
 docker.io/apecloud/gemini:0.6.0-beta.4
+docker.io/apecloud/gemini-tools:0.6.0-beta.4
 docker.io/apecloud/easymetrics:0.6.0-beta.4
 docker.io/apecloud/oteld:0.5.2-k8s21
 docker.io/apecloud/oteld:0.6.0-beta.5
