@@ -16,7 +16,7 @@ on:
       APP_VERSION:
         description: 'app version'
         required: true
-        default: ''
+        default: 'v0.8.4-beta.5'
       KUBEBLOCKS_VERSION:
         description: 'kubeblocks version'
         required: true
