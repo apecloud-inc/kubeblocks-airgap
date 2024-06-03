@@ -81,8 +81,8 @@ tar_charts_package() {
         if [[ "${APP_VERSION}" == "v"* ]]; then
             APP_VERSION_TEMP="${APP_VERSION/v/}"
         fi
-        sed -i "s/^kubeblocks-cloud:.*/kubeblocks-cloud:\"${APP_VERSION}\"/" $CHART_FILE_PATH
-        sed -i "s/^kb-cloud-installer:.*/kb-cloud-installer:\"${APP_VERSION_TEMP}\"/" $CHART_FILE_PATH
+        sed -i "s/^kubeblocks-cloud:.*/kubeblocks-cloud:${APP_VERSION}/" $CHART_FILE_PATH
+        sed -i "s/^kb-cloud-installer:.*/kb-cloud-installer:${APP_VERSION_TEMP}/" $CHART_FILE_PATH
     fi
     tar_flag=0
     for i in {1..10}; do
