@@ -10,6 +10,8 @@ on:
         type: choice
         options:
           - apecloud-mysql
+          - ape-local-csi-driver
+          - calico
           - cilium
           - postgresql
           - redis
@@ -19,6 +21,7 @@ on:
           - clickhouse
           - oceanbase
           - mysql
+          - elasticsearch
           - kubeblocks
           - kubeblocks-cloud
           - gemini
@@ -35,7 +38,9 @@ on:
           - nginx-ingress
           - prometheus
           - starrocks
+          - spiderpool
           - victoria-metrics-cluster
+          - metrics-server
       IMAGE_VERSION:
         description: 'image version'
         required: true

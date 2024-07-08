@@ -6,11 +6,13 @@ readonly ADD_CHARTS_LIST=${add_charts?}
 readonly APP_NAME=${app_name?}
 readonly APP_VERSION=${app_version?}
 readonly CHART_FILE_PATH=${charts_file?}
+readonly KUBEBLOCKS_VERSION=${kubeblocks_version?}
 
 echo "ADD_CHARTS_LIST:"${ADD_CHARTS_LIST}
 echo "APP_NAME:"${APP_NAME}
 echo "APP_VERSION:"${APP_VERSION}
 echo "CHART_FILE_PATH:"${CHART_FILE_PATH}
+echo "KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION}
 
 add_charts_list() {
     if [[ -z "${ADD_CHARTS_LIST}" ]]; then
@@ -58,21 +60,48 @@ tar_charts_package() {
         echo "no found tar charts file"
         return
     fi
-    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list
+    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps
+
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" ]]; then
+        echo "change ${APP_NAME}.txt images tag"
+        IMAGE_FILE_PATH=.github/images/${APP_NAME}.txt
+        sed -i "s/^# kubeblocks-cloud .*/# kubeblocks-cloud :${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/openconsole:.*/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}-jni/" $IMAGE_FILE_PATH
+        sed -i "s/^# docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/cr4w:.*/docker.io\/apecloud\/cr4w:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/prompt:.*/docker.io\/apecloud\/prompt:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/relay:.*/docker.io\/apecloud\/relay:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
+        sed -i "s/^docker.io\/apecloud\/kb-cloud-installer:.*/docker.io\/apecloud\/kb-cloud-installer:${APP_VERSION}/" $IMAGE_FILE_PATH
+    fi
 
     echo "copy image-list.txt"
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" ]]; then
-        echo
         cp -r .github/images/*.txt ${KB_CHART_NAME}/kubeblocks-image-list/
+        echo "copy apps yaml "
+        cp -r .github/apps/* ${KB_CHART_NAME}/apps/
     else
         cp -r .github/images/${APP_NAME}.txt ${KB_CHART_NAME}/kubeblocks-image-list/
     fi
-    if [[ -n "${APP_VERSION}" && ("$APP_NAME" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks" ) ]]; then
+    if [[ -n "${KUBEBLOCKS_VERSION}" && ("$APP_NAME" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks" ) ]]; then
         echo "download Kubeblocks crds"
-        wget ${KB_REPO_URL}/${APP_VERSION}/kubeblocks_crds.yaml -O kubeblocks_crds.yaml
+        wget ${KB_REPO_URL}/${KUBEBLOCKS_VERSION}/kubeblocks_crds.yaml -O kubeblocks_crds.yaml
         mv kubeblocks_crds.yaml ${KB_CHART_NAME}
     fi
 
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" ]]; then
+        echo "change ${APP_NAME} chart version"
+        APP_VERSION_TEMP=${APP_VERSION}
+        if [[ "${APP_VERSION}" == "v"* ]]; then
+            APP_VERSION_TEMP="${APP_VERSION/v/}"
+        fi
+        sed -i "s/^kubeblocks-cloud:.*/kubeblocks-cloud:${APP_VERSION}/" $CHART_FILE_PATH
+        sed -i "s/^kb-cloud-installer:.*/kb-cloud-installer:${APP_VERSION_TEMP}/" $CHART_FILE_PATH
+    fi
     tar_flag=0
     for i in {1..10}; do
         while read -r chart
