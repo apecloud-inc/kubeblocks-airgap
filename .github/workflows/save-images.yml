@@ -18,6 +18,7 @@ on:
           - kafka
           - kata
           - kubebench
+          - logto
           - mongodb
           - mysql
           - metallb
