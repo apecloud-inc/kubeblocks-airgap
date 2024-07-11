@@ -39,7 +39,7 @@ docker.io/apecloud/mc:RELEASE.2022-09-16T09-16-47Z
 # kubeblocks-cloud v0.25.65
 docker.io/apecloud/openconsole:v0.25.65
 docker.io/apecloud/apiserver:v0.25.65-jni
-# docker.io/apecloud/apiserver:v0.25.65
+docker.io/apecloud/apiserver:v0.25.65
 docker.io/apecloud/task-manager:v0.25.65
 docker.io/apecloud/cubetran-front:v0.25.65
 docker.io/apecloud/cr4w:v0.25.65

@@ -12,6 +12,7 @@ on:
           - kubeblocks-enterprise
           - kubeblocks
           - kubeblocks-cloud
+          - kubeblocks-cloud-patch
           - gemini
           - apecloud-mysql
           - clickhouse
