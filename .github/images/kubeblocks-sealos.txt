@@ -1,0 +1,3 @@
+# kubeblocks v0.9.0
+docker.io/apecloud/kubeblocks-airgap:v0.9.0
+docker.io/apecloud/qdrant-airgap:v0.9.0
