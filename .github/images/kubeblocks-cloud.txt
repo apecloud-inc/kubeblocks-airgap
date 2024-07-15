@@ -16,6 +16,6 @@ docker.io/apecloud/workflow-controller:v3.5.5
 docker.io/apecloud/argocli:v3.5.5
 docker.io/apecloud/argoexec:v3.5.5
 docker.io/apecloud/cloudshell:1.7.7
-docker.io/apecloud/dms:0.0.1
+docker.io/apecloud/dms:0.0.1-alpha.9
 # logto v0.1.4
 docker.io/apecloud/logto:1.12

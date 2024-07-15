@@ -4,4 +4,4 @@ docker.io/apecloud/obtools:4.2.1
 docker.io/apecloud/obagent:4.2.1-100000092023101717
 docker.io/apecloud/oceanbase-ent:4.2.1.7-107020012024061213
 docker.io/apecloud/apecloud-addon-charts:oceanbase-0.9.0
-docker.io/apecloud/ob-grpc-server:0.1.1
+docker.io/apecloud/ob-grpc-server:0.1.2
