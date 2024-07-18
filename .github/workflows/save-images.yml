@@ -13,6 +13,7 @@ on:
           - kubeblocks-enterprise-patch
           - kubeblocks
           - kubeblocks-cloud
+          - cert-manager
           - gemini
           - apecloud-mysql
           - clickhouse
