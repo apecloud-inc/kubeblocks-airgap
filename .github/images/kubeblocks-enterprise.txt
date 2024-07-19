@@ -1,9 +1,9 @@
-# kubeblocks v0.9.0
-docker.io/apecloud/kubeblocks:0.9.0
-docker.io/apecloud/kubeblocks-dataprotection:0.9.0
-docker.io/apecloud/kubeblocks-datascript:0.9.0
-docker.io/apecloud/kubeblocks-tools:0.9.0
-docker.io/apecloud/kubeblocks-charts:0.9.0
+# kubeblocks v0.9.1-beta.3
+docker.io/apecloud/kubeblocks:0.9.1-beta.3
+docker.io/apecloud/kubeblocks-dataprotection:0.9.1-beta.3
+docker.io/apecloud/kubeblocks-datascript:0.9.1-beta.3
+docker.io/apecloud/kubeblocks-tools:0.9.1-beta.3
+docker.io/apecloud/kubeblocks-charts:0.9.1-beta.3
 docker.io/apecloud/datasafed:0.2.0
 docker.io/apecloud/snapshot-controller:v6.2.1
 docker.io/apecloud/busybox:latest
@@ -49,7 +49,7 @@ docker.io/apecloud/kb-cloud-installer:v0.26.40
 docker.io/apecloud/dms:0.0.1-alpha.19
 docker.io/apecloud/ob-grpc-server:0.1.2
 docker.io/apecloud/servicemirror:0.2.17
-docker.io/apecloud/kubeblocks-installer:202407171056-offline
+docker.io/apecloud/kubeblocks-installer:202407191309-offline
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:10.1.1
 docker.io/apecloud/bats:v1.4.1
