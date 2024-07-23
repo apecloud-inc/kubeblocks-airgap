@@ -1,6 +1,6 @@
-kubeblocks:0.9.1-beta.3
-kubeblocks-cloud:v0.26.40
-kb-cloud-installer:0.26.40
+kubeblocks:0.9.1-beta.6
+kubeblocks-cloud:v0.26.87
+kb-cloud-installer:0.26.87
 gemini:0.6.2-beta.2
 gemini-monitor:0.6.2-beta.2
 logto:0.1.4
