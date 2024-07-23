@@ -107,6 +107,8 @@ jobs:
       - name: Upload images to oss
         id: upload_to_oss
         run: |
+          echo "Free space:"
+          df -h
           IMAGE_PKG_NAME="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz"
           ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME}
           upload_ret=$?
