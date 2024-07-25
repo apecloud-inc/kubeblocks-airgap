@@ -8,7 +8,7 @@ docker.io/apecloud/relay:v0.26.107
 docker.io/apecloud/sentry:v0.26.107
 docker.io/apecloud/sentry-init:v0.26.107
 docker.io/apecloud/kb-cloud-installer:v0.26.107
-docker.io/apecloud/kubeblocks-installer:202407251648-offline
+docker.io/apecloud/kubeblocks-installer:202407251908-offline
 docker.io/apecloud/dms:0.0.1-alpha.35
 # kubeblocks v0.9.1-beta.8
 docker.io/apecloud/kubeblocks:0.9.1-beta.8
