@@ -1,1 +1,1 @@
-kubeblocks:0.9.1-beta.6
+kubeblocks:0.9.1-beta.8
