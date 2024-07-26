@@ -1,7 +1,7 @@
-# gemini v0.6.2-beta.11
-docker.io/apecloud/gemini:0.6.2-beta.11
-docker.io/apecloud/gemini-tools:0.6.2-beta.11
-docker.io/apecloud/easymetrics:0.6.2-beta.11
+# gemini v0.6.2-beta.12
+docker.io/apecloud/gemini:0.6.2-beta.12
+docker.io/apecloud/gemini-tools:0.6.2-beta.12
+docker.io/apecloud/easymetrics:0.6.2-beta.12
 docker.io/apecloud/oteld:0.5.2-k8s21
 docker.io/apecloud/oteld:0.6.2-beta.0
 docker.io/apecloud/wal-g:mongo-5.0

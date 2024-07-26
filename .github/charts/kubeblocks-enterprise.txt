@@ -1,8 +1,8 @@
 kubeblocks:0.9.1-beta.8
 kubeblocks-cloud:v0.26.108
 kb-cloud-installer:0.26.108
-gemini:0.6.2-beta.11
-gemini-monitor:0.6.2-beta.11
+gemini:0.6.2-beta.12
+gemini-monitor:0.6.2-beta.12
 logto:0.1.4
 ingress-nginx:4.8.4
 metallb:0.14.4
