@@ -1,0 +1,162 @@
+name: Release Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      APP_VERSION:
+        description: 'Cloud version'
+        required: false
+        default: ''
+      KB_VERSION:
+        description: 'KubeBlocks version'
+        required: false
+        default: ''
+      GEMINI_VERSION:
+        description: 'Gemini '
+        required: false
+        default: ''
+      OTELD_VERSION:
+        description: 'Oteld version'
+        required: false
+        default: ''
+      INSTALLER_VERSION:
+        description: 'Offline Installer version'
+        required: false
+        default: ''
+      DMS_VERSION:
+        description: 'Dms version'
+        required: false
+        default: ''
+
+run-name: ref_name:${{ github.ref_name }} Cloud:${{ inputs.APP_VERSION }} KubeBlocks:${{ inputs.KB_VERSION }} Gemini:${{ inputs.GEMINI_VERSION }} Oteld:${{ inputs.OTELD_VERSION }} Installer:${{ inputs.INSTALLER_VERSION }} Dms:${{ inputs.DMS_VERSION }}
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+jobs:
+  release-version:
+    runs-on: ubuntu-latest
+    outputs:
+      release-version: ${{ steps.update_version.outputs.release_version }}
+      release-commit: ${{ steps.update_version.outputs.release_commit }}
+    steps:
+      - name: checkout ${{ github.ref_name }}
+        uses: actions/checkout@v4
+
+      - name: Update version
+        id: update_version
+        run: |
+          commit_message="chore: upgrade"
+          update_version_cmd="bash .github/scripts/upgrade_version.sh --type 1 "
+          generate_release_note_cmd="bash .github/scripts/upgrade_version.sh --type 2 "
+          if [[ -n "${{ inputs.APP_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --cloud-version ${{ inputs.APP_VERSION }} "
+              generate_release_note_cmd="${generate_release_note_cmd} --cloud-version ${{ inputs.APP_VERSION }} "
+              commit_message="${commit_message} cloud ${{ inputs.APP_VERSION }}"
+              RELEASE_VERSION="${{ inputs.APP_VERSION }}"
+              if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+                  RELEASE_VERSION=v"${RELEASE_VERSION}"
+              fi
+              echo release_version=${RELEASE_VERSION} >> $GITHUB_OUTPUT
+          fi
+          
+          if [[ -n "${{ inputs.KB_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --kubeblocks-version ${{ inputs.KB_VERSION }} "
+              commit_message="${commit_message} kubeblocks ${{ inputs.KB_VERSION }}"
+          fi
+          
+          if [[ -n "${{ inputs.GEMINI_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --gemini-version ${{ inputs.GEMINI_VERSION }} "
+              commit_message="${commit_message} gemini ${{ inputs.GEMINI_VERSION }}"
+          fi
+          
+          if [[ -n "${{ inputs.OTELD_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --oteld-version ${{ inputs.OTELD_VERSION }} "
+              commit_message="${commit_message} oteld ${{ inputs.OTELD_VERSION }}"
+          fi
+          
+          if [[ -n "${{ inputs.INSTALLER_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --installer-version ${{ inputs.INSTALLER_VERSION }} "
+              commit_message="${commit_message} installer ${{ inputs.INSTALLER_VERSION }}"
+          fi
+          
+          if [[ -n "${{ inputs.DMS_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --dms-version ${{ inputs.DMS_VERSION }} "
+              commit_message="${commit_message} dms ${{ inputs.DMS_VERSION }}"
+          fi
+          
+          echo "${update_version_cmd}"
+          eval "${update_version_cmd}"
+          
+          echo "${generate_release_note_cmd}"
+          eval "${generate_release_note_cmd}"
+          
+          FILE_CHANGES=`git diff --name-only ${{ github.sha }}`
+          if [[ ! -z "$FILE_CHANGES" ]]; then
+              echo $FILE_CHANGES
+              git config --local user.name "$GITHUB_ACTOR"
+              git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+              git commit -a -m "${commit_message}"
+          fi
+          echo file_changes=$FILE_CHANGES >> $GITHUB_OUTPUT
+          
+          RELEASE_COMMIT="$(git rev-parse HEAD)"
+          echo 'release_commit='${RELEASE_COMMIT} >> $GITHUB_OUTPUT
+
+      - name: push upgrade version
+        if: ${{ steps.update_version.outputs.file_changes }}
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.ref }}
+          github_token: ${{ env.GITHUB_TOKEN }}
+
+      - name: push tag ${{ inputs.APP_VERSION }}
+        if: ${{ inputs.APP_VERSION }}
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          custom_tag: ${{ inputs.APP_VERSION }}
+          github_token: ${{ env.GITHUB_TOKEN }}
+          commit_sha: ${{ steps.update_version.outputs.release_commit }}
+          tag_prefix: ""
+
+  release-result:
+    runs-on: ubuntu-latest
+    needs: [ release-version ]
+    if: ${{ always() && inputs.APP_VERSION != '' }}
+    outputs:
+      release-result: ${{ steps.get_release_result.outputs.release_result }}
+    steps:
+      - name: checkout ${{ github.ref_name }}
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: get release result
+        id: get_release_result
+        run: |
+          RELEASE_RESULT="error"
+          if [[ "${{ needs.release-version.result }}" == "success" ]]; then
+              RELEASE_RESULT="success"
+          fi
+          echo 'release_result='$RELEASE_RESULT >> $GITHUB_OUTPUT
+
+      - name: release with release notes
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: ./docs/release-notes/${{ needs.release-version.outputs.release-version }}.md
+          name: "KubeBlocks Enterprise ${{ needs.release-version.outputs.release-version }}"
+          tag_name: "${{ needs.release-version.outputs.release-version }}"
+          target_commitish: "${{ needs.release-version.outputs.release-version }}"
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+  send-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ release-version, release-result ]
+    if: ${{ always() && inputs.APP_VERSION != '' }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "release cloud airgap:${{ needs.release-version.outputs.release-version }} ${{ needs.release-result.outputs.release-result }}"
+    secrets: inherit
