@@ -149,14 +149,14 @@ jobs:
           fi
           echo 'release_result='$RELEASE_RESULT >> $GITHUB_OUTPUT
 
-#  send-message:
-#    permissions:
-#      id-token: write
-#      contents: read
-#    needs: [ release-version, release-result ]
-#    if: ${{ always() && inputs.APP_VERSION != '' }}
-#    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
-#    with:
-#      TYPE: "2"
-#      CONTENT: "release cloud airgap:${{ needs.release-version.outputs.release-version }} ${{ needs.release-result.outputs.release-result }}"
-#    secrets: inherit
+  send-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ release-version, release-result ]
+    if: ${{ always() && inputs.APP_VERSION != '' }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "release cloud airgap:${{ needs.release-version.outputs.release-version }} ${{ needs.release-result.outputs.release-result }}"
+    secrets: inherit
