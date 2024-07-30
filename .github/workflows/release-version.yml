@@ -32,9 +32,13 @@ run-name: ref_name:${{ github.ref_name }} Cloud:${{ inputs.APP_VERSION }} KubeBl
 
 env:
   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 jobs:
   release-version:
+    permissions:
+      contents: write # for pushing changes back to the repository
+      packages: write
     runs-on: ubuntu-latest
     outputs:
       release-version: ${{ steps.update_version.outputs.release_version }}
@@ -120,6 +124,9 @@ jobs:
           tag_prefix: ""
 
   release-result:
+    permissions:
+      contents: write
+      packages: write
     runs-on: ubuntu-latest
     needs: [ release-version ]
     if: ${{ always() && inputs.APP_VERSION != '' }}
