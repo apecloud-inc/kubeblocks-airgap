@@ -19,7 +19,7 @@ mysql:0.9.1
 postgresql:0.9.0
 redis:0.9.0
 starrocks:0.9.0
-oceanbase:0.9.1-beta.8
+oceanbase:0.9.1-beta.9
 clickhouse:0.9.0
 cert-manager:v1.14.2
 rabbitmq:0.9.0
