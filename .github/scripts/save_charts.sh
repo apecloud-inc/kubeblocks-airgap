@@ -4,13 +4,13 @@ set -eu
 
 readonly ADD_CHARTS_LIST=${add_charts?}
 readonly APP_NAME=${app_name?}
-readonly APP_VERSION=${app_version?}
 readonly CHART_FILE_PATH=${charts_file?}
-readonly KUBEBLOCKS_VERSION=${kubeblocks_version?}
-readonly GEMINI_VERSION="${gemini_version?}"
-readonly OTELD_VERSION="${oteld_version?}"
-readonly OFFLINE_INSTALLER_VERSION="${installer_version?}"
-readonly DMS_VERSION="${dms_version?}"
+local APP_VERSION=${app_version?}
+local KUBEBLOCKS_VERSION=${kubeblocks_version?}
+local GEMINI_VERSION="${gemini_version?}"
+local OTELD_VERSION="${oteld_version?}"
+local OFFLINE_INSTALLER_VERSION="${installer_version?}"
+local DMS_VERSION="${dms_version?}"
 
 echo "ADD_CHARTS_LIST:"${ADD_CHARTS_LIST}
 echo "APP_NAME:"${APP_NAME}
