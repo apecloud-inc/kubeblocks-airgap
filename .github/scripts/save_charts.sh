@@ -173,7 +173,7 @@ tar_charts_package() {
         else
             sed -i "s/^docker.io\/apecloud\/kubeblocks-installer:.*/docker.io\/apecloud\/kubeblocks-installer:${OFFLINE_INSTALLER_VERSION}/" $IMAGE_FILE_PATH
         fi
-    done
+    fi
 
     if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$DMS_VERSION" ]]; then
         echo "change Dms images tag"
@@ -182,7 +182,7 @@ tar_charts_package() {
         else
             sed -i "s/^docker.io\/apecloud\/dms:.*/docker.io\/apecloud\/dms:${DMS_VERSION}/" $IMAGE_FILE_PATH
         fi
-    done
+    fi
 
 
     echo "copy image-list.txt"

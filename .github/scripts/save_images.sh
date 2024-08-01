@@ -172,7 +172,7 @@ save_images_package() {
         else
             sed -i "s/^docker.io\/apecloud\/kubeblocks-installer:.*/docker.io\/apecloud\/kubeblocks-installer:${OFFLINE_INSTALLER_VERSION}/" $IMAGE_FILE_PATH
         fi
-    done
+    fi
 
     if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$DMS_VERSION" ]]; then
         echo "change Dms images tag"
@@ -181,7 +181,7 @@ save_images_package() {
         else
             sed -i "s/^docker.io\/apecloud\/dms:.*/docker.io\/apecloud\/dms:${DMS_VERSION}/" $IMAGE_FILE_PATH
         fi
-    done
+    fi
 
     app_package_name=${APP_NAME}-${APP_VERSION}.tar.gz
     save_flag=0
