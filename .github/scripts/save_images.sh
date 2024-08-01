@@ -5,23 +5,23 @@ set -eu
 readonly ADD_IMAGES_LIST=${add_images?}
 readonly APP_NAME=${app_name?}
 readonly IMAGE_FILE_PATH=${images_file?}
-local APP_VERSION=${app_version?}
-local KUBEBLOCKS_VERSION="${kubeblocks_version?}"
-local GEMINI_VERSION="${gemini_version?}"
-local OTELD_VERSION="${oteld_version?}"
-local OFFLINE_INSTALLER_VERSION="${installer_version?}"
-local DMS_VERSION="${dms_version?}"
+readonly APP_VERSION_TMP=${app_version?}
+readonly KUBEBLOCKS_VERSION_TMP="${kubeblocks_version?}"
+readonly GEMINI_VERSION_TMP="${gemini_version?}"
+readonly OTELD_VERSION_TMP="${oteld_version?}"
+readonly OFFLINE_INSTALLER_VERSION_TMP="${installer_version?}"
+readonly DMS_VERSION_TMP="${dms_version?}"
 
 echo "ADD_IMAGES_LIST:"${ADD_IMAGES_LIST}
 echo "APP_NAME:"${APP_NAME}
-echo "APP_VERSION:"${APP_VERSION}
 echo "IMAGE_FILE_PATH:"${IMAGE_FILE_PATH}
-echo "CLOUD_VERSION:"${APP_VERSION}
-echo "KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION}
-echo "GEMINI_VERSION:"${GEMINI_VERSION}
-echo "OTELD_VERSION:"${OTELD_VERSION}
-echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
-echo "DMS_VERSION:"${DMS_VERSION}
+echo "APP_VERSION:"${APP_VERSION_TMP}
+echo "CLOUD_VERSION:"${APP_VERSION_TMP}
+echo "KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION_TMP}
+echo "GEMINI_VERSION:"${GEMINI_VERSION_TMP}
+echo "OTELD_VERSION:"${OTELD_VERSION_TMP}
+echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION_TMP}
+echo "DMS_VERSION:"${DMS_VERSION_TMP}
 
 add_images_list() {
     if [[ -z "${ADD_IMAGES_LIST}" ]]; then
@@ -222,6 +222,12 @@ save_images_package() {
 
 main() {
     local UNAME=`uname -s`
+    local APP_VERSION=${APP_VERSION_TMP}
+    local KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION_TMP}"
+    local GEMINI_VERSION="${GEMINI_VERSION_TMP}"
+    local OTELD_VERSION="${OTELD_VERSION_TMP?}"
+    local OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_VERSION_TMP}"
+    local DMS_VERSION="${DMS_VERSION_TMP}"
 
     add_images_list
 
