@@ -287,18 +287,18 @@ tar_charts_package() {
 
 main() {
     local UNAME=`uname -s`
-    local REPO_URL="https://github.com/apecloud/helm-charts/releases/download"
-    local KB_REPO_URL="https://github.com/apecloud/kubeblocks/releases/download"
-    local KB_ENT_REPO_URL="https://jihulab.com/api/v4/projects/${CHART_PROJECT_ID}/packages/helm/stable"
-    local ENT_REPO_NAME="kb-ent"
-    local KB_CHART_NAME="${APP_NAME}-charts"
-    local APP_PKG_NAME="${KB_CHART_NAME}-${APP_VERSION}.tar.gz"
     local APP_VERSION=${APP_VERSION_TMP}
     local KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION_TMP}"
     local GEMINI_VERSION="${GEMINI_VERSION_TMP}"
     local OTELD_VERSION="${OTELD_VERSION_TMP?}"
     local OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_VERSION_TMP}"
     local DMS_VERSION="${DMS_VERSION_TMP}"
+    local REPO_URL="https://github.com/apecloud/helm-charts/releases/download"
+    local KB_REPO_URL="https://github.com/apecloud/kubeblocks/releases/download"
+    local KB_ENT_REPO_URL="https://jihulab.com/api/v4/projects/${CHART_PROJECT_ID}/packages/helm/stable"
+    local ENT_REPO_NAME="kb-ent"
+    local KB_CHART_NAME="${APP_NAME}-charts"
+    local APP_PKG_NAME="${KB_CHART_NAME}-${APP_VERSION}.tar.gz"
 
     add_charts_list
 
