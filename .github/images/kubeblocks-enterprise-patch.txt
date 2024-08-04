@@ -1,15 +1,15 @@
-# KubeBlocks-Cloud v0.26.158
-docker.io/apecloud/openconsole:v0.26.158
-docker.io/apecloud/apiserver:v0.26.158
-docker.io/apecloud/task-manager:v0.26.158
-docker.io/apecloud/cubetran-front:v0.26.158
-docker.io/apecloud/cr4w:v0.26.158
-docker.io/apecloud/relay:v0.26.158
-docker.io/apecloud/sentry:v0.26.158
-docker.io/apecloud/sentry-init:v0.26.158
-docker.io/apecloud/kb-cloud-installer:v0.26.158
-docker.io/apecloud/apecloud-charts:v0.26.158
-docker.io/apecloud/kubeblocks-installer:202407301836-offline
+# KubeBlocks-Cloud v0.26.162
+docker.io/apecloud/openconsole:v0.26.162
+docker.io/apecloud/apiserver:v0.26.162
+docker.io/apecloud/task-manager:v0.26.162
+docker.io/apecloud/cubetran-front:v0.26.162
+docker.io/apecloud/cr4w:v0.26.162
+docker.io/apecloud/relay:v0.26.162
+docker.io/apecloud/sentry:v0.26.162
+docker.io/apecloud/sentry-init:v0.26.162
+docker.io/apecloud/kb-cloud-installer:v0.26.162
+docker.io/apecloud/apecloud-charts:v0.26.162
+docker.io/apecloud/kubeblocks-installer:2024080226-offline
 docker.io/apecloud/dms:0.0.1-alpha.50
 # KubeBlocks v0.9.1-beta.11
 docker.io/apecloud/kubeblocks:0.9.1-beta.11
