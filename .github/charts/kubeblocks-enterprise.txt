@@ -1,4 +1,4 @@
-kubeblocks:0.9.1-beta.11
+kubeblocks:0.9.1-beta.12
 kubeblocks-cloud:v0.26.162
 kb-cloud-installer:0.26.162
 gemini:0.6.2

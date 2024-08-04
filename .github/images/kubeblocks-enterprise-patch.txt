@@ -9,14 +9,14 @@ docker.io/apecloud/sentry:v0.26.162
 docker.io/apecloud/sentry-init:v0.26.162
 docker.io/apecloud/kb-cloud-installer:v0.26.162
 docker.io/apecloud/apecloud-charts:v0.26.162
-docker.io/apecloud/kubeblocks-installer:2024080226-offline
+docker.io/apecloud/kubeblocks-installer:202407301836-offline
 docker.io/apecloud/dms:0.0.1-alpha.50
-# KubeBlocks v0.9.1-beta.11
-docker.io/apecloud/kubeblocks:0.9.1-beta.11
-docker.io/apecloud/kubeblocks-dataprotection:0.9.1-beta.11
-docker.io/apecloud/kubeblocks-datascript:0.9.1-beta.11
-docker.io/apecloud/kubeblocks-tools:0.9.1-beta.11
-docker.io/apecloud/kubeblocks-charts:0.9.1-beta.11
+# KubeBlocks v0.9.1-beta.12
+docker.io/apecloud/kubeblocks:0.9.1-beta.12
+docker.io/apecloud/kubeblocks-dataprotection:0.9.1-beta.12
+docker.io/apecloud/kubeblocks-datascript:0.9.1-beta.12
+docker.io/apecloud/kubeblocks-tools:0.9.1-beta.12
+docker.io/apecloud/kubeblocks-charts:0.9.1-beta.12
 # Gemini v0.6.2
 docker.io/apecloud/gemini:0.6.2
 docker.io/apecloud/gemini-tools:0.6.2
