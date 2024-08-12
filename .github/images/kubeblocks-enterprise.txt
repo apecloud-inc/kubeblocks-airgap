@@ -1,18 +1,18 @@
-# kubeblocks v0.8.4-beta.11
-docker.io/apecloud/kubeblocks:0.8.4-beta.11
-docker.io/apecloud/kubeblocks-dataprotection:0.8.4-beta.11
-docker.io/apecloud/kubeblocks-datascript:0.8.4-beta.11
-docker.io/apecloud/kubeblocks-tools:0.8.4-beta.11
-docker.io/apecloud/kubeblocks-charts:0.8.4-beta.11
+# kubeblocks v0.8.4
+docker.io/apecloud/kubeblocks:0.8.4
+docker.io/apecloud/kubeblocks-dataprotection:0.8.4
+docker.io/apecloud/kubeblocks-datascript:0.8.4
+docker.io/apecloud/kubeblocks-tools:0.8.4
+docker.io/apecloud/kubeblocks-charts:0.8.4
 docker.io/apecloud/datasafed:0.1.0
 docker.io/apecloud/snapshot-controller:v6.2.1
 docker.io/apecloud/busybox:latest
-# gemini v0.6.1-beta.1
-docker.io/apecloud/gemini:0.6.1-beta.1
-docker.io/apecloud/gemini-tools:0.6.1-beta.1
-docker.io/apecloud/easymetrics:0.6.1-beta.1
+# gemini v0.6.3-beta.1
+docker.io/apecloud/gemini:0.6.3-beta.1
+docker.io/apecloud/gemini-tools:0.6.3-beta.1
+docker.io/apecloud/easymetrics:0.6.3-beta.1
 docker.io/apecloud/oteld:0.5.2-k8s21
-docker.io/apecloud/oteld:0.6.1-beta.1
+docker.io/apecloud/oteld:0.6.3
 docker.io/apecloud/wal-g:mongo-5.0
 docker.io/apecloud/wal-g:mysql-8.0
 docker.io/apecloud/wal-g-mysql:2.0.1-1-ubuntu
@@ -43,12 +43,11 @@ docker.io/apecloud/apiserver:v0.25.91
 docker.io/apecloud/task-manager:v0.25.91
 docker.io/apecloud/cubetran-front:v0.25.91
 docker.io/apecloud/cr4w:v0.25.91
-docker.io/apecloud/prompt:v0.25.91
 docker.io/apecloud/relay:v0.25.91
 docker.io/apecloud/sentry:v0.25.91
 docker.io/apecloud/sentry-init:v0.25.91
 docker.io/apecloud/kb-cloud-installer:v0.25.91
-docker.io/apecloud/kubeblocks-installer:v0.8.4-beta.11-offline
+docker.io/apecloud/kubeblocks-installer:v0.8.4-offline
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:10.1.1
 docker.io/apecloud/bats:v1.4.1

@@ -21,7 +21,6 @@ for chart in "${charts[@]}"; do
     yq e -i '.images.sentry.tag="'${VERSION}'"' $values_file
     yq e -i '.images.sentryInit.tag="'${VERSION}'"' $values_file
     yq e -i '.images.relay.tag="'${VERSION}'"' $values_file
-    yq e -i '.images.prompt.tag="'${VERSION}'"' $values_file
     yq e -i '.images.openconsole.defaultTag="'${VERSION}'"' $values_file
 
     rm -rf charts/"${chart}"-"${VERSION}".tgz
