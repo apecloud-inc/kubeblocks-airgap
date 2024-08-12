@@ -38,7 +38,7 @@ docker.io/apecloud/minio:RELEASE.2022-09-17T00-09-45Z
 docker.io/apecloud/mc:RELEASE.2022-09-16T09-16-47Z
 # kubeblocks-cloud v0.25.94
 docker.io/apecloud/openconsole:v0.25.94
-docker.io/apecloud/apiserver:v0.25.94-jni
+docker.io/apecloud/apiserver:v0.25.94
 docker.io/apecloud/apiserver:v0.25.94
 docker.io/apecloud/task-manager:v0.25.94
 docker.io/apecloud/cubetran-front:v0.25.94
@@ -47,7 +47,7 @@ docker.io/apecloud/relay:v0.25.94
 docker.io/apecloud/sentry:v0.25.94
 docker.io/apecloud/sentry-init:v0.25.94
 docker.io/apecloud/kb-cloud-installer:v0.25.94
-docker.io/apecloud/kubeblocks-installer:v0.8.4-offline
+docker.io/apecloud/kubeblocks-installer:202408121809-offline
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:10.1.1
 docker.io/apecloud/bats:v1.4.1

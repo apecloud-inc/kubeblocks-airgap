@@ -9,7 +9,7 @@ docker.io/apecloud/sentry:v0.25.94
 docker.io/apecloud/sentry-init:v0.25.94
 docker.io/apecloud/kb-cloud-installer:v0.25.94
 docker.io/apecloud/apecloud-charts:v0.25.94
-docker.io/apecloud/kubeblocks-installer:202408060811-offline
+docker.io/apecloud/kubeblocks-installer:202408121809-offline
 docker.io/apecloud/dms:0.0.1-alpha.53
 # KubeBlocks v0.8.4
 docker.io/apecloud/kubeblocks:0.8.4
