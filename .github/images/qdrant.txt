@@ -1,4 +1,4 @@
-# qdrant v0.9.0
+# qdrant v0.9.1
 docker.io/apecloud/curl-jq:latest
 docker.io/apecloud/qdrant:v1.5.0
 docker.io/apecloud/qdrant:v1.7.3
