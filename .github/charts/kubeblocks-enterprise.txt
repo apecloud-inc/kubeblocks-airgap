@@ -26,3 +26,5 @@ metrics-server:3.12.0
 qdrant:0.9.1
 postgres-operator:1.12.2
 zookeeper:0.9.0
+minio:0.9.0
+
