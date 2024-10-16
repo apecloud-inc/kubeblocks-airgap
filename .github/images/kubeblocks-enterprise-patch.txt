@@ -17,8 +17,8 @@ docker.io/apecloud/kubeblocks-dataprotection:0.9.1
 docker.io/apecloud/kubeblocks-datascript:0.9.1
 docker.io/apecloud/kubeblocks-tools:0.9.1
 docker.io/apecloud/kubeblocks-charts:0.9.1
-# Gemini v0.6.4-beta.5
-docker.io/apecloud/gemini:0.6.4-beta.5
-docker.io/apecloud/gemini-tools:0.6.4-beta.5
-docker.io/apecloud/easymetrics:0.6.4-beta.5
+# Gemini v0.6.5-beta.0
+docker.io/apecloud/gemini:0.6.5-beta.0
+docker.io/apecloud/gemini-tools:0.6.5-beta.0
+docker.io/apecloud/easymetrics:0.6.5-beta.0
 docker.io/apecloud/oteld:0.6.3
