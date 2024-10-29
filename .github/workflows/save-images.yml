@@ -105,7 +105,7 @@ jobs:
               sudo swapoff -a
               sudo rm -f /swapfile
               df -h
-          elif [[ "${{ inputs.APP_NAME }}" == "mysql" || "${{ inputs.APP_NAME }}" == "starrocks" ]]
+          elif [[ "${{ inputs.APP_NAME }}" == "mysql" || "${{ inputs.APP_NAME }}" == "starrocks" ]]; then
               sudo apt-get autoremove -y >/dev/null 2>&1
               sudo apt-get autoclean -y >/dev/null 2>&1
               sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
