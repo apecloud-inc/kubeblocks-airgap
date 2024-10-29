@@ -15,34 +15,40 @@ on:
           - kubeblocks-cloud
           - cert-manager
           - gemini
+          - ape-local-csi-driver
           - apecloud-mysql
           - clickhouse
+          - damengdb
+          - elasticsearch
+          - gaussdb
+          - gbase
           - kafka
           - kata
-          - kubebench
-          - minio
-          - mongodb
-          - mysql
-          - metallb
-          - oceanbase
-          - postgresql
-          - qdrant
-          - redis
-          - starrocks
-          - ingress-nginx
-          - ape-local-csi-driver
-          - spiderpool
-          - metrics-server
-          - elasticsearch
-          - xinference
-          - kubechat
-          - postgres-operator
-          - rabbitmq
-          - zookeeper
-          - damengdb
           - kingbase
+          - kubebench
+          - kubechat
           - k3s
           - kubernetes
+          - loki
+          - minio
+          - mongodb
+          - mssql
+          - mysql
+          - metallb
+          - metrics-server
+          - oceanbase
+          - oceanbase-proxy
+          - postgresql
+          - postgres-operator
+          - qdrant
+          - rabbitmq
+          - redis
+          - starrocks
+          - spiderpool
+          - victoria-metrics
+          - xinference
+          - zookeeper
+          - ingress-nginx
       APP_VERSION:
         description: 'app version'
         required: true
@@ -91,7 +97,7 @@ jobs:
     steps:
       - name: Free disk space
         run: |
-          if [[ "${{ inputs.APP_NAME }}" == "kubeblocks-enterprise" || "${{ inputs.APP_NAME }}" == "starrocks" ]]; then
+          if [[ "${{ inputs.APP_NAME }}" == "kubeblocks-enterprise" || "${{ inputs.APP_NAME }}" == "starrocks" || "${{ inputs.APP_NAME }}" == "mysql" ]]; then
               sudo apt-get autoremove -y >/dev/null 2>&1
               sudo apt-get autoclean -y >/dev/null 2>&1
               sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
