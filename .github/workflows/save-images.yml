@@ -44,6 +44,10 @@ on:
           - rabbitmq
           - redis
           - starrocks
+          - starrocks-3.2.2
+          - starrocks-3.3.0
+          - starrocks-3.3.2
+          - starrocks-3.3.3
           - spiderpool
           - victoria-metrics
           - xinference
