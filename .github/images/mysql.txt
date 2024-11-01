@@ -18,9 +18,8 @@ docker.io/apecloud/mysql_audit_log:8.0.33
 docker.io/apecloud/orc-tools:1.0.2
 docker.io/apecloud/orc-tools:1.0.3
 docker.io/apecloud/percona-xtrabackup:2.4
-docker.io/apecloud/percona-xtrabackup:8.0.32
-docker.io/apecloud/percona-xtrabackup:8.0.33-28
-docker.io/apecloud/percona-xtrabackup:8.4.0-1
+docker.io/apecloud/percona-xtrabackup:8.0
+docker.io/apecloud/percona-xtrabackup:8.4
 docker.io/apecloud/proxysql:2.4.4
 docker.io/apecloud/syncer:0.3.0
 docker.io/apecloud/syncer:mysql
