@@ -1,4 +1,4 @@
-kubeblocks:0.9.2-beta.16
+kubeblocks:0.9.2-beta.18
 kubeblocks-cloud:v0.27.130
 kb-cloud-installer:0.27.130
 gemini:0.7.1-beta.2
@@ -16,7 +16,7 @@ kafka:0.9.0
 mongodb:0.9.1
 mysql:0.9.1
 postgresql:0.9.0
-redis:0.9.0
+redis:0.9.1
 starrocks:0.9.0
 oceanbase:0.9.1
 clickhouse:0.9.0
