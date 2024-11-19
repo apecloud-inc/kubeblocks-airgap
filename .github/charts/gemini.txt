@@ -1,2 +1,2 @@
-gemini:0.7.0
-gemini-monitor:0.7.0
+gemini:0.7.1-beta.4
+gemini-monitor:0.7.1-beta.4
