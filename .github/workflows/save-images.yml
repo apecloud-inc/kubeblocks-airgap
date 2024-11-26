@@ -50,7 +50,8 @@ on:
           - starrocks-3.3.3
           - spiderpool
           - victoria-metrics
-          - xinference
+          - xinference-cpu
+          - xinference-gpu
           - zookeeper
           - ingress-nginx
       APP_VERSION:
