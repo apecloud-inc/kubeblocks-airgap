@@ -5,4 +5,4 @@ docker.io/apecloud/oceanbase-ent:4.2.1.7-107020012024061213
 docker.io/apecloud/oceanbase-ent:4.2.1.7-107020012024061213-sshd
 docker.io/apecloud/oceanbase-ent:4.2.1.7-107020012024061213-ocp
 docker.io/apecloud/apecloud-addon-charts:oceanbase-0.9.1
-docker.io/apecloud/syncer:0.3.0
+docker.io/apecloud/syncer:0.3.8
