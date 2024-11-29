@@ -24,3 +24,4 @@ docker.io/apecloud/gemini:0.8.0-alpha.0
 docker.io/apecloud/gemini-tools:0.8.0-alpha.0
 docker.io/apecloud/easymetrics:0.8.0-alpha.0
 docker.io/apecloud/oteld:0.7.2-beta.7
+docker.io/apecloud/cr-exporter:0.1.0-alpha.13
