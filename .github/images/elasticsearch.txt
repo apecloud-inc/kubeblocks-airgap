@@ -1,6 +1,7 @@
 # elasticsearch v0.9.1
 docker.io/apecloud/elasticsearch-exporter:v1.7.0
 docker.io/apecloud/curl-jq:0.1.0
+docker.io/apecloud/curl-jq:latest
 docker.io/apecloud/elasticsearch-plugins:8.8.2
 docker.io/apecloud/elasticsearch:8.8.2
 docker.io/apecloud/elasticsearch:7.8.1
