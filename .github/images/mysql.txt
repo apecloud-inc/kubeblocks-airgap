@@ -21,6 +21,7 @@ docker.io/apecloud/percona-xtrabackup:2.4
 docker.io/apecloud/percona-xtrabackup:8.0
 docker.io/apecloud/percona-xtrabackup:8.4
 docker.io/apecloud/proxysql:2.4.4
+docker.io/apecloud/syncer:0.3.0
 docker.io/apecloud/syncer:0.3.8
 docker.io/apecloud/syncer:mysql
 docker.io/apecloud/wal-g-mysql:2.0.1-1-ubuntu
