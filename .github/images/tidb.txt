@@ -1,0 +1,7 @@
+# tidb v0.9.2
+docker.io/pingcap/br:v7.1.5
+docker.io/pingcap/pd:v7.1.5
+docker.io/pingcap/tidb:v7.1.5
+docker.io/pingcap/tikv:v7.1.5
+docker.io/apecloud/busybox:1.35
+
