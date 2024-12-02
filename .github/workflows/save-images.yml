@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - kubeblocks-sealos-sailisi
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
