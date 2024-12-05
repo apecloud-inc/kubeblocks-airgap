@@ -12,5 +12,4 @@ docker.io/apecloud/br:v8.4.0
 docker.io/apecloud/pd:v8.4.0
 docker.io/apecloud/tidb:v8.4.0
 docker.io/apecloud/tikv:v8.4.0
-
-
+docker.io/apecloud/apecloud-addon-charts:tidb-0.9.0
