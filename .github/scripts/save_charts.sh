@@ -261,7 +261,9 @@ tar_charts_package() {
             chart_version=${chart#*:}
 
             case "$chart_tmp" in
-                "kubeblocks-cloud"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|"kafka"*|"kingbase"*|"loki"*|"minio"*|"mssql"*|"mysql"*|"oceanbase"*|"postgresql"*|"qdrant"*|"redis"*|"starrocks"*|"victoria-metrics"*)
+                "kubeblocks-cloud"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|\
+                "kafka"*|"kingbase"*|"loki"*|"minio"*|"mssql"*|"mysql"*|"oceanbase"*|"postgresql"*|\
+                "qdrant"*|"redis"*|"starrocks"*|"victoria-metrics"*|"vastbase"*)
                     helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
