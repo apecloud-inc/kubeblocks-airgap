@@ -21,7 +21,7 @@ docker.io/apecloud/bats:v1.4.1
 docker.io/apecloud/workflow-controller:v3.5.5
 docker.io/apecloud/argocli:v3.5.5
 docker.io/apecloud/argoexec:v3.5.5
-docker.io/apecloud/cloudshell:1.7.8
+docker.io/apecloud/cloudshell:1.7.9
 docker.io/apecloud/datasafed:0.2.0
 docker.io/apecloud/snapshot-controller:v6.2.1
 docker.io/apecloud/busybox:latest
