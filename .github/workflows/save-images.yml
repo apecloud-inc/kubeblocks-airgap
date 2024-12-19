@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - openconsole
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
