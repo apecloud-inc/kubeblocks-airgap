@@ -1,0 +1,2 @@
+# KubeBlocks Tools test-redis-getrole
+docker.io/apecloud/kubeblocks-tools:test-redis-getrole

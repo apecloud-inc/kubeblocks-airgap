@@ -9,6 +9,8 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - syncer
+          - kubeblocks-tools
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
