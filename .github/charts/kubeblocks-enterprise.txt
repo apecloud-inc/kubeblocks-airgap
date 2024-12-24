@@ -3,7 +3,7 @@ kubeblocks-cloud:v0.29.10
 kb-cloud-installer:0.29.10
 gemini:0.8.0-alpha.11
 gemini-monitor:0.8.0-alpha.11
-logto:0.1.4
+casdoor-helm-charts:v1.721.0
 ingress-nginx:4.8.4
 metallb:0.14.4
 ape-local-csi-driver:0.2.4
