@@ -10,8 +10,8 @@ docker.io/apecloud/sentry-init:v0.29.37
 docker.io/apecloud/kb-cloud-installer:v0.29.37
 docker.io/apecloud/apecloud-addon-charts:v0.29.37
 docker.io/apecloud/kb-cloud-hook:v0.29.37
-docker.io/apecloud/dms:0.0.2-alpha.49
-docker.io/apecloud/kubeblocks-installer:v0.29.35-0.9.2-offline
+docker.io/apecloud/dms:0.0.2-alpha.63
+docker.io/apecloud/kubeblocks-installer:v0.29.38-0.9.2-offline
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:10.1.1
