@@ -8,3 +8,4 @@ docker.io/apecloud/twemproxy:0.5.0
 docker.io/apecloud/busybox:1.36
 docker.io/apecloud/ape-dts:0.1.17
 docker.io/apecloud/ape-dts:redis.reshard.2.0.9
+docker.io/apecloud/redis:5.0.12
