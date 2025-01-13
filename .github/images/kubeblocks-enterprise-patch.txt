@@ -1,16 +1,16 @@
-# KubeBlocks-Cloud v0.28.176
-docker.io/apecloud/openconsole:v0.28.176
-docker.io/apecloud/apiserver:v0.28.176
-docker.io/apecloud/task-manager:v0.28.176
-docker.io/apecloud/cubetran-front:v0.28.176
-docker.io/apecloud/cr4w:v0.28.176
-docker.io/apecloud/relay:v0.28.176
-docker.io/apecloud/sentry:v0.28.176
-docker.io/apecloud/sentry-init:v0.28.176
-docker.io/apecloud/kb-cloud-installer:v0.28.176
-docker.io/apecloud/apecloud-charts:v0.28.176
-docker.io/apecloud/kb-cloud-hook:v0.28.176
-docker.io/apecloud/kubeblocks-installer:v0.28.176-0.9.3-beta.18-offline
+# KubeBlocks-Cloud v0.28.180
+docker.io/apecloud/openconsole:v0.28.180
+docker.io/apecloud/apiserver:v0.28.180
+docker.io/apecloud/task-manager:v0.28.180
+docker.io/apecloud/cubetran-front:v0.28.180
+docker.io/apecloud/cr4w:v0.28.180
+docker.io/apecloud/relay:v0.28.180
+docker.io/apecloud/sentry:v0.28.180
+docker.io/apecloud/sentry-init:v0.28.180
+docker.io/apecloud/kb-cloud-installer:v0.28.180
+docker.io/apecloud/apecloud-charts:v0.28.180
+docker.io/apecloud/kb-cloud-hook:v0.28.180
+docker.io/apecloud/kubeblocks-installer:v0.28.180-0.9.3-beta.18-offline
 docker.io/apecloud/dms:0.0.1-alpha.94
 # KubeBlocks v0.9.3-beta.18
 docker.io/apecloud/kubeblocks:0.9.3-beta.18
