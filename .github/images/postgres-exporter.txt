@@ -1,0 +1,2 @@
+# postgres-exporter v0.13.2
+docker.io/apecloud/postgres-exporter:v0.13.2

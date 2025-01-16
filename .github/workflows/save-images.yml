@@ -43,6 +43,7 @@ on:
           - oceanbase-proxy
           - postgresql
           - postgres-operator
+          - postgres-exporter
           - qdrant
           - rabbitmq
           - redis
