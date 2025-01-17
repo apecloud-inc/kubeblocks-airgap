@@ -1,0 +1,2 @@
+# cr-exporter v0.1.0-alpha.13
+docker.io/apecloud/cr-exporter:0.1.0-alpha.13
