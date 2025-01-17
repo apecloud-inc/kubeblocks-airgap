@@ -9,7 +9,6 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - cr-exporter
           - kubeblocks-tools
           - openconsole
           - syncer

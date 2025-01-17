@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - cr-exporter
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
