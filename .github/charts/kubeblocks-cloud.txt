@@ -1,2 +1,2 @@
-kubeblocks-cloud:v0.29.50
-kb-cloud-installer:0.29.50
+kubeblocks-cloud:v0.29.53
+kb-cloud-installer:0.29.53
