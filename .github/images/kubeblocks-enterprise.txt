@@ -27,6 +27,7 @@ docker.io/apecloud/apecloud-addon-charts:damengdb-0.9.1
 docker.io/apecloud/apecloud-addon-charts:elasticsearch-0.9.1
 docker.io/apecloud/apecloud-addon-charts:gaussdb-0.9.0
 docker.io/apecloud/apecloud-addon-charts:gbase-0.9.0
+docker.io/apecloud/apecloud-addon-charts:goldendb-0.9.0
 docker.io/apecloud/apecloud-addon-charts:kafka-0.9.1
 docker.io/apecloud/apecloud-addon-charts:kingbase-0.9.0
 docker.io/apecloud/apecloud-addon-charts:llm-0.9.0

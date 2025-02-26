@@ -22,6 +22,7 @@ damengdb:0.9.1
 elasticsearch:0.9.1
 gaussdb:0.9.0
 gbase:0.9.0
+goldendb:0.9.0
 kafka:0.9.1
 kingbase:0.9.0
 loki:0.9.1
