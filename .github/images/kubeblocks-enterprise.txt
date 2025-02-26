@@ -1,12 +1,8 @@
 # KubeBlocks-Cloud v0.29.44
 docker.io/apecloud/openconsole:v0.29.44
 docker.io/apecloud/apiserver:v0.29.44
-docker.io/apecloud/task-manager:v0.29.44
 docker.io/apecloud/cubetran-front:v0.29.44
 docker.io/apecloud/cr4w:v0.29.44
-docker.io/apecloud/relay:v0.29.44
-docker.io/apecloud/sentry:v0.29.44
-docker.io/apecloud/sentry-init:v0.29.44
 docker.io/apecloud/kb-cloud-installer:v0.29.44
 docker.io/apecloud/apecloud-addon-charts:v0.29.44
 docker.io/apecloud/kb-cloud-hook:v0.29.44
@@ -74,7 +70,6 @@ docker.io/apecloud/kubeblocks-tools:0.8.2
 docker.io/apecloud/cubetran-platform:0.5.11-alpha.1
 docker.io/apecloud/cubetran-sidecar:0.1.2
 docker.io/apecloud/cubetran-core:0.1.2
-docker.io/apecloud/kubeviewer:0.1.17
 docker.io/apecloud/mysql:8.0
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/loki:2.9.4
