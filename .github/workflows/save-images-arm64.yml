@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - damengdb-8.1.4
           - cr-exporter
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
