@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - kubeblocks-installer
           - kubeblocks-tools
           - openconsole
           - syncer

@@ -1,0 +1,2 @@
+# kubeblocks-installer
+docker.io/apecloud/kubeblocks-installer:0.28-20250304
