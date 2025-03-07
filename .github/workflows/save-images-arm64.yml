@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - swhy-upgrade
           - damengdb-8.1.4
           - cr-exporter
           - kubeblocks-enterprise
