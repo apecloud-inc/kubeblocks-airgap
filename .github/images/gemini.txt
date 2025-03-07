@@ -1,4 +1,4 @@
-# gemini v0.7.1-beta.4
+# gemini v0.8.3
 docker.io/apecloud/gemini:0.8.2
 docker.io/apecloud/gemini-tools:0.8.2
 docker.io/apecloud/easymetrics:0.8.2
