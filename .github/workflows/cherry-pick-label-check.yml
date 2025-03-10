@@ -1,4 +1,4 @@
-name: Pull Request Label Check
+name: Cherry Pick Label Check
 
 on:
   pull_request_target:
