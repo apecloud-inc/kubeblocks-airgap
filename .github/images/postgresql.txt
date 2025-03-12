@@ -1,4 +1,4 @@
-# postgresql v0.9.3
+# postgresql v0.9.4
 docker.io/apecloud/agamotto:0.1.2-beta.1
 docker.io/apecloud/postgres-exporter:v0.15.0
 docker.io/apecloud/pgbouncer:1.19.0
