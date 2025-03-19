@@ -1,12 +1,12 @@
-# KubeBlocks-Cloud v0.30.58
-docker.io/apecloud/openconsole:v0.30.58
-docker.io/apecloud/apiserver:v0.30.58
-docker.io/apecloud/cubetran-front:v0.30.58
-docker.io/apecloud/cr4w:v0.30.58
-docker.io/apecloud/kb-cloud-installer:v0.30.58
-docker.io/apecloud/apecloud-addon-charts:v0.30.58
-docker.io/apecloud/kb-cloud-hook:v0.30.58
-docker.io/apecloud/kubeblocks-installer:v0.30.58-0.9.4-beta.3-offline
+# KubeBlocks-Cloud v0.30.60
+docker.io/apecloud/openconsole:v0.30.60
+docker.io/apecloud/apiserver:v0.30.60
+docker.io/apecloud/cubetran-front:v0.30.60
+docker.io/apecloud/cr4w:v0.30.60
+docker.io/apecloud/kb-cloud-installer:v0.30.60
+docker.io/apecloud/apecloud-addon-charts:v0.30.60
+docker.io/apecloud/kb-cloud-hook:v0.30.60
+docker.io/apecloud/kubeblocks-installer:v0.30.60-0.9.4-beta.4-offline
 docker.io/apecloud/dms:0.0.3-alpha.3
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/servicemirror:0.4.0
@@ -51,17 +51,17 @@ docker.io/apecloud/apecloud-addon-charts:vastbase-0.9.0
 docker.io/apecloud/apecloud-addon-charts:victoria-metrics-0.9.1
 docker.io/apecloud/apecloud-addon-charts:zookeeper-0.9.0
 docker.io/apecloud/apecloud-addon-charts:tdsql-0.9.3
-# KubeBlocks v0.9.4-beta.3
-docker.io/apecloud/kubeblocks:0.9.4-beta.3
-docker.io/apecloud/kubeblocks-dataprotection:0.9.4-beta.3
-docker.io/apecloud/kubeblocks-datascript:0.9.4-beta.3
-docker.io/apecloud/kubeblocks-tools:0.9.4-beta.3
-docker.io/apecloud/kubeblocks-charts:0.9.4-beta.3
-# Gemini v0.8.4-beta.1
-docker.io/apecloud/gemini:0.8.4-beta.1
-docker.io/apecloud/gemini-tools:0.8.4-beta.1
-docker.io/apecloud/easymetrics:0.8.4-beta.1
-docker.io/apecloud/oteld:0.8.1
+# KubeBlocks v0.9.4-beta.4
+docker.io/apecloud/kubeblocks:0.9.4-beta.4
+docker.io/apecloud/kubeblocks-dataprotection:0.9.4-beta.4
+docker.io/apecloud/kubeblocks-datascript:0.9.4-beta.4
+docker.io/apecloud/kubeblocks-tools:0.9.4-beta.4
+docker.io/apecloud/kubeblocks-charts:0.9.4-beta.4
+# Gemini v0.8.4-beta.3
+docker.io/apecloud/gemini:0.8.4-beta.3
+docker.io/apecloud/gemini-tools:0.8.4-beta.3
+docker.io/apecloud/easymetrics:0.8.4-beta.3
+docker.io/apecloud/oteld:0.8.2-beta.2
 docker.io/apecloud/oteld:0.5.2-k8s21
 docker.io/apecloud/cr-exporter:0.1.0-alpha.13
 docker.io/apecloud/wal-g:mongo-5.0
@@ -94,7 +94,7 @@ docker.io/apecloud/alertmanager:v0.25.0
 docker.io/apecloud/configmap-reload:v0.5.0
 docker.io/apecloud/minio:RELEASE.2022-09-17T00-09-45Z
 docker.io/apecloud/mc:RELEASE.2022-09-16T09-16-47Z
-docker.io/apecloud/kubeblocks-tools:0.9.4-beta.3
+docker.io/apecloud/kubeblocks-tools:0.9.4-beta.4
 # casdoor v1.721.0
 docker.io/apecloud/casdoor:v1.721.0
 # minio
