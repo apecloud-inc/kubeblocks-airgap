@@ -10,6 +10,7 @@ docker.io/apecloud/kubeblocks-installer:v0.30.63-0.9.4-beta.4-offline
 docker.io/apecloud/dms:0.0.3-alpha.3
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.66
+docker.io/apecloud/curl:latest
 docker.io/apecloud/servicemirror:0.4.0
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:10.1.1
