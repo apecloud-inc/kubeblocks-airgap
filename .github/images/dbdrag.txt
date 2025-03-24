@@ -1,0 +1,6 @@
+# dbdrag v0.1.0
+docker.io/apecloud/ragflow:dbdrag
+docker.io/apecloud/elasticsearch:dbdrag
+docker.io/apecloud/minio:dbdrag
+docker.io/apecloud/mysql:dbdrag
+docker.io/apecloud/valkey:dbdrag
