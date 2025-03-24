@@ -11,7 +11,7 @@ docker.io/apecloud/kb-cloud-installer:v0.28.282
 docker.io/apecloud/apecloud-charts:v0.28.282
 docker.io/apecloud/kb-cloud-hook:v0.28.282
 docker.io/apecloud/kubeblocks-installer:v0.28.282-0.9.4-beta.5-offline
-docker.io/apecloud/dms:0.0.1-alpha.100
+docker.io/apecloud/dms:0.0.1-alpha.103
 # KubeBlocks v0.9.4-beta.5
 docker.io/apecloud/kubeblocks:0.9.4-beta.5
 docker.io/apecloud/kubeblocks-dataprotection:0.9.4-beta.5
