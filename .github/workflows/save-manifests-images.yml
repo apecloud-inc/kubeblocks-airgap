@@ -13,16 +13,13 @@ on:
         type: string
         required: false
         default: 'false'
-#      SELF_RUNNER:
-#        description: "Enable self runner"
-#        default: 'false'
-#        type: choice
-#        required: false
-#        options:
-#          - false
-#          - true
+      ENABLE_ARM64:
+        description: 'Release ARM64 images'
+        type: string
+        required: false
+        default: 'false'
 
-run-name: save images ${{ inputs.RELEASE_VERSION }} ${{ inputs.ENABLE_ADDONS }}
+run-name: save images ${{ inputs.RELEASE_VERSION }} addon:${{ inputs.ENABLE_ADDONS }} arm:${{ inputs.ENABLE_ARM64 }}
 
 permissions:
   id-token: write
@@ -47,8 +44,29 @@ jobs:
     secrets: inherit
 
   save-cloud-images:
+    if: ${{ inputs.ENABLE_ARM64 == 'false' }}
     needs: [ check-manifests-image, check-manifests-charts-image ]
     uses: ./.github/workflows/manifests-images-save.yml
+    with:
+      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
+      IS_ADDON: "false"
+    secrets: inherit
+
+  enable-self-runner:
+    if: ${{ inputs.ENABLE_ARM64 == 'true' }}
+    needs: [ check-manifests-image, check-manifests-charts-image ]
+    uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
+    with:
+      CLOUD_PROVIDER: "eks"
+      GITHUB_REPO: "apecloud-inc/kubeblocks-airgap"
+      RUNNER_LABEL: "kubeblocks-airgap-runner-arm64"
+      RUNNER_REPLICAS: 1
+    secrets: inherit
+
+  save-cloud-images-arm:
+    if: ${{ inputs.ENABLE_ARM64 == 'true' }}
+    needs: [ enable-self-runner ]
+    uses: ./.github/workflows/manifests-images-save-arm64.yml
     with:
       RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
       IS_ADDON: "false"
@@ -102,6 +120,7 @@ jobs:
           echo "matrix={\"include\":[$ADDONS_NAME]}" >> $GITHUB_OUTPUT
 
   save-addon-images:
+    if: ${{ inputs.ENABLE_ARM64 == 'false' }}
     needs: [ get-enbale-addons ]
     uses: ./.github/workflows/manifests-images-save-addons.yml
     strategy:
@@ -110,6 +129,29 @@ jobs:
     with:
       RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
       ENABLE_ADDONS: "${{ matrix.addon-name }}"
+    secrets: inherit
+
+  save-addon-images-arm64:
+    if: ${{ inputs.ENABLE_ARM64 == 'true' }}
+    needs: [ get-enbale-addons ]
+    uses: ./.github/workflows/manifests-images-save-addons-arm64.yml
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.get-enbale-addons.outputs.matrix) }}
+    with:
+      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
+      ENABLE_ADDONS: "${{ matrix.addon-name }}"
+    secrets: inherit
+
+  disable-self-runner:
+    if: ${{ always() }}
+    needs: [ save-addon-images-arm64 ]
+    uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
+    with:
+      CLOUD_PROVIDER: "eks"
+      GITHUB_REPO: "apecloud-inc/kubeblocks-airgap"
+      RUNNER_LABEL: "kubeblocks-airgap-runner-arm64"
+      ENABLE: "disable"
     secrets: inherit
 
   send-message:
@@ -124,48 +166,3 @@ jobs:
       BOT_TYPE: "package"
       CONTENT: "save images ${{ inputs.RELEASE_VERSION }} error"
     secrets: inherit
-
-#  check-self-runner:
-#    needs: [ check-manifests-image, check-manifests-charts-image ]
-#    if: ${{ inputs.ENABLE_ADDONS != 'false' && inputs.ENABLE_ADDONS != '' }}
-#    runs-on: ubuntu-latest
-#    outputs:
-#      self-runner: ${{ steps.check-self-runner.outputs.self-runner }}
-#      enable-addons: ${{ steps.check-self-runner.outputs.enable-addons }}
-#    steps:
-#      - name: check self runner
-#        id: check-self-runner
-#        run: |
-#          SELF_RUNNER="${{ inputs.SELF_RUNNER }}"
-#          ENABLE_ADDONS="${{ inputs.ENABLE_ADDONS }}"
-#          if [[ "${ENABLE_ADDONS}" == "true" ]]; then
-#              SELF_RUNNER="true"
-#              ENABLE_ADDONS=""
-#          else
-#              ADDON_COUNTS=$(echo "${{ inputs.ENABLE_ADDONS }}" | grep -o "|" | wc -l)
-#              if [[ ${ADDON_COUNTS} -gt 8 ]]; then
-#                  SELF_RUNNER="true"
-#              fi
-#          fi
-#          echo "self-runner=${SELF_RUNNER}" >> $GITHUB_OUTPUT
-#          echo "enable-addons=${ENABLE_ADDONS}" >> $GITHUB_OUTPUT
-#
-#  save-addon-images:
-#    needs: [ check-self-runner ]
-#    if: ${{ inputs.ENABLE_ADDONS != 'false' && inputs.ENABLE_ADDONS != '' && needs.check-self-runner.outputs.self-runner != 'true' }}
-#    uses: ./.github/workflows/manifests-images-save.yml
-#    with:
-#      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
-#      IS_ADDON: "true"
-#      ENABLE_ADDONS: "${{ needs.check-self-runner.outputs.enable-addons }}"
-#    secrets: inherit
-#
-#  save-addon-images-self:
-#    needs: [ check-self-runner ]
-#    if: ${{ inputs.ENABLE_ADDONS != 'false' && inputs.ENABLE_ADDONS != '' && needs.check-self-runner.outputs.self-runner == 'true' }}
-#    uses: ./.github/workflows/manifests-images-save-self.yml
-#    with:
-#      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
-#      IS_ADDON: "true"
-#      ENABLE_ADDONS: "${{ needs.check-self-runner.outputs.enable-addons }}"
-#    secrets: inherit
