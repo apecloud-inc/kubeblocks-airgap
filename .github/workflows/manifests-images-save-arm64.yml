@@ -1,0 +1,235 @@
+name: Manifests Images Save  Arm64
+
+on:
+  workflow_dispatch:
+    inputs:
+      RELEASE_VERSION:
+        description: 'The version of release'
+        type: string
+        required: true
+        default: ''
+      IS_ADDON:
+        description: "Save addon images type"
+        default: 'false'
+        type: choice
+        required: true
+        options:
+          - false
+          - true
+      ENABLE_ADDONS:
+        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        type: string
+        required: false
+        default: ''
+  workflow_call:
+    inputs:
+      RELEASE_VERSION:
+        description: 'The version of release'
+        type: string
+        required: true
+        default: ''
+      IS_ADDON:
+        description: "Save addon images flag"
+        default: 'false'
+        type: string
+        required: true
+      ENABLE_ADDONS:
+        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        type: string
+        required: false
+        default: ''
+
+
+run-name: save images ${{ inputs.RELEASE_VERSION }} is_addon:${{ inputs.IS_ADDON }} ${{ inputs.ENABLE_ADDONS }}
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
+  OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+  OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
+  OSS_BUCKET: "kubeblocks-oss"
+  MANIFESTS_FILE: "apecloud/manifests/deploy-manifests.yaml"
+  VALUES_FILE: "apecloud/manifests/deploy-values.yaml"
+  DOCKER_REGISTRY_URL: docker.io
+  DOCKER_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+jobs:
+  save-images:
+    runs-on: [ self-hosted, kubeblocks-airgap-runner-arm64 ]
+    outputs:
+      release-version: ${{ steps.manifests-images-save.outputs.release-version }}
+      image-name: ${{ steps.get-version.outputs.image-name }}
+      runner-name: ${{ steps.get_runner_name.outputs.runner-name }}
+    steps:
+      - name: setup ossutil
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install unzip
+          sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
+
+      - name: ossutil config
+        env:
+          OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
+          OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+        run: |
+          ossutil config --access-key-id="${{ env.OSS_KEY_ID }}" --access-key-secret="${{ env.OSS_KEY_SECRET }}" --endpoint="${{ env.OSS_ENDPOINT }}"
+
+      - name: get version
+        id: get-version
+        run: |
+          RELEASE_VERSION="${{ inputs.RELEASE_VERSION }}"
+          if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+              RELEASE_VERSION="v${RELEASE_VERSION}"
+          fi
+          echo "release-version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+
+      - uses: actions/checkout@v4
+      - name: Checkout apecloud Code
+        uses: actions/checkout@v4
+        with:
+          repository: apecloud/apecloud
+          path: apecloud
+          token: ${{ env.GITHUB_TOKEN }}
+          ref: ${{ steps.get-version.outputs.release-version }}
+
+      - uses: docker/setup-qemu-action@v3
+      - if: ${{ env.DOCKER_USER != '' && env.DOCKER_PASSWORD != '' && inputs.ENABLE_ADDONS == 'damengdb' }}
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DOCKER_REGISTRY_URL }}
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: get image name
+        id: get-image-name
+        run: |
+          IMAGE_NAME="kubeblocks-enterprise"
+          if [[ "${{ inputs.IS_ADDON }}" == "true" ]]; then
+              if [[ -z "${{ inputs.ENABLE_ADDONS }}" ]]; then
+                  IMAGE_NAME="kb-ent-addons-all"
+              else
+                  ENABLE_ADDONS="${{ inputs.ENABLE_ADDONS }}"
+                  IMAGE_NAME="kb-ent-addons"
+                  for addon_name in $(echo "${ENABLE_ADDONS}"|sed 's/|/ /g' ); do
+                      IMAGE_NAME="${IMAGE_NAME}-${addon_name}"
+                  done
+              fi
+          fi
+          echo "image-name=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+
+      - name: manifests images save
+        run: |
+          MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
+          VALUES_FILE="${{ env.VALUES_FILE }}"
+          RELEASE_VERSION="${{ steps.get-version.outputs.release-version }}"
+          IMAGES_NAME="${{ steps.get-image-name.outputs.image-name }}"
+          IS_ADDON="${{ inputs.IS_ADDON }}"
+          ENABLE_ADDONS="${{ inputs.ENABLE_ADDONS }}"
+       
+          echo "save manifests images"
+          bash .github/scripts/manifests_images_save.sh "${MANIFESTS_FILE}" "${VALUES_FILE}" "${RELEASE_VERSION}" "${IMAGES_NAME}" "${IS_ADDON}" "${ENABLE_ADDONS}"
+
+      - name: Upload manifests to oss
+        run: |
+          MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
+          VALUES_FILE="${{ env.VALUES_FILE }}"
+          RELEASE_VERSION="${{ steps.get-version.outputs.release-version }}"
+          ossutil cp -rf ./${MANIFESTS_FILE} oss://${{ env.OSS_BUCKET }}/manifests/${RELEASE_VERSION}/manifests.yaml
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${MANIFESTS_FILE} to oss successfully"
+          else
+              exit 1
+          fi 
+          ossutil cp -rf ./${VALUES_FILE} oss://${{ env.OSS_BUCKET }}/manifests/${RELEASE_VERSION}/values.yaml
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${VALUES_FILE} to oss successfully"
+          else
+              exit 1
+          fi
+
+      - name: Upload arm64 images to oss
+        id: upload_to_oss
+        run: |
+          IMAGE_PKG_NAME="${{ steps.get-image-name.outputs.image-name }}-images-${{ steps.get-version.outputs.release-version }}.tar.gz"
+          
+          upload_ret=0
+          for i in {1..10}; do
+              echo "ossutil cp ${IMAGE_PKG_NAME} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME}  --read-timeout=420 --retry-times=5
+              upload_ret=$?
+          
+              if [[ -d "ossutil_output" ]]; then
+                  ossutil_report_files=$(ls ossutil_output)
+                  if [[ -n "${ossutil_report_files}" ]]; then
+                      ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
+                      if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_ARM64} to oss error, retry..."
+                          cat "${ossutil_report_file_name}"
+                          rm -rf ossutil_output/ossutil_report_*.report
+                          upload_ret=1
+                      fi
+                  fi
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_ARM64} to oss successfully"
+          else
+              exit 1
+          fi
+
+      - name: get self runner name
+        id: get_runner_name
+        if: ${{ always() }}
+        run: |
+          echo runner-name=${RUNNER_NAME} >> $GITHUB_OUTPUT
+
+  delete-self-runner:
+    if: ${{ always() }}
+    needs: [ save-images ]
+    uses: apecloud-inc/apecloud-cd/.github/workflows/delete-self-runner.yml@v0.5.0
+    with:
+      RUNNER_NAME: "${{ needs.save-images.outputs.runner-name }}"
+    secrets: inherit
+
+  save-result:
+    runs-on: ubuntu-latest
+    needs: [ save-images ]
+    if: ${{ always() }}
+    outputs:
+      image-pkg-name: ${{ steps.get_save_result.outputs.image_pkg_name }}
+      save-result: ${{ steps.get_save_result.outputs.save_result }}
+    steps:
+      - name: get save result
+        id: get_save_result
+        run: |
+          SAVE_RESULT="error"
+          IMAGE_PKG_NAME="${{ needs.save-images.outputs.image-name }}-images-${{ needs.save-images.outputs.release-version }}.tar.gz"
+          if [[ "${{ needs.save-images.result }}" == "success" ]]; then
+              SAVE_RESULT="success"
+              IMAGE_PKG_NAME="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/images/arm64/${IMAGE_PKG_NAME}"
+          fi
+          echo 'save_result='$SAVE_RESULT >> $GITHUB_OUTPUT
+          echo 'image_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
+
+  send-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      BOT_TYPE: "package"
+      CONTENT: "save image ${{ needs.save-result.outputs.image-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
+    secrets: inherit
