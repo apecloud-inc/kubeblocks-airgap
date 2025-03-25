@@ -59,7 +59,7 @@ jobs:
     runs-on: [ self-hosted, arm-yq-runner ]
     outputs:
       release-version: ${{ steps.manifests-images-save.outputs.release-version }}
-      image-name: ${{ steps.get-version.outputs.image-name }}
+      image-name: ${{ steps.get-image-name.outputs.image-name }}
       runner-name: ${{ steps.get_runner_name.outputs.runner-name }}
     steps:
       - name: setup ossutil
@@ -168,7 +168,7 @@ jobs:
                   if [[ -n "${ossutil_report_files}" ]]; then
                       ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
                       if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
-                          echo "cp ${IMAGE_PKG_NAME_ARM64} to oss error, retry..."
+                          echo "cp ${IMAGE_PKG_NAME} to oss error, retry..."
                           cat "${ossutil_report_file_name}"
                           rm -rf ossutil_output/ossutil_report_*.report
                           upload_ret=1
@@ -182,7 +182,7 @@ jobs:
           done
           
           if [[ $upload_ret -eq 0 ]]; then
-              echo "upload ${IMAGE_PKG_NAME_ARM64} to oss successfully"
+              echo "upload ${IMAGE_PKG_NAME} to oss successfully"
           else
               exit 1
           fi
