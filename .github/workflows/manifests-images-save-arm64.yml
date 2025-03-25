@@ -56,7 +56,7 @@ env:
 
 jobs:
   save-images:
-    runs-on: [ self-hosted, kubeblocks-airgap-runner-arm64 ]
+    runs-on: [ self-hosted, amd-yq-runner ]
     outputs:
       release-version: ${{ steps.manifests-images-save.outputs.release-version }}
       image-name: ${{ steps.get-version.outputs.image-name }}
