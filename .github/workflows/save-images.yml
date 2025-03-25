@@ -50,6 +50,7 @@ on:
           - starrocks-3.3.0
           - starrocks-3.3.2
           - starrocks-3.3.3
+          - starrocks-3.4.1
           - spiderpool
           - victoria-metrics
           - xinference-cpu
