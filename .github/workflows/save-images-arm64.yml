@@ -22,7 +22,7 @@ on:
           - kubebench
           - minio
           - mongodb
-          - mysql
+          - mysql-arm
           - metallb
           - oceanbase
           - postgresql
