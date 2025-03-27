@@ -14,6 +14,10 @@ pull_chart_images() {
             if [[ "${image}" == "apecloud/mysql:5.7.44" || "${image}" == "apecloud/mysql_audit_log:5.7.44" || "${image}" == "apecloud/percona-xtrabackup:2.4" || "${image}" == "apecloud/xtrabackup:2.4" ]]; then
                 continue
             fi
+        elif [[ "${ARM64_IMAGE}" == "true" && "$image_name_tmp" == "elasticsearch" ]]; then
+            if [[ "${image}" == "apecloud/elasticsearch:7.7.1" || "${image}" == "apecloud/kibana:7.10.1" || "${image}" == "apecloud/kibana:7.8.1" || "${image}" == "apecloud/kibana:7.7.1" ]]; then
+                continue
+            fi
         fi
 
         repository="${SRC_REGISTRY}/${image}"

@@ -2,6 +2,7 @@
 
 MANIFESTS_FILE=${1:-"deploy-manifests.yaml"}
 VALUES_FILE=${2:-"deploy-values.yaml"}
+ENABLE_ARM64=${3:-"false"}
 
 
 get_manifests_addon() {
@@ -11,9 +12,13 @@ get_manifests_addon() {
     fi
     charts_name=$(yq e "to_entries|map(.key)|.[]"  "${MANIFESTS_FILE}")
     for chart_name in $(echo "$charts_name"); do
+        if [[ "${ENABLE_ARM64}" == "true" && ("${chart_name}" == "goldendb" || "${chart_name}" == "rocketmq") ]]; then
+            continue
+        fi
         is_addon=$(yq e "."${chart_name}"[0].isAddon" ${MANIFESTS_FILE})
         chart_enable=$(yq e ".${chart_name}.enable" "${VALUES_FILE}")
         if [[ "${is_addon}" == "true" && "${chart_enable}" == "true" ]]; then
+
             if [[ -z "$ADDONS_NAME" ]]; then
                 ADDONS_NAME="{\"addon-name\":\"${chart_name}\"}"
             else
