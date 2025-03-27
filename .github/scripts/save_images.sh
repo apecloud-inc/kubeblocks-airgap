@@ -193,7 +193,7 @@ save_images_package() {
     app_package_name=${APP_NAME}-${APP_VERSION}.tar.gz
     save_flag=0
     for i in {1..10}; do
-        save_cmd="docker save -o ${app_package_name} "
+        save_cmd="docker save "
         while read -r image
         do
             if [[ -z "$image" || "$image" == "#"* ]]; then
@@ -211,6 +211,7 @@ save_images_package() {
             done
             save_cmd="${save_cmd} $image "
         done < $IMAGE_FILE_PATH
+        save_cmd="${save_cmd} | gzip > ${app_package_name} "
         echo "$save_cmd"
         eval "$save_cmd"
         ret_msg=$?
