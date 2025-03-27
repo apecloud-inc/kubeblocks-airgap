@@ -105,11 +105,16 @@ jobs:
           ADDONS_NAME=""
           ENABLE_ADDONS="${{ inputs.ENABLE_ADDONS }}"
           MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
+          ENABLE_ARM64="${{ inputs.ENABLE_ARM64 }}"
           VALUES_FILE="${{ env.VALUES_FILE }}"
           if [[ "${ENABLE_ADDONS}" == "true" ]]; then
-              ADDONS_NAME="$(bash .github/scripts/get_manifests_addons.sh "${MANIFESTS_FILE}" "${VALUES_FILE}")"
+              ADDONS_NAME="$(bash .github/scripts/get_manifests_addons.sh "${MANIFESTS_FILE}" "${VALUES_FILE}" "${ENABLE_ARM64}")"
           else
               for addons_name in $( echo "${ENABLE_ADDONS}" | sed 's/|/ /g'); do
+                  if [[ "${ENABLE_ARM64}" == "true" && ("${addons_name}" == "goldendb" || "${addons_name}" == "rocketmq") ]]; then
+                      continue
+                  fi
+          
                   if [[ -z "$ADDONS_NAME" ]]; then
                       ADDONS_NAME="{\"addon-name\":\"$addons_name\"}"
                   else
