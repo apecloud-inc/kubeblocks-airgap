@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - cilium
           - kubeblocks-installer
           - kubeblocks-tools
           - openconsole
@@ -26,6 +27,7 @@ on:
           - elasticsearch
           - gaussdb
           - gbase
+          - goldendb
           - kafka
           - kata
           - kingbase
@@ -44,15 +46,16 @@ on:
           - oceanbase-proxy
           - postgresql
           - postgres-operator
-          - postgres-exporter
           - qdrant
           - rabbitmq
+          - rocketmq
           - redis
           - starrocks
           - starrocks-3.2.2
           - starrocks-3.3.0
           - starrocks-3.3.2
           - starrocks-3.3.3
+          - starrocks-3.4.1
           - spiderpool
           - victoria-metrics
           - xinference-cpu
@@ -61,8 +64,15 @@ on:
           - ingress-nginx
           - nvidia-device-plugin
           - dify
+          - tdsql
           - tidb
           - vastbase
+          - mogdb
+          - polardbx
+          - pulsar
+          - calico
+          - csi-driver-nfs
+          - dbdrag
       APP_VERSION:
         description: 'app version'
         required: true
@@ -107,11 +117,11 @@ env:
 jobs:
   save-app-images:
     name: save app images
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Free disk space
         run: |
-          if [[ "${{ inputs.APP_NAME }}" == "mysql" || "${{ inputs.APP_NAME }}" == "starrocks" ]]; then
+          if [[ "${{ inputs.APP_NAME }}" == "mysql" || "${{ inputs.APP_NAME }}" == "starrocks" || "${{ inputs.APP_NAME }}" == "goldendb" || "${{ inputs.APP_NAME }}" == "dbdrag" || "${{ inputs.APP_NAME }}" == "elasticsearch" || "${{ inputs.APP_NAME }}" == "xinference-gpu" ]]; then
               sudo apt-get autoremove -y >/dev/null 2>&1
               sudo apt-get autoclean -y >/dev/null 2>&1
               sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
@@ -128,7 +138,7 @@ jobs:
           }
           EOF
               sudo systemctl restart docker
-          elif [[ "${{ inputs.APP_NAME }}" == "kubeblocks-enterprise" || "${{ inputs.APP_NAME }}" == "elasticsearch" || "${{ inputs.APP_NAME }}" == "starrocks"* ]]; then
+          elif [[ "${{ inputs.APP_NAME }}" == "kubeblocks-enterprise" || "${{ inputs.APP_NAME }}" == "starrocks"* || "${{ inputs.APP_NAME }}" == "mongodb" ]]; then
               sudo apt-get autoremove -y >/dev/null 2>&1
               sudo apt-get autoclean -y >/dev/null 2>&1
               sudo rm -rf /usr/local/lib/android >/dev/null 2>&1

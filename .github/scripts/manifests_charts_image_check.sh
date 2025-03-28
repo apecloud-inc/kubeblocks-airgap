@@ -13,14 +13,14 @@ add_chart_repo() {
 }
 
 check_images() {
-    ent_flag_tmp=${1:-""}
+    is_enterprise_tmp=${1:-""}
     chart_version_tmp=${2:-""}
     chart_name_tmp=${3:-""}
     chart_images_tmp=${4:-""}
     set_values_tmp=${5:-""}
     for j in {1..10}; do
         template_repo="${KB_REPO_NAME}"
-        if [[ "$ent_flag_tmp" == "true" ]]; then
+        if [[ "$is_enterprise_tmp" == "true" ]]; then
             template_repo="${KB_ENT_REPO_NAME}"
         fi
         echo "helm template ${chart_name_tmp} ${template_repo}/${chart_name_tmp} --version ${chart_version_tmp} ${set_values_tmp}"
@@ -69,6 +69,11 @@ check_images() {
                 continue
             fi
 
+            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/vastbase:0.0.19"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"*) ]]; then
+                repository=""
+                continue
+            fi
+
             if [[ "$repository" == "'"*"'" ]]; then
                 repository=${repository//\'/}
             fi
@@ -111,7 +116,7 @@ check_charts_images() {
             continue
         fi
         set_values=""
-        ent_flag=$(yq e "."${chart_name}"[0].isEnterprise"  ${MANIFESTS_FILE})
+        is_enterprise=$(yq e "."${chart_name}"[0].isEnterprise"  ${MANIFESTS_FILE})
         chart_version=$(yq e "."${chart_name}"[0].version"  ${MANIFESTS_FILE})
         chart_images=$(yq e "."${chart_name}"[0].images[]"  ${MANIFESTS_FILE})
         case $chart_name in
@@ -137,8 +142,16 @@ check_charts_images() {
             gemini)
                 set_values="${set_values} --set cr-exporter.enabled=true "
             ;;
+            kubebench)
+                set_values="${set_values} --set image.tag=0.0.10 "
+                set_values="${set_values} --set kubebenchImages.exporter=apecloud/kubebench:0.0.10"
+                set_values="${set_values} --set kubebenchImages.tools=apecloud/kubebench:0.0.10"
+            ;;
+            dbdrag)
+                continue
+            ;;
         esac
-        check_images "$ent_flag" "$chart_version" "$chart_name" "$chart_images" "$set_values" &
+        check_images "$is_enterprise" "$chart_version" "$chart_name" "$chart_images" "$set_values" &
     done
     wait
     cat exit_result

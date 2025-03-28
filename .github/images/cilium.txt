@@ -1,0 +1,2 @@
+# cilium v1.14.8
+registry.cn-shanghai.aliyuncs.com/labring/cilium:v1.14.8
