@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - kubebench-0.0.10
           - cilium
           - kubeblocks-installer
           - kubeblocks-tools

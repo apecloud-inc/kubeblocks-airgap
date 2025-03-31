@@ -1,0 +1,2 @@
+# kubebench v0.0.10
+docker.io/apecloud/kubebench:0.0.10
