@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - kubebench-0.0.10
           - cilium
           - swhy-upgrade
           - damengdb-8.1.4
