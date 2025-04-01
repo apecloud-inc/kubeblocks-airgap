@@ -1,4 +1,5 @@
 # kubebench v0.0.10
+docker.io/apecloud/kubebench:0.0.10
 docker.io/apecloud/customsuites:latest
 docker.io/apecloud/benchmarksql:latest
 docker.io/apecloud/go-ycsb:latest
