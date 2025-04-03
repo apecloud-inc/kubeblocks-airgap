@@ -43,5 +43,5 @@ tdsql:0.9.3
 tidb:0.9.0
 vastbase:0.9.0
 netshoot:0.1.0
-rocketmq:0.9.0
+rocketmq:0.9.1
 csi-driver-nfs:v4.10.0

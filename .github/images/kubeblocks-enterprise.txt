@@ -45,7 +45,7 @@ docker.io/apecloud/apecloud-addon-charts:pulsar-0.9.1
 docker.io/apecloud/apecloud-addon-charts:qdrant-0.9.1
 docker.io/apecloud/apecloud-addon-charts:rabbitmq-0.9.0
 docker.io/apecloud/apecloud-addon-charts:redis-0.9.5
-docker.io/apecloud/apecloud-addon-charts:rocketmq-0.9.0
+docker.io/apecloud/apecloud-addon-charts:rocketmq-0.9.1
 docker.io/apecloud/apecloud-addon-charts:starrocks-0.9.0
 docker.io/apecloud/apecloud-addon-charts:tidb-0.9.0
 docker.io/apecloud/apecloud-addon-charts:vastbase-0.9.0
