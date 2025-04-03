@@ -1,5 +1,7 @@
 # KubeBlocks-Cloud v0.30.92
 docker.io/apecloud/openconsole:v0.30.92
+docker.io/apecloud/openconsole:v0.30.92-console
+docker.io/apecloud/openconsole:v0.30.92-admin
 docker.io/apecloud/apiserver:v0.30.92
 docker.io/apecloud/cubetran-front:v0.30.92
 docker.io/apecloud/cr4w:v0.30.92
