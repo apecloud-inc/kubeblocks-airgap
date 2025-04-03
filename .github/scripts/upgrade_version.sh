@@ -87,7 +87,7 @@ change_cloud_version() {
         HEAD_CLOUD_VERSION="${CLOUD_VERSION%%.*}"
         if [[ "$UNAME" == "Darwin" ]]; then
             sed -i '' "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${CLOUD_VERSION}/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/openconsole:.*/docker.io\/apecloud\/openconsole:${CLOUD_VERSION}/" $image_file_path
+            sed -i '' "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${CLOUD_VERSION}/" $image_file_path
             sed -i '' "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${CLOUD_VERSION}/" $image_file_path
             sed -i '' "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${CLOUD_VERSION}/" $image_file_path
             sed -i '' "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${CLOUD_VERSION}/" $image_file_path
@@ -101,7 +101,7 @@ change_cloud_version() {
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${CLOUD_VERSION}/" $image_file_path
         else
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${CLOUD_VERSION}/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/openconsole:.*/docker.io\/apecloud\/openconsole:${CLOUD_VERSION}/" $image_file_path
+            sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${CLOUD_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${CLOUD_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${CLOUD_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${CLOUD_VERSION}/" $image_file_path
