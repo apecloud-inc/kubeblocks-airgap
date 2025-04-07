@@ -19,6 +19,7 @@ on:
           - apecloud-mysql
           - clickhouse
           - damengdb
+          - influxdb
           - elasticsearch
           - gaussdb
           - gbase
