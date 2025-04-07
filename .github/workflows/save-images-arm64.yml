@@ -17,6 +17,7 @@ on:
           - gemini
           - apecloud-mysql
           - clickhouse
+          - influxdb
           - kafka
           - kata
           - kubebench
