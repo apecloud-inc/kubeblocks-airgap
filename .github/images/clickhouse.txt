@@ -1,3 +1,4 @@
-# clickhouse v0.9.2
+# clickhouse v0.9.3
 docker.io/apecloud/clickhouse:24.8.3-debian-12-r1
 docker.io/apecloud/clickhouse:22.9.4-debian-11-r1
+docker.io/apecloud/busybox:1.36
