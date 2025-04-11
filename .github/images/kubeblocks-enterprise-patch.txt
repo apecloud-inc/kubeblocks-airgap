@@ -8,7 +8,7 @@ docker.io/apecloud/cr4w:v1.0.0
 docker.io/apecloud/kb-cloud-installer:v1.0.0
 docker.io/apecloud/apecloud-addon-charts:v0.30.109
 docker.io/apecloud/kb-cloud-hook:v1.0.0
-docker.io/apecloud/kubeblocks-installer:v1.0.0-0.9.4-beta.13-offline -offline
+docker.io/apecloud/kubeblocks-installer:v1.0.0-0.9.4-beta.13-offline
 docker.io/apecloud/dms:0.0.3-alpha.3
 # KubeBlocks v0.9.4-beta.13
 docker.io/apecloud/kubeblocks:0.9.4-beta.13

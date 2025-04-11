@@ -9,7 +9,7 @@ docker.io/apecloud/kb-cloud-installer:v1.0.0
 docker.io/apecloud/apecloud-addon-charts:v0.30.109
 docker.io/apecloud/kb-cloud-hook:v1.0.0
 docker.io/apecloud/dms:0.0.3-alpha.3
-docker.io/apecloud/kubeblocks-installer:v1.0.0-0.9.4-beta.13-offline -offline
+docker.io/apecloud/kubeblocks-installer:v1.0.0-0.9.4-beta.13-offline
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.66
 docker.io/apecloud/redis:7.0.5
