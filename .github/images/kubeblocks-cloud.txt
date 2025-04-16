@@ -23,6 +23,6 @@ docker.io/apecloud/datasafed:0.2.0
 docker.io/apecloud/snapshot-controller:v6.2.1
 docker.io/apecloud/busybox:latest
 docker.io/apecloud/netshoot:0.13
-docker.io/apecloud/kubebench:0.0.10
+docker.io/apecloud/kubebench:0.0.11
 # casdoor-helm-charts v0.1.4
 docker.io/apecloud/casdoor:v1.721.0
