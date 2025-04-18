@@ -1,0 +1,2 @@
+# minio RELEASE.2024-06-26T01-06-18Z-cpuv1
+docker.io/apecloud/minio:RELEASE.2024-06-26T01-06-18Z-cpuv1

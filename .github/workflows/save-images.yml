@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - minio-cpuv1
           - kubebench-0.0.10
           - cilium
           - kubeblocks-installer
