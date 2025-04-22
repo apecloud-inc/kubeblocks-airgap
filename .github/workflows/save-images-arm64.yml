@@ -103,7 +103,7 @@ jobs:
   save-app-images:
     needs: [ enable-self-runner ]
     name: save app images
-    runs-on: [ self-hosted, kubeblocks-airgap-runner-arm64 ]
+    runs-on: [ self-hosted, arm-yq-runner ]
     outputs:
       runner-name: ${{ steps.get_runner_name.outputs.runner-name }}
     steps:
