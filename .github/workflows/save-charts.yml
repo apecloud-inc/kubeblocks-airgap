@@ -19,8 +19,8 @@ on:
         default: ''
       KB_VERSION:
         description: 'kubeblocks version'
-        required: true
-        default: 'v0.9.0'
+        required: false
+        default: ''
       ADD_CHARTS:
         description: 'additional charts (e.g. kubeblocks:0.8.1|kubeblocks-cloud:v0.12.11|...)'
         required: false
@@ -61,6 +61,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: get cloud version
+        if: ${{ inputs.APP_NAME == 'kubeblocks-enterprise' || inputs.APP_NAME == 'kubeblocks-cloud' }}
+        id: get-version
+        run: |
+          RELEASE_VERSION="${{ inputs.APP_VERSION }}"
+          if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+              RELEASE_VERSION="v${RELEASE_VERSION}"
+          fi
+          echo "release-version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Checkout apecloud Code
+        uses: actions/checkout@v4
+        if: ${{ inputs.APP_NAME == 'kubeblocks-enterprise' || inputs.APP_NAME == 'kubeblocks-cloud' }}
+        with:
+          repository: apecloud/apecloud
+          path: apecloud
+          token: ${{ env.GITHUB_TOKEN }}
+          ref: ${{ steps.get-version.outputs.release-version }}
+
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
