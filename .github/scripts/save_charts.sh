@@ -210,7 +210,12 @@ tar_charts_package() {
     fi
     if [[ -n "${KUBEBLOCKS_VERSION}" && ("$APP_NAME" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks" ) ]]; then
         echo "download Kubeblocks crds"
-        wget ${KB_REPO_URL}/v${KUBEBLOCKS_VERSION}/kubeblocks_crds.yaml -O kubeblocks_crds.yaml
+        KUBEBLOCKS_VERSION_TMP="${KUBEBLOCKS_VERSION}"
+        if [[ "${KUBEBLOCKS_VERSION_TMP}" != "v"* ]]; then
+            KUBEBLOCKS_VERSION_TMP="v${KUBEBLOCKS_VERSION_TMP}"
+        fi
+
+        wget ${KB_REPO_URL}/${KUBEBLOCKS_VERSION_TMP}/kubeblocks_crds.yaml -O kubeblocks_crds.yaml
         mv kubeblocks_crds.yaml ${KB_CHART_NAME}
     fi
 
