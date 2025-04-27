@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - clickhouse-22.3
           - minio-cpuv1
           - kubebench-0.0.10
           - cilium
