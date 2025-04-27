@@ -69,7 +69,7 @@ check_images() {
                 continue
             fi
 
-            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/vastbase:0.0.19"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"*) ]]; then
+            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"*) ]]; then
                 repository=""
                 continue
             fi
@@ -143,9 +143,9 @@ check_charts_images() {
                 set_values="${set_values} --set cr-exporter.enabled=true "
             ;;
             kubebench)
-                set_values="${set_values} --set image.tag=0.0.10 "
-                set_values="${set_values} --set kubebenchImages.exporter=apecloud/kubebench:0.0.10"
-                set_values="${set_values} --set kubebenchImages.tools=apecloud/kubebench:0.0.10"
+                set_values="${set_values} --set image.tag=0.0.11 "
+                set_values="${set_values} --set kubebenchImages.exporter=apecloud/kubebench:0.0.11"
+                set_values="${set_values} --set kubebenchImages.tools=apecloud/kubebench:0.0.11"
             ;;
             dbdrag)
                 continue
