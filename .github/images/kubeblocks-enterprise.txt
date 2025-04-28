@@ -1,14 +1,14 @@
-# KubeBlocks-Cloud v1.0.23
-docker.io/apecloud/openconsole:v1.0.23
-docker.io/apecloud/openconsole:v1.0.23-console
-docker.io/apecloud/openconsole:v1.0.23-admin
-docker.io/apecloud/apiserver:v1.0.23
-docker.io/apecloud/cubetran-front:v1.0.23
-docker.io/apecloud/cr4w:v1.0.23
-docker.io/apecloud/kb-cloud-installer:v1.0.23
+# KubeBlocks-Cloud v1.0.24
+docker.io/apecloud/openconsole:v1.0.24
+docker.io/apecloud/openconsole:v1.0.24-console
+docker.io/apecloud/openconsole:v1.0.24-admin
+docker.io/apecloud/apiserver:v1.0.24
+docker.io/apecloud/cubetran-front:v1.0.24
+docker.io/apecloud/cr4w:v1.0.24
+docker.io/apecloud/kb-cloud-installer:v1.0.24
 docker.io/apecloud/apecloud-addon-charts:v0.30.109
-docker.io/apecloud/kb-cloud-hook:v1.0.23
-docker.io/apecloud/kubeblocks-installer:v1.0.23-0.9.4-beta.19-offline
+docker.io/apecloud/kb-cloud-hook:v1.0.24
+docker.io/apecloud/kubeblocks-installer:v1.0.24-0.9.4-beta.19-offline
 docker.io/apecloud/dms:0.0.3-alpha.5
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.66
