@@ -21,6 +21,7 @@ on:
           - kafka
           - kata
           - kubebench
+          - loki
           - minio
           - mongodb
           - mysql-arm
