@@ -17,6 +17,7 @@ on:
           - gemini
           - apecloud-mysql
           - clickhouse
+          - gaussdb
           - influxdb
           - kafka
           - kata
@@ -26,6 +27,7 @@ on:
           - mongodb
           - mysql-arm
           - metallb
+          - mssql
           - oceanbase
           - postgresql
           - qdrant
