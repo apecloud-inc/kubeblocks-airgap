@@ -10,12 +10,12 @@ docker.io/apecloud/apecloud-addon-charts:v0.30.109
 docker.io/apecloud/kb-cloud-hook:v1.0.39
 docker.io/apecloud/kubeblocks-installer:v1.0.39-0.9.4-beta.19-offline
 docker.io/apecloud/dms:0.0.3-alpha.7
-# KubeBlocks v0.9.4-beta.19
-docker.io/apecloud/kubeblocks:0.9.4-beta.19
-docker.io/apecloud/kubeblocks-dataprotection:0.9.4-beta.19
-docker.io/apecloud/kubeblocks-datascript:0.9.4-beta.19
-docker.io/apecloud/kubeblocks-tools:0.9.4-beta.19
-docker.io/apecloud/kubeblocks-charts:0.9.4-beta.19
+# KubeBlocks v0.9.4-beta.23
+docker.io/apecloud/kubeblocks:0.9.4-beta.23
+docker.io/apecloud/kubeblocks-dataprotection:0.9.4-beta.23
+docker.io/apecloud/kubeblocks-datascript:0.9.4-beta.23
+docker.io/apecloud/kubeblocks-tools:0.9.4-beta.23
+docker.io/apecloud/kubeblocks-charts:0.9.4-beta.23
 # Gemini v0.8.7-beta.1
 docker.io/apecloud/gemini:0.8.7-beta.1
 docker.io/apecloud/gemini-tools:0.8.7-beta.1
