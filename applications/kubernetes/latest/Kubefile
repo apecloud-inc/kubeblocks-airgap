@@ -1,4 +1,4 @@
-FROM labring/kubernetes:v1.27.7
+FROM labring/kubernetes:v1.30.13
 COPY ./kubelet-pre-start.sh ./scripts/kubelet-pre-start.sh
 COPY ./check.sh ./scripts/check.sh
 MAINTAINER sealos
