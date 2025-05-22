@@ -1,0 +1,21 @@
+FROM labring/kubernetes:v1.32.5
+COPY ./kubelet-pre-start.sh ./scripts/kubelet-pre-start.sh
+COPY ./check.sh ./scripts/check.sh
+MAINTAINER sealos
+LABEL init="init-cri.sh \$registryDomain \$registryPort && bash init.sh" \
+      clean="clean.sh && bash clean-cri.sh \$criData" \
+      check="check.sh \$registryData" \
+      init-registry="init-registry.sh \$registryData \$registryConfig" \
+      clean-registry="clean-registry.sh \$registryData \$registryConfig" \
+      vip="\$defaultVIP"
+ENV criData=/var/lib/containerd \
+    registryData=/var/lib/registry \
+    registryConfig=/etc/registry \
+    registryDomain=sealos.hub \
+    registryPort=5000 \
+    registryUsername=admin \
+    registryPassword=passw0rd \
+    disableApparmor=false \
+    SEALOS_SYS_CRI_ENDPOINT=/var/run/containerd/containerd.sock \
+    SEALOS_SYS_IMAGE_ENDPOINT=/var/run/image-cri-shim.sock
+COPY . .
