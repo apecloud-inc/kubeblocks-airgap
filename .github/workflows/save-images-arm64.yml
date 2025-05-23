@@ -37,7 +37,7 @@ on:
           - ape-local-csi-driver
           - spiderpool
           - metrics-server
-          - elasticsearch
+          - elasticsearch-arm
           - kubechat
           - postgres-operator
           - rabbitmq
