@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - oteld
           - gemini-oteld
           - clickhouse-22.3
           - minio-cpuv1
