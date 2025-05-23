@@ -1,5 +1,6 @@
 # tidb v0.9.0
 docker.io/apecloud/br:v7.1.5
+docker.io/apecloud/br:v7.1.6
 docker.io/apecloud/pd:v7.1.5
 docker.io/apecloud/tidb:v7.1.5
 docker.io/apecloud/tikv:v7.1.5
