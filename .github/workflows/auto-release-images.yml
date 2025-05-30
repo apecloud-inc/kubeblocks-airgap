@@ -3,7 +3,6 @@ name: Auto Release Images
 on:
   push:
     branches:
-      - main
       - release-*
     paths:
       - '.github/images/*.txt'
