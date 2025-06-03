@@ -44,7 +44,7 @@ jobs:
           
                       if [[ "${release_name}" == *"-arm" ]]; then
                           cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
-                      elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* ]]; then
+                      elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* || "${release_name}" == "mssql"* ]]; then
                           cmd=$cmd"--workflow-id \"save-images.yml\" "
                       else
                           cmd=$cmd"--workflow-id \"save-images.yml|save-images-arm64.yml\" "
