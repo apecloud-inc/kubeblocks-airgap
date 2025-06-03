@@ -5,14 +5,13 @@ on:
     branches:
       - main
       - release-*
-    paths-ignore:
-      - '.github/images/gemini.txt'
-      - '.github/images/kubeblocks.txt'
-      - '.github/images/kubeblocks-cloud.txt'
-      - '.github/images/kubeblocks-enterprise.txt'
-      - '.github/images/kubeblocks-enterprise-patch.txt'
     paths:
       - '.github/images/*.txt'
+      - '!.github/images/gemini.txt'
+      - '!.github/images/kubeblocks.txt'
+      - '!.github/images/kubeblocks-cloud.txt'
+      - '!.github/images/kubeblocks-enterprise.txt'
+      - '!.github/images/kubeblocks-enterprise-patch.txt'
 
 
 env:
