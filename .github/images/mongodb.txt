@@ -17,3 +17,4 @@ docker.io/apecloud/mongo:6.0.20
 docker.io/apecloud/mongo:7.0.12
 docker.io/apecloud/mongo:7.0.16
 docker.io/apecloud/mongo:8.0.4
+docker.io/apecloud/percona-server-mongodb:4.4.29-multi
