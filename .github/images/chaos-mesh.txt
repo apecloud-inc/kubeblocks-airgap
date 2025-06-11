@@ -1,0 +1,5 @@
+# chaos-mesh v2.7.0
+docker.io/apecloud/chaos-daemon:v2.7.0
+docker.io/apecloud/chaos-dashboard:v2.7.0
+docker.io/apecloud/chaos-mesh:v2.7.0
+docker.io/apecloud/chaos-coredns:v0.2.6
