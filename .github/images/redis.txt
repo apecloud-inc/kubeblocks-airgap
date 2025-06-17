@@ -1,4 +1,4 @@
-# redis v0.9.5
+# redis v0.9.6
 docker.io/apecloud/ape-dts:0.1.17
 docker.io/apecloud/ape-dts:redis.reshard.2.0.9
 docker.io/apecloud/busybox:1.36
@@ -12,3 +12,4 @@ docker.io/apecloud/redis-stack-server:7.2.0-v14
 docker.io/apecloud/redis-stack-server:7.4.0-v3
 docker.io/apecloud/oteld:0.7.3
 docker.io/apecloud/redis:5.0.12
+docker.io/apecloud/redis:8.0.1
