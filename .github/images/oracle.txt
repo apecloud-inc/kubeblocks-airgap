@@ -1,0 +1,3 @@
+# oracle v0.9.0
+docker.io/apecloud/oracle:12.2.0.1-ee
+docker.io/apecloud/oracledb_exporter:0.5.2
