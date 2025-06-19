@@ -40,6 +40,7 @@ on:
           - metrics-server
           - oceanbase
           - oceanbase-proxy
+          - oracle
           - postgresql
           - postgres-operator
           - qdrant
