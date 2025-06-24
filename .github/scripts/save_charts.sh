@@ -192,7 +192,7 @@ tar_charts_package() {
         echo "no found tar charts file"
         return
     fi
-    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps
+    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps ${KB_CHART_NAME}/scripts
 
     image_file_path=.github/images/${APP_NAME}.txt
     change_charts_version "$image_file_path"
@@ -203,8 +203,12 @@ tar_charts_package() {
     echo "copy image-list.txt"
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" ]]; then
         cp -r .github/images/*.txt ${KB_CHART_NAME}/kubeblocks-image-list/
+
         echo "copy apps yaml "
         cp -r .github/apps/* ${KB_CHART_NAME}/apps/
+
+        echo "copy scripts "
+        cp -r cloud/scripts/* ${KB_CHART_NAME}/scripts/
     else
         cp -r .github/images/${APP_NAME}.txt ${KB_CHART_NAME}/kubeblocks-image-list/
     fi
