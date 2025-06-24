@@ -20,6 +20,7 @@ on:
           - clickhouse
           - damengdb
           - influxdb
+          - etcd
           - elasticsearch
           - gaussdb
           - gbase
