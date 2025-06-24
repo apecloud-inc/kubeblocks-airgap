@@ -43,6 +43,7 @@ docker.io/apecloud/apecloud-addon-charts:mogdb-0.9.0
 docker.io/apecloud/apecloud-addon-charts:mongodb-0.9.1
 docker.io/apecloud/apecloud-addon-charts:mssql-0.9.2
 docker.io/apecloud/apecloud-addon-charts:mysql-0.9.3
+docker.io/apecloud/apecloud-addon-charts:milvus-0.9.0
 docker.io/apecloud/apecloud-addon-charts:oceanbase-0.9.5
 docker.io/apecloud/apecloud-addon-charts:oceanbase-proxy-0.9.2
 docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
