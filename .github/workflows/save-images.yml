@@ -37,6 +37,7 @@ on:
           - mongodb
           - mssql
           - mysql
+          - milvus
           - metallb
           - metrics-server
           - oceanbase
