@@ -33,6 +33,7 @@ on:
           - k3s
           - kubernetes
           - loki
+          - milvus
           - minio
           - mongodb
           - mssql

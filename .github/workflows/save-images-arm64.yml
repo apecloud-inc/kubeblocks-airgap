@@ -19,10 +19,12 @@ on:
           - clickhouse
           - gaussdb
           - influxdb
+          - etcd
           - kafka
           - kata
           - kubebench
           - loki
+          - milvus
           - minio
           - mongodb
           - mysql-arm
