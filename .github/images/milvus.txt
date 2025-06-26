@@ -4,3 +4,9 @@ docker.io/apecloud/milvus-operator:v0.8.4
 docker.io/apecloud/milvus:v2.3.2
 docker.io/apecloud/milvus:v2.5.13
 docker.io/apecloud/minio:RELEASE.2022-03-17T06-34-49Z
+# etcd
+docker.io/apecloud/etcd:v3.6.1
+docker.io/apecloud/bash-busybox:1.37.0-musl
+# kafka
+docker.io/apecloud/kafka:3.3.2-debian-11-r54
+docker.io/apecloud/jmx-exporter:0.18.0-debian-11-r20
