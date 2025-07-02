@@ -9,4 +9,3 @@ docker.io/apecloud/nebula-metad:v3.8.0
 docker.io/apecloud/nebula-storaged:v3.5.0
 docker.io/apecloud/nebula-storaged:v3.8.0
 docker.io/apecloud/nebula-tool:1.0.0
- 
