@@ -59,7 +59,14 @@ while IFS= read -r image; do
     tag_ret=$?
     set -e
     if [[ "$tag_ret" != "0" ]]; then
+        set +e
         sealos tag "$image_tmp" "$new_image"
+        tag_ret_2=$?
+        set -e
+        if [[ "$tag_ret_2" != "0" ]]; then
+            image_tmp_2=${image_tmp/docker.io\//}
+            sealos tag "$image_tmp_2" "$new_image"
+        fi
     fi
     # 推送镜像到指定的 registry
     sealos push "$new_image"
