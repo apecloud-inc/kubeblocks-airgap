@@ -44,6 +44,7 @@ on:
           - kubechat
           - postgres-operator
           - rabbitmq
+          - rocketmq
           - zookeeper
           - kingbase
           - k3s
