@@ -47,7 +47,7 @@ while IFS= read -r image; do
     fi
 
     new_image="${new_image_name}:${image_tag}"
-    # 对镜像执行 docker tag
+    # 对镜像执行 sealos tag
     image_tmp="$image"
     if [[ "$image" == "docker.io/library/"* ]]; then
         image=${image/docker.io\/library\//localhost\/}
@@ -70,5 +70,8 @@ while IFS= read -r image; do
     fi
     # 推送镜像到指定的 registry
     sealos push "$new_image"
+    echo "✅ $(tput -T xterm setaf 2) $new_image pushed successfully $(tput -T xterm sgr0)"
 
 done < "$IMAGES_LIST_FILE"
+
+echo "$(tput -T xterm setaf 2) All images pushed successfully $(tput -T xterm sgr0)"
