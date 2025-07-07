@@ -318,7 +318,7 @@ tar_charts_package() {
             chart_version=${chart#*:}
 
             case "$chart_tmp" in
-                "kubeblocks-cloud"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|\
+                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|\
                 "kafka"*|"kingbase"*|"loki"*|"minio"*|"mssql"*|"mysql"*|"oceanbase"*|"postgresql"*|\
                 "qdrant"*|"redis"*|"starrocks"*|"victoria-metrics"*|"vastbase"*|"tidb"*|"rocketmq"*|\
                 "goldendb"*|"tdsql"*|"influxdb"*)
