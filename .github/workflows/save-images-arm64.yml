@@ -15,17 +15,21 @@ on:
           - kubeblocks-cloud
           - cert-manager
           - gemini
+          - elasticsearch-arm
+          - mysql-arm
+          - mongodb-arm
+          - damengdb-arm
           - apecloud-mysql
           - clickhouse
           - gaussdb
           - influxdb
+          - etcd
           - kafka
           - kata
           - kubebench
           - loki
+          - milvus
           - minio
-          - mongodb
-          - mysql-arm
           - metallb
           - mssql
           - oceanbase
@@ -37,12 +41,11 @@ on:
           - ape-local-csi-driver
           - spiderpool
           - metrics-server
-          - elasticsearch-arm
           - kubechat
           - postgres-operator
           - rabbitmq
+          - rocketmq
           - zookeeper
-          - damengdb-arm
           - kingbase
           - k3s
           - kubernetes

@@ -20,6 +20,7 @@ on:
           - clickhouse
           - damengdb
           - influxdb
+          - etcd
           - elasticsearch
           - gaussdb
           - gbase
@@ -32,14 +33,17 @@ on:
           - k3s
           - kubernetes
           - loki
+          - milvus
           - minio
           - mongodb
           - mssql
           - mysql
           - metallb
           - metrics-server
+          - nebula
           - oceanbase
           - oceanbase-proxy
+          - oracle
           - postgresql
           - postgres-operator
           - qdrant
