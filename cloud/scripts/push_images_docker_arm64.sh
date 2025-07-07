@@ -46,7 +46,7 @@ while IFS= read -r image; do
         image_tag="latest"
     fi
 
-    new_image="${new_image_name}:${image_tag}"
+    new_image="${new_image_name}:${image_tag}--arm64"
     # 对镜像执行 docker tag
     image_tmp="$image"
     if [[ "$image" == "docker.io/library/"* ]]; then
@@ -74,4 +74,4 @@ while IFS= read -r image; do
 
 done < "$IMAGES_LIST_FILE"
 
-echo "$(tput -T xterm setaf 2) All images pushed successfully $(tput -T xterm sgr0)"
+echo "$(tput -T xterm setaf 2) All arm64 images pushed successfully $(tput -T xterm sgr0)"

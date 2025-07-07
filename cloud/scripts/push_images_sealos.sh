@@ -47,7 +47,7 @@ while IFS= read -r image; do
     fi
 
     new_image="${new_image_name}:${image_tag}"
-    # 对镜像执行 docker tag
+    # 对镜像执行 sealos tag
     image_tmp="$image"
     if [[ "$image" == "docker.io/library/"* ]]; then
         image=${image/docker.io\/library\//localhost\/}
@@ -59,9 +59,19 @@ while IFS= read -r image; do
     tag_ret=$?
     set -e
     if [[ "$tag_ret" != "0" ]]; then
+        set +e
         sealos tag "$image_tmp" "$new_image"
+        tag_ret_2=$?
+        set -e
+        if [[ "$tag_ret_2" != "0" ]]; then
+            image_tmp_2=${image_tmp/docker.io\//}
+            sealos tag "$image_tmp_2" "$new_image"
+        fi
     fi
     # 推送镜像到指定的 registry
     sealos push "$new_image"
+    echo "✅ $(tput -T xterm setaf 2) $new_image pushed successfully $(tput -T xterm sgr0)"
 
 done < "$IMAGES_LIST_FILE"
+
+echo "$(tput -T xterm setaf 2) All images pushed successfully $(tput -T xterm sgr0)"
