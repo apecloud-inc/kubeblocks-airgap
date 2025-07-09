@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - redis-stack-server
           - oteld
           - gemini-oteld
           - clickhouse-22.3
