@@ -106,6 +106,26 @@ jobs:
           access-key-secret: "${{ secrets.OSS_KEY_SECRET }}"
           endpoint: "${{ env.OSS_ENDPOINT }}"
 
+      - name: Upload manifests to oss
+        run: |
+          MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
+          VALUES_FILE="apecloud/manifests/deploy-values.yaml"
+          RELEASE_VERSION="${{ steps.get-version.outputs.release-version }}"
+          ossutil cp -rf ./${MANIFESTS_FILE} oss://${{ env.OSS_BUCKET }}/manifests/${RELEASE_VERSION}/manifests.yaml
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${MANIFESTS_FILE} to oss successfully"
+          else
+              exit 1
+          fi 
+          ossutil cp -rf ./${VALUES_FILE} oss://${{ env.OSS_BUCKET }}/manifests/${RELEASE_VERSION}/values.yaml
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${VALUES_FILE} to oss successfully"
+          else
+              exit 1
+          fi
+
       - name: Upload charts to oss
         id: upload_to_oss
         run: |
