@@ -25,6 +25,7 @@ on:
           - gaussdb
           - gbase
           - goldendb
+          - greatsql
           - kafka
           - kata
           - kingbase
