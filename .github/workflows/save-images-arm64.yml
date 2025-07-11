@@ -22,6 +22,7 @@ on:
           - apecloud-mysql
           - clickhouse
           - gaussdb
+          - greatsql
           - influxdb
           - etcd
           - kafka
