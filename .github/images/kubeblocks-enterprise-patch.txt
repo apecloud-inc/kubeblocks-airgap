@@ -1,21 +1,21 @@
-# KubeBlocks-Cloud v1.1.85
-docker.io/apecloud/openconsole:v1.1.85
-docker.io/apecloud/openconsole:v1.1.85-console
-docker.io/apecloud/openconsole:v1.1.85-admin
-docker.io/apecloud/apiserver:v1.1.85
-docker.io/apecloud/cubetran-front:v1.1.85
-docker.io/apecloud/cr4w:v1.1.85
-docker.io/apecloud/kb-cloud-installer:v1.1.85
+# KubeBlocks-Cloud v1.1.86
+docker.io/apecloud/openconsole:v1.1.86
+docker.io/apecloud/openconsole:v1.1.86-console
+docker.io/apecloud/openconsole:v1.1.86-admin
+docker.io/apecloud/apiserver:v1.1.86
+docker.io/apecloud/cubetran-front:v1.1.86
+docker.io/apecloud/cr4w:v1.1.86
+docker.io/apecloud/kb-cloud-installer:v1.1.86
 docker.io/apecloud/apecloud-addon-charts:v0.30.109
-docker.io/apecloud/kb-cloud-hook:v1.1.85
-docker.io/apecloud/kubeblocks-installer:v1.1.85-0.9.5-beta.2-offline
+docker.io/apecloud/kb-cloud-hook:v1.1.86
+docker.io/apecloud/kubeblocks-installer:v1.1.86-0.9.5-beta.4-offline
 docker.io/apecloud/dms:0.0.3-alpha.9
-# KubeBlocks v0.9.5-beta.2
-docker.io/apecloud/kubeblocks:0.9.5-beta.2
-docker.io/apecloud/kubeblocks-dataprotection:0.9.5-beta.2
-docker.io/apecloud/kubeblocks-datascript:0.9.5-beta.2
-docker.io/apecloud/kubeblocks-tools:0.9.5-beta.2
-docker.io/apecloud/kubeblocks-charts:0.9.5-beta.2
+# KubeBlocks v0.9.5-beta.4
+docker.io/apecloud/kubeblocks:0.9.5-beta.4
+docker.io/apecloud/kubeblocks-dataprotection:0.9.5-beta.4
+docker.io/apecloud/kubeblocks-datascript:0.9.5-beta.4
+docker.io/apecloud/kubeblocks-tools:0.9.5-beta.4
+docker.io/apecloud/kubeblocks-charts:0.9.5-beta.4
 # Gemini v0.9.1
 docker.io/apecloud/gemini:0.9.1
 docker.io/apecloud/gemini-tools:0.9.1
