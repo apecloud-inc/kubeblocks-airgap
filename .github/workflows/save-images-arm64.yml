@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - redisinsight
           - oteld
           - clickhouse-22.3
           - kubebench-0.0.10

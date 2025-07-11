@@ -1,0 +1,2 @@
+# redisinsight v2.70.0
+docker.io/apecloud/redisinsight:2.70.0

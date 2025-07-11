@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - redisinsight
           - dms
           - redis-stack-server
           - oteld
