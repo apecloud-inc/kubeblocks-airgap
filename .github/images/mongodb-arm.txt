@@ -1,4 +1,4 @@
-# mongodb v0.9.1
+# mongodb v0.9.2
 docker.io/apecloud/percona-server-mongodb:4.4.29-multi
 docker.io/apecloud/percona-server-mongodb:5.0.29
 docker.io/apecloud/percona-server-mongodb:5.0.29-multi
