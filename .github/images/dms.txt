@@ -1,2 +1,2 @@
-# dms v0.0.1-alpha.104
-docker.io/apecloud/dms:0.0.1-alpha.104
+# dms v0.0.1-alpha.106
+docker.io/apecloud/dms:0.0.1-alpha.106
