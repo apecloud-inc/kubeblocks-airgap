@@ -1,14 +1,14 @@
-# KubeBlocks-Cloud v1.1.90
-docker.io/apecloud/openconsole:v1.1.90
-docker.io/apecloud/openconsole:v1.1.90-console
-docker.io/apecloud/openconsole:v1.1.90-admin
-docker.io/apecloud/apiserver:v1.1.90
-docker.io/apecloud/cubetran-front:v1.1.90
-docker.io/apecloud/cr4w:v1.1.90
-docker.io/apecloud/kb-cloud-installer:v1.1.90
+# KubeBlocks-Cloud v1.1.91
+docker.io/apecloud/openconsole:v1.1.91
+docker.io/apecloud/openconsole:v1.1.91-console
+docker.io/apecloud/openconsole:v1.1.91-admin
+docker.io/apecloud/apiserver:v1.1.91
+docker.io/apecloud/cubetran-front:v1.1.91
+docker.io/apecloud/cr4w:v1.1.91
+docker.io/apecloud/kb-cloud-installer:v1.1.91
 docker.io/apecloud/apecloud-addon-charts:v0.30.109
-docker.io/apecloud/kb-cloud-hook:v1.1.90
-docker.io/apecloud/kubeblocks-installer:v1.1.90-0.9.5-beta.5-offline
+docker.io/apecloud/kb-cloud-hook:v1.1.91
+docker.io/apecloud/kubeblocks-installer:v1.1.91-0.9.5-beta.5-offline
 docker.io/apecloud/dms:0.0.3-alpha.9
 # KubeBlocks v0.9.5-beta.5
 docker.io/apecloud/kubeblocks:0.9.5-beta.5
