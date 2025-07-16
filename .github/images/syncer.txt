@@ -1,2 +1,2 @@
-# openconsole v0.4.1
-docker.io/apecloud/syncer:0.4.1
+# syncer v0.6.0
+docker.io/apecloud/syncer:0.6.0
