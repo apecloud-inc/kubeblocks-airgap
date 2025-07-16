@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - kb-cloud-docs
           - redisinsight
           - dms
           - redis-stack-server
