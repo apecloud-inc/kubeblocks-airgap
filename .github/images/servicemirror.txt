@@ -1,0 +1,2 @@
+# servicemirror v0.4.1
+docker.io/apecloud/servicemirror:0.4.1
