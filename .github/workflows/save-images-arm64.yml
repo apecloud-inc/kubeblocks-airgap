@@ -22,6 +22,7 @@ on:
           - apecloud-mysql
           - clickhouse
           - gaussdb
+          - greatsql
           - influxdb
           - etcd
           - kafka
@@ -56,7 +57,6 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
-          - chaos-mesh
       APP_VERSION:
         description: 'app version'
         required: true
