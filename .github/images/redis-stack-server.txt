@@ -1,2 +1,5 @@
 # redis-stack-server 7.2.0-v18
 docker.io/apecloud/redis-stack-server:7.2.0-v18
+docker.io/apecloud/redis-stack-server:7.4.0-v6
+docker.io/apecloud/redis:8.0.3
+
