@@ -33,6 +33,7 @@ on:
           - minio
           - metallb
           - mssql
+          - nebula
           - oceanbase
           - postgresql
           - qdrant
