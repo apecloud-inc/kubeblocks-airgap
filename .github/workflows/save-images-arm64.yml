@@ -51,6 +51,7 @@ on:
           - k3s
           - kubernetes
           - dify
+          - tdengine
           - tidb
           - vastbase
           - victoria-metrics

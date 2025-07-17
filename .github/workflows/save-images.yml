@@ -65,6 +65,7 @@ on:
           - ingress-nginx
           - nvidia-device-plugin
           - dify
+          - tdengine
           - tdsql
           - tidb
           - vastbase
