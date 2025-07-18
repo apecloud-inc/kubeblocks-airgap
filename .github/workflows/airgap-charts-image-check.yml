@@ -57,7 +57,7 @@ jobs:
         with:
           version: ${{ env.HELM_VERSION }}
 
-      - name: manifests images check
+      - name: images txt check
         run: |
           MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
           bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/"
