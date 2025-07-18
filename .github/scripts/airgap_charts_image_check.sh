@@ -124,7 +124,7 @@ check_charts_images() {
         is_enterprise="false"
         check_skip=0
         case $chart_name in
-            gbase|xinference|dbdrag|dify|kata|kubechat|nvidia-device-plugin|pv-migrate|spiderpool)
+            gbase|xinference|dbdrag|dify|kata|kubechat|nvidia-device-plugin|pv-migrate|spiderpool|kubernetes|k3s)
                 check_skip=1
             ;;
             kubeblocks-enterprise)
