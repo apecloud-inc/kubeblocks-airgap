@@ -203,3 +203,22 @@ jobs:
       BOT_TYPE: "package"
       CONTENT: "check cloud ${{ inputs.APP_VERSION }} charts image error"
     secrets: inherit
+
+  check-airgap-charts-image:
+    uses: ./.github/workflows/airgap-charts-image-check.yml
+    with:
+      RELEASE_VERSION: "${{ inputs.APP_VERSION }}"
+    secrets: inherit
+
+  send-airgap-check-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ check-airgap-charts-image ]
+    if: ${{ failure() || cancelled() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      BOT_TYPE: "package"
+      CONTENT: "check ${{ github.ref_name }} images txt error"
+    secrets: inherit
