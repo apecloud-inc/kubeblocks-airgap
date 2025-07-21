@@ -119,7 +119,7 @@ check_charts_images() {
 
     for image_txt in $(ls "${IMAGES_TXT_DIR}"); do
         image_txt_path="${IMAGES_TXT_DIR}/${image_txt}"
-        check_chart_name=$(head -n 1 "${image_txt_path}" | awk '{print $2}')
+        check_chart_name=$(head -n 1 "${image_txt_path}" | awk '{print $2}' | tr '[:upper:]' '[:lower:]')
         chart_name=${image_txt%.txt}
         is_enterprise="false"
         check_skip=0
