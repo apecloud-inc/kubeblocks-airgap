@@ -1,0 +1,14 @@
+# nebula v0.9.1
+docker.io/apecloud/alpine:3.16
+docker.io/apecloud/nebula-console:v3.5.0
+docker.io/apecloud/nebula-console:v3.8.0
+docker.io/apecloud/nebula-graphd:v3.5.0
+docker.io/apecloud/nebula-graphd:v3.8.0
+docker.io/apecloud/nebula-metad:v3.5.0
+docker.io/apecloud/nebula-metad:v3.8.0
+docker.io/apecloud/nebula-storaged:v3.5.0
+docker.io/apecloud/nebula-storaged:v3.8.0
+docker.io/apecloud/nebula-tool:1.0.0
+docker.io/apecloud/nebula-agent:3.7.1
+docker.io/apecloud/nebula-br:3.6.0
+docker.io/apecloud/nebula-stats-exporter:v3.8.0

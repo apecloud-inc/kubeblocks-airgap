@@ -1,5 +1,5 @@
-# dbdrag v0.1.0
-docker.io/apecloud/ragflow:dbdrag
+# dbdrag v0.1.1
+docker.io/apecloud/ragflow:dbrag_202505221020
 docker.io/apecloud/elasticsearch:dbdrag
 docker.io/apecloud/minio:dbdrag
 docker.io/apecloud/mysql:dbdrag

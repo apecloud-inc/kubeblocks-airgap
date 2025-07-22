@@ -1,0 +1,6 @@
+# pv-migrate v2.2.1
+docker.io/apecloud/pv-migrate:v2.2.1
+docker.io/apecloud/pv-migrate-sshd:1.1.0
+docker.io/apecloud/pv-migrate-rsync:1.0.0
+docker.io/apecloud/vmbackup:v1.102.1
+docker.io/apecloud/vmrestore:v1.102.1

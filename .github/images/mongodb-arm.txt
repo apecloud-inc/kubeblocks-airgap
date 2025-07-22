@@ -3,8 +3,6 @@ docker.io/apecloud/kubectl:1.29
 docker.io/apecloud/mongodb_exporter:0.44.0
 docker.io/apecloud/percona-backup-mongodb:2.5.0-multi
 docker.io/apecloud/percona-backup-mongodb:2.9.1
-docker.io/apecloud/percona-server-mongodb:4.0.28
-docker.io/apecloud/percona-server-mongodb:4.2.25
 docker.io/apecloud/percona-server-mongodb:4.4.29-multi
 docker.io/apecloud/percona-server-mongodb:5.0.29
 docker.io/apecloud/percona-server-mongodb:5.0.29-multi

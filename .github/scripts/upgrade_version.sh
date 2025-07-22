@@ -106,6 +106,7 @@ change_cloud_version() {
             sed -i '' "s/^docker.io\/apecloud\/apecloud-charts:.*/docker.io\/apecloud\/apecloud-charts:${CLOUD_VERSION}/" $image_file_path
             sed -i '' "s/^docker.io\/apecloud\/apecloud-addon-charts:${HEAD_CLOUD_VERSION}.*/docker.io\/apecloud\/apecloud-addon-charts:${CLOUD_VERSION}/" $image_file_path
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${CLOUD_VERSION}/" $image_file_path
+            sed -i '' "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${CLOUD_VERSION}/" $image_file_path
         else
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${CLOUD_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${CLOUD_VERSION}/" $image_file_path
@@ -120,6 +121,7 @@ change_cloud_version() {
             sed -i "s/^docker.io\/apecloud\/apecloud-charts:.*/docker.io\/apecloud\/apecloud-charts:${CLOUD_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/apecloud-addon-charts:${HEAD_CLOUD_VERSION}.*/docker.io\/apecloud\/apecloud-addon-charts:${CLOUD_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${CLOUD_VERSION}/" $image_file_path
+            sed -i "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${CLOUD_VERSION}/" $image_file_path
         fi
     done
     echo "$(tput -T xterm setaf 3)change kubeblocks-cloud chart version:${CLOUD_VERSION}$(tput -T xterm sgr0)"

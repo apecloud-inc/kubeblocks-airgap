@@ -1,0 +1,68 @@
+name: Auto Release Images
+
+on:
+  push:
+    branches:
+      - release-1.1
+    paths:
+      - '.github/images/*.txt'
+      - '!.github/images/gemini.txt'
+      - '!.github/images/kubeblocks.txt'
+      - '!.github/images/kubeblocks-cloud.txt'
+      - '!.github/images/kubeblocks-enterprise.txt'
+      - '!.github/images/kubeblocks-enterprise-patch.txt'
+
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+jobs:
+  release-images:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: copy helm chart
+        run: |
+          for filePath in $( git diff --name-only HEAD HEAD^ ); do
+              if [[ "$filePath" == ".github/images/"*".txt" ]]; then
+                  if [[ -f "$filePath" ]]; then
+                      echo "release $filePath images"
+                      release_version="$(head -n 1 $filePath | (awk '{print $3}'|| true))"
+                      release_name="${filePath##*/}"
+                      release_name="${release_name%.*}"
+          
+          
+                      if [[ "${release_name}" == "gemini"* || "${release_name}" == "kubeblocks"* ]]; then
+                          continue
+                      fi
+          
+                      if [[ -z "${release_version}" || -z "${release_name}" ]]; then
+                          echo "$(tput -T xterm setaf 3)Not found ${release_name}:${release_version}$(tput -T xterm sgr0)"
+                          continue
+                      fi
+          
+                      cmd="bash .github/scripts/trigger_workflow.sh "
+                      cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
+                      cmd=$cmd"--github-repo \"${{ github.repository }}\" "
+                      cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
+                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_VERSION=${release_version}\" "
+          
+                      if [[ "${release_name}" == *"-arm" ]]; then
+                          cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
+                      elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* || "${release_name}" == "mssql"*  || "${release_name}" == "kingbase"* || "${release_name}" == "goldendb"* || "${release_name}" == "mongodb"* ]]; then
+                          cmd=$cmd"--workflow-id \"save-images.yml\" "
+                      else
+                          cmd=$cmd"--workflow-id \"save-images.yml|save-images-arm64.yml\" "
+                      fi
+                      
+                      echo "$cmd"
+                      eval "$cmd"
+                  else
+                      echo "not found file:$filePath"
+                  fi
+              fi
+          done

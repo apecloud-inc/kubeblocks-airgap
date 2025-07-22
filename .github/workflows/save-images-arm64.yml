@@ -18,6 +18,10 @@ on:
           - swhy-upgrade
           - damengdb-8.1.4
           - cr-exporter
+          - elasticsearch-arm
+          - mysql-arm
+          - mongodb-arm
+          - damengdb-arm
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
@@ -26,14 +30,20 @@ on:
           - gemini
           - apecloud-mysql
           - clickhouse
+          - gaussdb
+          - greatsql
           - influxdb
+          - etcd
           - kafka
           - kata
           - kubebench
+          - loki
+          - milvus
           - minio
           - mongodb
-          - mysql-arm
           - metallb
+          - mssql
+          - nebula
           - oceanbase
           - postgresql
           - qdrant
@@ -47,17 +57,19 @@ on:
           - kubechat
           - postgres-operator
           - rabbitmq
+          - rocketmq
           - zookeeper
-          - damengdb-arm
           - kingbase
           - k3s
           - kubernetes
           - dify
+          - tdengine
           - tidb
           - vastbase
           - victoria-metrics
           - csi-driver-nfs
           - dbdrag
+          - pv-migrate
       APP_VERSION:
         description: 'app version'
         required: true

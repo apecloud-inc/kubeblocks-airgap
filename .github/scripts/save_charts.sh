@@ -88,6 +88,7 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/apecloud-charts:.*/docker.io\/apecloud\/apecloud-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/apecloud-addon-charts:${HEAD_APP_VERSION}.*/docker.io\/apecloud\/apecloud-addon-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         else
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -102,6 +103,7 @@ change_charts_version() {
             sed -i "s/^docker.io\/apecloud\/apecloud-charts:.*/docker.io\/apecloud\/apecloud-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/apecloud-addon-charts:${HEAD_APP_VERSION}.*/docker.io\/apecloud\/apecloud-addon-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         fi
     fi
 
@@ -230,7 +232,7 @@ tar_charts_package() {
         echo "no found tar charts file"
         return
     fi
-    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps
+    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps ${KB_CHART_NAME}/scripts
 
     image_file_path=.github/images/${APP_NAME}.txt
     change_charts_version "$image_file_path"
@@ -241,8 +243,12 @@ tar_charts_package() {
     echo "copy image-list.txt"
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" ]]; then
         cp -r .github/images/*.txt ${KB_CHART_NAME}/kubeblocks-image-list/
+
         echo "copy apps yaml "
         cp -r .github/apps/* ${KB_CHART_NAME}/apps/
+
+        echo "copy scripts "
+        cp -r cloud/scripts/* ${KB_CHART_NAME}/scripts/
     else
         cp -r .github/images/${APP_NAME}.txt ${KB_CHART_NAME}/kubeblocks-image-list/
     fi
@@ -314,10 +320,10 @@ tar_charts_package() {
             chart_version=${chart#*:}
 
             case "$chart_tmp" in
-                "kubeblocks-cloud"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|\
+                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|\
                 "kafka"*|"kingbase"*|"loki"*|"minio"*|"mssql"*|"mysql"*|"oceanbase"*|"postgresql"*|\
                 "qdrant"*|"redis"*|"starrocks"*|"victoria-metrics"*|"vastbase"*|"tidb"*|"rocketmq"*|\
-                "goldendb"*|"tdsql"*|"influxdb"*)
+                "goldendb"*|"tdsql"*|"influxdb"*|"oracle"*|"greatsql"* )
                     helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1

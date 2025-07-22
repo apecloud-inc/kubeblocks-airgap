@@ -1,10 +1,8 @@
-FROM labring/kubernetes:v1.32.5
-COPY ./kubelet-pre-start.sh ./scripts/kubelet-pre-start.sh
-COPY ./check.sh ./scripts/check.sh
+FROM labring/kubernetes:v1.27.7
 MAINTAINER sealos
 LABEL init="init-cri.sh \$registryDomain \$registryPort && bash init.sh" \
       clean="clean.sh && bash clean-cri.sh \$criData" \
-      check="check.sh \$registryData" \
+      check="" \
       init-registry="init-registry.sh \$registryData \$registryConfig" \
       clean-registry="clean-registry.sh \$registryData \$registryConfig" \
       vip="\$defaultVIP"
