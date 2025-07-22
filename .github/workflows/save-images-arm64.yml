@@ -23,6 +23,7 @@ on:
           - clickhouse
           - gaussdb
           - greatsql
+          - greatdb
           - influxdb
           - etcd
           - kafka
