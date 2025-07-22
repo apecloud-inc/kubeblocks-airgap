@@ -11,6 +11,7 @@ docker.io/apecloud/kb-cloud-hook:v1.1.105
 docker.io/apecloud/kb-cloud-docs:v1.1.105
 docker.io/apecloud/kubeblocks-installer:v1.1.105-0.9.5-beta.7-offline
 docker.io/apecloud/dms:0.0.3-alpha.9
+docker.io/apecloud/dms:0.0.3-alpha.10
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.66
 docker.io/apecloud/curl:latest
