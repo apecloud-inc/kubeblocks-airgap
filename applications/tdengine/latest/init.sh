@@ -10,9 +10,7 @@ rm -rf charts
 mkdir charts
 
 repo_url="https://github.com/apecloud/helm-charts/releases/download"
-
-charts=("")
-
+charts=( "tdengine")
 for chart in "${charts[@]}"; do
     helm fetch -d charts --untar "$repo_url"/"${chart}"-"${VERSION#v}"/"${chart}"-"${VERSION#v}".tgz
     rm -rf charts/"${chart}"-"${VERSION#v}".tgz
