@@ -1,5 +1,5 @@
-# kubeblocks v0.9.4
-docker.io/apecloud/kubeblocks-airgap:v0.9.4
+# kubeblocks v0.9.5-beta.7
+docker.io/apecloud/kubeblocks-airgap:v0.9.5-beta.7
 docker.io/apecloud/snapshot-controller-airgap:v1.7.2
 docker.io/apecloud/nebula-airgap:v0.9.1
 docker.io/apecloud/tdengine-airgap:v0.9.1
