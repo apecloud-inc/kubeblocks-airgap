@@ -1,0 +1,2 @@
+# apecloud-addon-charts tdengine-0.9.1
+docker.io/apecloud/apecloud-addon-charts:tdengine-0.9.1
