@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - apecloud-mcp
           - apecloud-addon-charts
           - kubeblocks-sealos-sailisi
           - k3s
