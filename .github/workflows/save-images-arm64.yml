@@ -23,6 +23,7 @@ on:
           - clickhouse
           - gaussdb
           - greatsql
+          - greatdb
           - influxdb
           - etcd
           - kafka
@@ -33,6 +34,7 @@ on:
           - minio
           - metallb
           - mssql
+          - nebula
           - oceanbase
           - postgresql
           - qdrant
@@ -51,6 +53,7 @@ on:
           - k3s
           - kubernetes
           - dify
+          - tdengine
           - tidb
           - vastbase
           - victoria-metrics

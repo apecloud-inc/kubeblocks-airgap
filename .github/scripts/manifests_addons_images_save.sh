@@ -47,6 +47,32 @@ pull_chart_images() {
             sleep 1
         done
         SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
+
+        repository="${SRC_REGISTRY}/apecloud/dmdb-exporter:8.1.4"
+        echo "pull image $repository"
+        for i in {1..10}; do
+            docker pull "$repository"
+            ret_msg=$?
+            if [[ $ret_msg -eq 0 ]]; then
+                echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
+                break
+            fi
+            sleep 1
+        done
+        SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
+
+        repository="${SRC_REGISTRY}/apecloud/dmdb-tool:8.1.4"
+        echo "pull image $repository"
+        for i in {1..10}; do
+            docker pull "$repository"
+            ret_msg=$?
+            if [[ $ret_msg -eq 0 ]]; then
+                echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
+                break
+            fi
+            sleep 1
+        done
+        SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
     fi
 }
 

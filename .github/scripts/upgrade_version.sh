@@ -319,11 +319,25 @@ change_kubebench_version() {
     done
 }
 
+change_servicemirror_version() {
+    echo "$(tput -T xterm setaf 3)change servicemirror image version:${SERVICEMIRROR_VERSION}$(tput -T xterm sgr0)"
+    imageFiles=("kubeblocks-enterprise.txt" "kubeblocks-cloud.txt")
+    for imageFile in "${imageFiles[@]}"; do
+        echo "change ${imageFile} images tag"
+        image_file_path=.github/images/${imageFile}
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^docker.io\/apecloud\/servicemirror:0.4.*/docker.io\/apecloud\/servicemirror:${SERVICEMIRROR_VERSION}/" $image_file_path
+        else
+            sed -i "s/^docker.io\/apecloud\/servicemirror:0.4.*/docker.io\/apecloud\/servicemirror:${SERVICEMIRROR_VERSION}/" $image_file_path
+        fi
+    done
+}
+
 generate_release_note() {
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
     cp -r "$kubeblocks_enterprise_txt" "$release_note_file"
-    imageFiles=("ape-local-csi-driver" "kubebench" "apecloud-mysql" "postgresql" "redis" "mongodb" "mysql" "kafka" "oceanbase" "starrocks" "qdrant" "rabbitmq" "elasticsearch" "clickhouse")
+    imageFiles=("ape-local-csi-driver" "kubebench" "apecloud-mysql" "mongodb" "rabbitmq" "zookeeper" "clickhouse" "damengdb" "elasticsearch" "etcd" "milvus" "gaussdb" "goldendb" "greatdb" "kafka" "kingbase" "loki" "minio" "mssql" "mysql" "nebula" "oceanbase" "oceanbase-proxy" "oracle" "postgresql" "qdrant" "redis" "starrocks" "victoria-metrics" "tdsql" "tidb" "vastbase" "rocketmq" "influxdb" "tdengine")
     for imageFile in "${imageFiles[@]}"; do
         echo "add ${imageFile} to release note "
         image_file_path=.github/images/${imageFile}.txt
@@ -345,6 +359,7 @@ main() {
     local APE_LOCAL_CSI_DRIVER_VERSION=""
     local CUBETRAN_CORE_VERSION=""
     local KUBEBENCH_VERSION=""
+    local SERVICEMIRROR_VERSION=""
 
     parse_command_line "$@"
 
@@ -452,6 +467,10 @@ main() {
 
             if [[ -n "$KUBEBENCH_VERSION" ]]; then
                 change_kubebench_version
+            fi
+
+            if [[ -n "$SERVICEMIRROR_VERSION" ]]; then
+                change_servicemirror_version
             fi
         ;;
         2)

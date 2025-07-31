@@ -26,6 +26,7 @@ on:
           - gbase
           - goldendb
           - greatsql
+          - greatdb
           - kafka
           - kata
           - kingbase
@@ -65,6 +66,7 @@ on:
           - ingress-nginx
           - nvidia-device-plugin
           - dify
+          - tdengine
           - tdsql
           - tidb
           - vastbase
