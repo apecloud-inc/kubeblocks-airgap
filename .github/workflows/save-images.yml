@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - busybox
           - apecloud-mcp
           - apecloud-addon-charts
           - kubeblocks-sealos-sailisi
