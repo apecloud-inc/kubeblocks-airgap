@@ -12,3 +12,4 @@ docker.io/apecloud/percona-server-mongodb:6.0.21
 docker.io/apecloud/percona-server-mongodb:7.0.18
 docker.io/apecloud/percona-server-mongodb:8.0.8
 docker.io/apecloud/syncer:0.6.2
+docker.io/apecloud/wal-g:mongo-5.0.1
