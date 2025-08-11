@@ -1,6 +1,6 @@
-kubeblocks:0.9.5-beta.8
-kubeblocks-cloud:v1.1.126
-kb-cloud-installer:1.1.126
+kubeblocks:0.9.5-beta.12
+kubeblocks-cloud:v1.1.127
+kb-cloud-installer:1.1.127
 gemini:0.9.4-beta.1
 gemini-monitor:0.9.4-beta.1
 casdoor-helm-charts:v1.721.0
