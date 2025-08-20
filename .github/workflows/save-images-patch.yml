@@ -70,8 +70,6 @@ jobs:
           sudo systemctl restart docker
           echo "Free space second:"
           df -h
-          docker rmi $(docker image ls -aq) >/dev/null 2>&1
-          df -h
 
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
