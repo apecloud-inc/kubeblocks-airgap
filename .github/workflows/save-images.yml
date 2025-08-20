@@ -125,14 +125,8 @@ jobs:
     steps:
       - name: Free disk space
         run: |
-          sudo apt-get autoremove -y >/dev/null 2>&1
-          sudo apt-get autoclean -y >/dev/null 2>&1
-          sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
-          docker rmi $(docker image ls -aq) >/dev/null 2>&1
-          sudo swapoff -a
-          sudo rm -f /swapfile
+          echo "Free space first:"
           df -h
-          
           sudo mkdir -p /mnt/new-storage
           sudo touch /etc/docker/daemon.json
           sudo tee /etc/docker/daemon.json <<EOF
@@ -141,6 +135,10 @@ jobs:
           }
           EOF
           sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
+          docker rmi $(docker image ls -aq) >/dev/null 2>&1
+          df -h
 
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
