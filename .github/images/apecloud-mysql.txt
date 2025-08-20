@@ -1,4 +1,4 @@
-# apecloud-mysql v0.9.0
+# apecloud-mysql v0.9.1
 docker.io/apecloud/apecloud-xtrabackup:8.0
 docker.io/apecloud/agamotto:0.1.2-beta.1
 docker.io/apecloud/mysql_audit_log:8.0.33
@@ -7,3 +7,4 @@ docker.io/apecloud/apecloud-mysql-server:8.0.30-5.beta3.auditlog.20231221.g6ba5e
 docker.io/apecloud/apecloud-mysql-server:8.0.30-5.beta3.20231215.ge77d836.14
 docker.io/apecloud/mysqld-exporter:0.15.1
 docker.io/apecloud/busybox:1.35
+docker.io/apecloud/wal-g:mysql-8.0

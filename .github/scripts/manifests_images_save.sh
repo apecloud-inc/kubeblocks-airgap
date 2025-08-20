@@ -103,7 +103,7 @@ save_charts_images() {
         echo "$(tput -T xterm setaf 1)Images file is empty!$(tput -T xterm sgr0)"
         return
     fi
-
+    df -h
     save_cmd="docker save ${images_file} | gzip > ${IMAGE_PKG_NAME} "
     echo "$save_cmd"
     save_flag=0

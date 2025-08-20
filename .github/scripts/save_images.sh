@@ -251,6 +251,7 @@ save_images_package() {
             done
             save_cmd="${save_cmd} $image "
         done < $IMAGE_FILE_PATH
+        df -h
         save_cmd="${save_cmd} | gzip > ${app_package_name} "
         echo "$save_cmd"
         eval "$save_cmd"
