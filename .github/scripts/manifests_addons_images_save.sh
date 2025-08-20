@@ -98,7 +98,7 @@ save_charts_images() {
     pull_chart_images "$chart_images" "${IMAGE_NAME}"
 
     echo " Pull images done!"
-
+    df -h
     save_cmd="docker save ${SAVE_CHART_IMAGES} | gzip > ${IMAGE_PKG_NAME}"
     echo "$save_cmd"
     save_flag=0
