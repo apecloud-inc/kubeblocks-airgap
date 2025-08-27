@@ -31,7 +31,7 @@ docker.io/apecloud/vmselect:v1.102.1-cluster
 docker.io/apecloud/vmstorage:v1.102.1-cluster
 docker.io/apecloud/vmalert:v1.102.1
 docker.io/apecloud/servicemirror:0.3.1
-docker.io/apecloud/alertmanager:v0.25.0
+docker.io/apecloud/alertmanager:v0.28.0
 docker.io/apecloud/configmap-reload:v0.5.0
 docker.io/apecloud/minio:RELEASE.2022-09-17T00-09-45Z
 docker.io/apecloud/minio:RELEASE.2024-06-29T01-20-47Z
