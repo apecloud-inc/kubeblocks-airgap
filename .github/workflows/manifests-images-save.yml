@@ -65,6 +65,13 @@ jobs:
         run: |
           echo "Free space first:"
           df -h
+          
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
+          
           sudo mkdir -p /mnt/new-storage
           sudo touch /etc/docker/daemon.json
           sudo tee /etc/docker/daemon.json <<EOF
