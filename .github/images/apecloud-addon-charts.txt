@@ -1,2 +1,2 @@
-# apecloud-addon-charts oracle-0.9.0
-docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
+# apecloud-addon-charts kingbase-0.9.1
+docker.io/apecloud/apecloud-addon-charts:kingbase-0.9.1
