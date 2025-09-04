@@ -1,0 +1,7 @@
+# kafka v1.0.1-beta.0
+docker.io/apecloud/kafka-exporter:1.6.0-debian-11-r67
+docker.io/apecloud/jmx-exporter:0.18.0-debian-11-r20
+docker.io/apecloud/kafka:2.7.0-debian-10-r124
+docker.io/apecloud/kafka:3.3.2-debian-11-r54
+docker.io/apecloud/kafka:2.8.1-debian-11-r7
+docker.io/apecloud/kafka:2.8.2-r1

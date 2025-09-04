@@ -1,0 +1,5 @@
+# oceanbase v1.0.1-beta.0
+docker.io/apecloud/obtools:4.2.1
+docker.io/apecloud/obagent:4.2.2-100000042024011120
+docker.io/apecloud/oceanbase-ent:4.2.1.7-107020012024061213-ocp
+docker.io/apecloud/syncer:0.6.5

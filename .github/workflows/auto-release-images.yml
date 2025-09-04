@@ -3,15 +3,10 @@ name: Auto Release Images
 on:
   push:
     branches:
-      - release-1.1
+      - release-2.0
     paths:
-      - '.github/images/*.txt'
-      - '!.github/images/gemini.txt'
-      - '!.github/images/kubeblocks.txt'
-      - '!.github/images/kubeblocks-cloud.txt'
-      - '!.github/images/kubeblocks-enterprise.txt'
-      - '!.github/images/kubeblocks-enterprise-patch.txt'
-
+      - '.github/images/0.9/*.txt'
+      - '.github/images/1.0/*.txt'
 
 env:
   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -28,16 +23,18 @@ jobs:
       - name: copy helm chart
         run: |
           for filePath in $( git diff --name-only HEAD HEAD^ ); do
-              if [[ "$filePath" == ".github/images/"*".txt" ]]; then
+              if [[ "$filePath" == ".github/images/0.9/"*".txt" || "$filePath" == ".github/images/1.0/"*".txt" ]]; then
                   if [[ -f "$filePath" ]]; then
                       echo "release $filePath images"
                       release_version="$(head -n 1 $filePath | (awk '{print $3}'|| true))"
                       release_name="${filePath##*/}"
                       release_name="${release_name%.*}"
           
-          
-                      if [[ "${release_name}" == "gemini"* || "${release_name}" == "kubeblocks"* ]]; then
-                          continue
+                      release_dir=""
+                      if [[ "$filePath" == *"/0.9/"* ]]; then
+                          release_dir="0.9/"
+                      el if [[ "$filePath" == *"/1.0/"* ]]; then
+                          release_dir="1.0/"
                       fi
           
                       if [[ -z "${release_version}" || -z "${release_name}" ]]; then
@@ -49,7 +46,7 @@ jobs:
                       cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
                       cmd=$cmd"--github-repo \"${{ github.repository }}\" "
                       cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
-                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_VERSION=${release_version}\" "
+                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_DIR=${release_dir}#APP_VERSION=${release_version}\" "
           
                       if [[ "${release_name}" == *"-arm" ]]; then
                           cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
