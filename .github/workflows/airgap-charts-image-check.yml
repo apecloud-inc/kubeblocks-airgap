@@ -60,4 +60,11 @@ jobs:
       - name: images txt check
         run: |
           MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
+          echo "check image files"
           bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/"
+          
+          echo "check addon 0.9 image files"
+          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/0.9"
+          
+          echo "check addon 1.0 image files"
+          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/1.0"

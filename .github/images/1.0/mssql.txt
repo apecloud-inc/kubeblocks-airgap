@@ -1,0 +1,5 @@
+# mssql v1.0.0
+docker.io/apecloud/mssql:2022-CU14
+docker.io/apecloud/mssql:2022-CU19
+docker.io/apecloud/prometheus-mssql-exporter:1.3.2
+docker.io/apecloud/syncer:0.6.5

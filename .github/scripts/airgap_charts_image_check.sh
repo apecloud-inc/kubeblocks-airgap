@@ -119,6 +119,10 @@ check_charts_images() {
 
     for image_txt in $(ls "${IMAGES_TXT_DIR}"); do
         image_txt_path="${IMAGES_TXT_DIR}/${image_txt}"
+        if [[ ! -f "${image_txt_path}" ]]; then
+            continue
+        fi
+
         check_chart_name=$(head -n 1 "${image_txt_path}" | awk '{print $2}' | tr '[:upper:]' '[:lower:]')
         chart_name=${image_txt%.txt}
         is_enterprise="false"
@@ -144,7 +148,23 @@ check_charts_images() {
         is_enterprise=$(yq e "."${chart_name}"[0].isEnterprise"  ${MANIFESTS_FILE})
         chart_version=$(head -n 1 "${image_txt_path}" | awk '{print $3}')
         if [[ -z "${chart_version}" ]]; then
-            chart_version=$(yq e "."${chart_name}"[0].version"  ${MANIFESTS_FILE})
+            if [[ "${IMAGES_TXT_DIR}" == ".github/images/" ]]; then
+                chart_version=$(yq e "."${chart_name}"[0].version"  ${MANIFESTS_FILE})
+            else
+                chart_versions=$(yq e '[.'${chart_name}'[].version] | join("|")' ${MANIFESTS_FILE})
+                ADDON_VERSION_HEAD=${IMAGES_TXT_DIR##*/}
+                for chart_version_tmp in $(echo "$chart_versions" | sed 's/|/ /g'); do
+                    if [[ "${ADDON_VERSION_HEAD}."* == "${chart_version_tmp}" ]]; then
+                        chart_version=${chart_version_tmp}
+                        break
+                    fi
+                done
+            fi
+
+            if [[ -z "${chart_version}" ]]; then
+                continue
+            fi
+
         fi
         chart_images=$(cat "${image_txt_path}" | (grep -v "#" || true))
         case $chart_name in
@@ -188,7 +208,7 @@ main() {
     local KB_REPO_URL="https://apecloud.github.io/helm-charts"
     local KB_ENT_REPO_NAME="kb-ent-charts"
     local KB_ENT_REPO_URL="https://jihulab.com/api/v4/projects/${CHART_PROJECT_ID}/packages/helm/stable"
-    add_chart_repo
+    #add_chart_repo
     check_charts_images
 }
 

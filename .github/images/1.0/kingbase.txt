@@ -1,0 +1,4 @@
+# kingbase v1.0.0
+docker.io/apecloud/kingbase:v008r006c008b0014
+docker.io/apecloud/kingbase-monitor:v2.4.0
+docker.io/apecloud/kubeblocks-tools:0.8.3
