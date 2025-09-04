@@ -1,15 +1,15 @@
-# KubeBlocks-Cloud v1.1.152
-docker.io/apecloud/openconsole:v1.1.152
-docker.io/apecloud/openconsole:v1.1.152-console
-docker.io/apecloud/openconsole:v1.1.152-admin
-docker.io/apecloud/apiserver:v1.1.152
-docker.io/apecloud/cubetran-front:v1.1.152
-docker.io/apecloud/cr4w:v1.1.152
-docker.io/apecloud/kb-cloud-installer:v1.1.152
+# KubeBlocks-Cloud v1.1.153
+docker.io/apecloud/openconsole:v1.1.153
+docker.io/apecloud/openconsole:v1.1.153-console
+docker.io/apecloud/openconsole:v1.1.153-admin
+docker.io/apecloud/apiserver:v1.1.153
+docker.io/apecloud/cubetran-front:v1.1.153
+docker.io/apecloud/cr4w:v1.1.153
+docker.io/apecloud/kb-cloud-installer:v1.1.153
 docker.io/apecloud/apecloud-addon-charts:v0.30.109
-docker.io/apecloud/kb-cloud-hook:v1.1.152
-docker.io/apecloud/kb-cloud-docs:v1.1.152
-docker.io/apecloud/kubeblocks-installer:v1.1.152-0.9.5-beta.18-offline
+docker.io/apecloud/kb-cloud-hook:v1.1.153
+docker.io/apecloud/kb-cloud-docs:v1.1.153
+docker.io/apecloud/kubeblocks-installer:v1.1.153-0.9.6-beta.0-offline
 docker.io/apecloud/dms:0.0.3-alpha.13
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.70.0
@@ -64,12 +64,12 @@ docker.io/apecloud/apecloud-addon-charts:milvus-0.9.1
 docker.io/apecloud/apecloud-addon-charts:nebula-0.9.1
 docker.io/apecloud/apecloud-addon-charts:tdengine-0.9.1
 docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
-# KubeBlocks v0.9.5-beta.18
-docker.io/apecloud/kubeblocks:0.9.5-beta.18
-docker.io/apecloud/kubeblocks-dataprotection:0.9.5-beta.18
-docker.io/apecloud/kubeblocks-datascript:0.9.5-beta.18
-docker.io/apecloud/kubeblocks-tools:0.9.5-beta.18
-docker.io/apecloud/kubeblocks-charts:0.9.5-beta.18
+# KubeBlocks v0.9.6-beta.0
+docker.io/apecloud/kubeblocks:0.9.6-beta.0
+docker.io/apecloud/kubeblocks-dataprotection:0.9.6-beta.0
+docker.io/apecloud/kubeblocks-datascript:0.9.6-beta.0
+docker.io/apecloud/kubeblocks-tools:0.9.6-beta.0
+docker.io/apecloud/kubeblocks-charts:0.9.6-beta.0
 # Gemini v0.9.9
 docker.io/apecloud/gemini:0.9.9
 docker.io/apecloud/gemini-tools:0.9.9
@@ -110,7 +110,7 @@ docker.io/apecloud/alertmanager:v0.28.0
 docker.io/apecloud/configmap-reload:v0.5.0
 docker.io/apecloud/minio:RELEASE.2022-09-17T00-09-45Z
 docker.io/apecloud/mc:RELEASE.2022-09-16T09-16-47Z
-docker.io/apecloud/kubeblocks-tools:0.9.5-beta.18
+docker.io/apecloud/kubeblocks-tools:0.9.6-beta.0
 docker.io/apecloud/ape-dts:2.0.24
 # casdoor v1.721.0
 docker.io/apecloud/casdoor:v1.721.0
