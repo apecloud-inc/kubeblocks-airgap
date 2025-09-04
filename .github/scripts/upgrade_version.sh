@@ -42,7 +42,7 @@ parse_command_line() {
                 ;;
             -kv|--kubeblocks-version)
                 if [[ -n "${2:-}" ]]; then
-                    KUBEBLOCKS_VERSION="$2"
+                    KUBEBLOCKS_VERSIONS="$2"
                     shift
                 fi
                 ;;
@@ -143,43 +143,44 @@ change_cloud_version() {
     done
 }
 
-change_kubeblocks_version() {
-    echo "$(tput -T xterm setaf 3)change kubeblocks image version:${KUBEBLOCKS_VERSION}$(tput -T xterm sgr0)"
-    imageFiles=("kubeblocks.txt" "kubeblocks-enterprise.txt" "kubeblocks-enterprise-patch.txt")
-    for imageFile in "${imageFiles[@]}"; do
-        echo "change ${imageFile} images tag"
-        image_file_path=.github/images/${imageFile}
-        if [[ "$UNAME" == "Darwin" ]]; then
-            sed -i '' "s/^# KubeBlocks .*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-tools:0.8.2/#docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks:.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-dataprotection:.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-datascript:.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-tools:.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-charts:.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i '' "s/^#docker.io\/apecloud\/kubeblocks-tools:0.8.2/docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $image_file_path
-        else
-            sed -i "s/^# KubeBlocks .*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-tools:0.8.2/#docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/kubeblocks:.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-dataprotection:.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-datascript:.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-tools:.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-charts:.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $image_file_path
-            sed -i "s/^#docker.io\/apecloud\/kubeblocks-tools:0.8.2/docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $image_file_path
-        fi
-    done
+change_kubeblocks_versions() {
+    echo "$(tput -T xterm setaf 3)change kubeblocks image version:${KUBEBLOCKS_VERSIONS}$(tput -T xterm sgr0)"
+    for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
+        IFS='.' read -r major_v minor_v rest_v <<< "${KUBEBLOCKS_VERSION}"
+        KUBEBLOCKS_VERSION_HEAD="$major_v.$minor_v."
 
-    echo "$(tput -T xterm setaf 3)change kubeblocks chart version:${KUBEBLOCKS_VERSION}$(tput -T xterm sgr0)"
-    chartFiles=("kubeblocks.txt" "kubeblocks-enterprise.txt")
-    for chartFile in "${chartFiles[@]}"; do
-        echo "change ${chartFile} chart version"
-        chart_file_path=.github/charts/${chartFile}
-        if [[ "$UNAME" == "Darwin" ]]; then
-            sed -i '' "s/^kubeblocks:.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $chart_file_path
-        else
-            sed -i "s/^kubeblocks:.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $chart_file_path
-        fi
+        imageFiles=("kubeblocks.txt" "kubeblocks-enterprise.txt" "kubeblocks-enterprise-patch.txt")
+        for imageFile in "${imageFiles[@]}"; do
+            echo "change ${imageFile} images tag"
+            image_file_path=.github/images/${imageFile}
+            if [[ "$UNAME" == "Darwin" ]]; then
+                sed -i '' "s/^# KubeBlocks v${KUBEBLOCKS_VERSION_HEAD}.*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $image_file_path
+            else
+                sed -i "s/^# KubeBlocks v${KUBEBLOCKS_VERSION_HEAD}.*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i "s/^docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $image_file_path
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $image_file_path
+            fi
+        done
+
+        echo "$(tput -T xterm setaf 3)change kubeblocks chart version:${KUBEBLOCKS_VERSION}$(tput -T xterm sgr0)"
+        chartFiles=("kubeblocks.txt" "kubeblocks-enterprise.txt")
+        for chartFile in "${chartFiles[@]}"; do
+            echo "change ${chartFile} chart version"
+            chart_file_path=.github/charts/${chartFile}
+            if [[ "$UNAME" == "Darwin" ]]; then
+                sed -i '' "s/^kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $chart_file_path
+            else
+                sed -i "s/^kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $chart_file_path
+            fi
+        done
     done
 }
 
@@ -350,7 +351,7 @@ main() {
     local TYPE=""
     local UNAME=`uname -s`
     local CLOUD_VERSION=""
-    local KUBEBLOCKS_VERSION=""
+    local KUBEBLOCKS_VERSIONS=""
     local GEMINI_VERSION=""
     local OTELD_VERSION=""
     local OFFLINE_INSTALLER_VERSION=""
@@ -364,7 +365,7 @@ main() {
     parse_command_line "$@"
 
     echo "CLOUD_VERSION:"${CLOUD_VERSION}
-    echo "KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION}
+    echo "KUBEBLOCKS_VERSIONS:"${KUBEBLOCKS_VERSIONS}
     echo "GEMINI_VERSION:"${GEMINI_VERSION}
     echo "OTELD_VERSION:"${OTELD_VERSION}
     echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
@@ -374,7 +375,7 @@ main() {
         1)
             if [[ -n "$MANIFESTS_FILE" && -f "${MANIFESTS_FILE}" ]]; then
                 CLOUD_VERSION=$(yq e ".kubeblocks-cloud[0].version"  ${MANIFESTS_FILE})
-                KUBEBLOCKS_VERSION=$(yq e ".kubeblocks[0].version"  ${MANIFESTS_FILE})
+                KUBEBLOCKS_VERSIONS=$(yq e '[.kubeblocks[].version] | join("|")' ${MANIFESTS_FILE})
                 GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
                 APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
 
@@ -404,7 +405,7 @@ main() {
                 fi
 
                 echo "MANIFESTS CLOUD_VERSION:"${CLOUD_VERSION}
-                echo "MANIFESTS KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION}
+                echo "MANIFESTS KUBEBLOCKS_VERSIONS:"${KUBEBLOCKS_VERSIONS}
                 echo "MANIFESTS GEMINI_VERSION:"${GEMINI_VERSION}
                 echo "MANIFESTS OTELD_VERSION:"${OTELD_VERSION}
                 echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
@@ -422,11 +423,11 @@ main() {
                 change_cloud_version
             fi
 
-            if [[ -n "$KUBEBLOCKS_VERSION" ]]; then
-                if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
-                    KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION/v/}"
+            if [[ -n "$KUBEBLOCKS_VERSIONS" ]]; then
+                if [[ "${KUBEBLOCKS_VERSIONS}" == "v"* ]]; then
+                    KUBEBLOCKS_VERSIONS="${KUBEBLOCKS_VERSIONS//v/}"
                 fi
-                change_kubeblocks_version
+                change_kubeblocks_versions
             fi
 
             if [[ -n "$GEMINI_VERSION" ]]; then
