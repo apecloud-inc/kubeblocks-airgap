@@ -84,8 +84,8 @@ on:
         type: choice
         options:
           - ''
-          - 0.9/
-          - 1.0/
+          - '0.9'
+          - '1.0'
       APP_VERSION:
         description: 'app version'
         required: true
@@ -168,6 +168,17 @@ jobs:
           fi
           echo "release-version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
 
+      - name: get images file
+        id: get-images-file
+        run: |
+          APP_DIR="${{ inputs.APP_DIR }}"
+          APP_NAME="${{ inputs.APP_NAME }}"
+          IMAGES_FILE=".github/images/${APP_NAME}.txt"
+          if [[ -n "${APP_DIR}" ]]; then
+              IMAGES_FILE=".github/images/${APP_DIR}/${APP_NAME}.txt"
+          fi
+          echo "images-file=${IMAGES_FILE}" >> $GITHUB_OUTPUT
+
       - name: Checkout apecloud Code
         uses: actions/checkout@v4
         if: ${{ inputs.APP_NAME == 'kubeblocks-enterprise' || inputs.APP_NAME == 'kubeblocks-cloud' || inputs.APP_NAME == 'kubeblocks-enterprise-patch' }}
@@ -194,7 +205,7 @@ jobs:
           oteld_version: ${{ inputs.OTELD_VERSION }}
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
-          images_file: .github/images/${{ inputs.APP_DIR }}${{ inputs.APP_NAME }}.txt
+          images_file: ${{ steps.get-images-file.outputs.images-file }}
         run: |
           bash .github/scripts/save_images.sh
 
