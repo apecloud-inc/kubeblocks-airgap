@@ -94,19 +94,19 @@ docker.io/apecloud/apecloud-addon-charts:tdengine-0.9.1
 docker.io/apecloud/apecloud-addon-charts:tdengine-1.0.1
 docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
 docker.io/apecloud/apecloud-addon-charts:oracle-1.0.1-beta.0
-# KubeBlocks v0.9.5
-docker.io/apecloud/kubeblocks:0.9.5
-docker.io/apecloud/kubeblocks-dataprotection:0.9.5
-docker.io/apecloud/kubeblocks-datascript:0.9.5
-docker.io/apecloud/kubeblocks-tools:0.9.5
-docker.io/apecloud/kubeblocks-charts:0.9.5
+# KubeBlocks v0.9.5-beta.18
+docker.io/apecloud/kubeblocks:0.9.5-beta.18
+docker.io/apecloud/kubeblocks-dataprotection:0.9.5-beta.18
+docker.io/apecloud/kubeblocks-datascript:0.9.5-beta.18
+docker.io/apecloud/kubeblocks-tools:0.9.5-beta.18
+docker.io/apecloud/kubeblocks-charts:0.9.5-beta.18
 docker.io/apecloud/datasafed:0.2.0
 docker.io/apecloud/snapshot-controller:v6.2.1
-# KubeBlocks v1.0.1-beta.17
-docker.io/apecloud/kubeblocks:1.0.1-beta.17
-docker.io/apecloud/kubeblocks-dataprotection:1.0.1-beta.17
-docker.io/apecloud/kubeblocks-tools:1.0.1-beta.17
-docker.io/apecloud/kubeblocks-charts:1.0.1-beta.17
+# KubeBlocks v1.0.1-beta.12
+docker.io/apecloud/kubeblocks:1.0.1-beta.12
+docker.io/apecloud/kubeblocks-dataprotection:1.0.1-beta.12
+docker.io/apecloud/kubeblocks-tools:1.0.1-beta.12
+docker.io/apecloud/kubeblocks-charts:1.0.1-beta.12
 docker.io/apecloud/datasafed:0.2.1
 # Gemini v0.10.0-beta.1
 docker.io/apecloud/gemini:0.10.0-beta.1
