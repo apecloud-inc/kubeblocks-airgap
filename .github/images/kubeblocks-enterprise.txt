@@ -105,7 +105,6 @@ docker.io/apecloud/snapshot-controller:v6.2.1
 # KubeBlocks v1.0.1-beta.17
 docker.io/apecloud/kubeblocks:1.0.1-beta.17
 docker.io/apecloud/kubeblocks-dataprotection:1.0.1-beta.17
-docker.io/apecloud/kubeblocks-datascript:1.0.1-beta.17
 docker.io/apecloud/kubeblocks-tools:1.0.1-beta.17
 docker.io/apecloud/kubeblocks-charts:1.0.1-beta.17
 docker.io/apecloud/datasafed:0.2.1

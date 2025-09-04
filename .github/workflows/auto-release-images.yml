@@ -33,8 +33,11 @@ jobs:
                       release_dir=""
                       if [[ "$filePath" == *"/0.9/"* ]]; then
                           release_dir="0.9/"
-                      el if [[ "$filePath" == *"/1.0/"* ]]; then
+                      elif [[ "$filePath" == *"/1.0/"* ]]; then
                           release_dir="1.0/"
+                      else
+                          echo "$(tput -T xterm setaf 3)Not found $filePath$(tput -T xterm sgr0)"
+                          continue
                       fi
           
                       if [[ -z "${release_version}" || -z "${release_name}" ]]; then

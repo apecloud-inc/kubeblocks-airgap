@@ -338,11 +338,30 @@ generate_release_note() {
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
     cp -r "$kubeblocks_enterprise_txt" "$release_note_file"
-    imageFiles=("ape-local-csi-driver" "kubebench" "apecloud-mysql" "mongodb" "rabbitmq" "zookeeper" "clickhouse" "damengdb" "elasticsearch" "etcd" "milvus" "gaussdb" "goldendb" "greatdb" "kafka" "kingbase" "loki" "minio" "mssql" "mysql" "nebula" "oceanbase" "oceanbase-proxy" "oracle" "postgresql" "qdrant" "redis" "starrocks" "victoria-metrics" "tdsql" "tidb" "vastbase" "rocketmq" "influxdb" "tdengine")
+    
+    # add apps images to release note
+    imageFiles=("ape-local-csi-driver" "kubebench")
     for imageFile in "${imageFiles[@]}"; do
         echo "add ${imageFile} to release note "
         image_file_path=.github/images/${imageFile}.txt
-        cat ${image_file_path} >> "$release_note_file"
+        if [[ -f "${image_file_path}" ]]; then
+            cat ${image_file_path} >> "$release_note_file"
+        fi
+    done
+
+    # add addons images to release note
+    imageFiles=("clickhouse" "damengdb" "damengdb-arm" "elasticsearch" "elasticsearch-arm" "etcd" "gaussdb" "goldendb" "influxdb" "kafka" "kingbase" "loki" "milvus" "minio" "mongodb" "mongodb-arm" "mssql" "mysql" "mysql-arm" "nebula" "oceanbase" "oceanbase-proxy" "oracle" "postgresql" "qdrant" "rabbitmq" "redis" "rocketmq" "starrocks" "tdengine" "tdsql" "tidb" "vastbase" "victoria-metrics" "zookeeper")
+    for imageFile in "${imageFiles[@]}"; do
+        echo "add ${imageFile} to release note "
+        image_file_path=.github/images/0.9/${imageFile}.txt
+        if [[ -f "${image_file_path}" ]]; then
+            cat ${image_file_path} >> "$release_note_file"
+        fi
+
+        image_file_path=.github/images/1.0/${imageFile}.txt
+        if [[ -f "${image_file_path}" ]]; then
+            cat ${image_file_path} >> "$release_note_file"
+        fi
     done
     git add "$release_note_file"
 }
