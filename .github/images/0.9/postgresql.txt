@@ -15,3 +15,4 @@ docker.io/apecloud/spilo:16.9
 docker.io/apecloud/spilo:17.5
 docker.io/apecloud/wal-g:postgres-1.1
 docker.io/apecloud/wal-g:postgres-1.2
+docker.io/apecloud/spilo-init:0.1
