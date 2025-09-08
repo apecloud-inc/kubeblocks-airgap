@@ -1,2 +1,2 @@
-kubeblocks:0.9.5-beta.18
-kubeblocks:1.0.1-beta.12
+kubeblocks:0.9.5
+kubeblocks:1.0.1-beta.17
