@@ -48,7 +48,7 @@ jobs:
                       cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
                       cmd=$cmd"--github-repo \"${{ github.repository }}\" "
                       cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
-                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_DIR=${release_dir}\/#APP_VERSION=${release_version}\" "
+                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_DIR=${release_dir}#APP_VERSION=${release_version}\" "
           
                       if [[ "${release_name}" == *"-arm" ]]; then
                           cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
