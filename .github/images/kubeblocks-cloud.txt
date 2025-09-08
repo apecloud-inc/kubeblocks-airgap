@@ -9,6 +9,7 @@ docker.io/apecloud/cr4w:v2.0.0-alpha.13
 docker.io/apecloud/apecloud-addon-charts:v2.0.0-alpha.13
 docker.io/apecloud/kb-cloud-hook:v2.0.0-alpha.13
 docker.io/apecloud/kb-cloud-docs:v2.0.0-alpha.13
+docker.io/apecloud/kubeblocks-installer:v2.0.0-alpha.13
 docker.io/apecloud/kubeblocks-installer:v2.0.0-alpha.13-offline
 docker.io/apecloud/dms:0.0.3-alpha.13
 docker.io/apecloud/apecloud-mcp:1.2.0-alpha.5
