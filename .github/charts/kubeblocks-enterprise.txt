@@ -1,9 +1,9 @@
 kubeblocks:0.9.5
 kubeblocks:1.0.1-beta.17
-kubeblocks-cloud:v2.0.0-alpha.13
-kb-cloud-installer:2.0.0-alpha.13
-gemini:0.10.0-beta.1
-gemini-monitor:0.10.0-beta.1
+kubeblocks-cloud:v2.0.0-alpha.16
+kb-cloud-installer:2.0.0-alpha.16
+gemini:0.10.0-beta.2
+gemini-monitor:0.10.0-beta.2
 casdoor-helm-charts:v1.721.0
 ingress-nginx:4.12.1
 metallb:0.14.4
