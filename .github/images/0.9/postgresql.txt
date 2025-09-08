@@ -1,4 +1,4 @@
-# postgresql v0.9.5
+# postgresql v0.9.6
 docker.io/apecloud/pgbouncer:1.19.0
 docker.io/apecloud/postgres-exporter:v0.15.0
 docker.io/apecloud/spilo:12.14.0-pgvector-v0.6.1
