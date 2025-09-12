@@ -1,4 +1,4 @@
-# milvus v0.9.1
+# milvus v0.9.2
 docker.io/apecloud/os-shell:11-debian-11-r90
 docker.io/apecloud/milvus-operator:v0.8.4
 docker.io/apecloud/milvus-operator:v0.9.17
