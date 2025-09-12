@@ -24,7 +24,7 @@ apecloud-mysql:0.9.1
 clickhouse:0.9.3
 clickhouse:1.0.1
 damengdb:0.9.2
-damengdb:1.0.0
+damengdb:1.0.1
 elasticsearch:0.9.1
 elasticsearch:1.0.1-beta.0
 gaussdb:0.9.2

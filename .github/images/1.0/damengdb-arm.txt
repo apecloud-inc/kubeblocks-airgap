@@ -1,4 +1,4 @@
-# damengdb v1.0.0
+# damengdb v1.0.1
 docker.io/apecloud/dm:8.1
 docker.io/apecloud/dmdb-exporter:0.1.1
 docker.io/apecloud/dmdb-tool:8.1
