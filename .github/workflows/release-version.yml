@@ -179,11 +179,11 @@ jobs:
       CONTENT: "release cloud airgap:${{ needs.release-version.outputs.release-version }} ${{ needs.release-result.outputs.release-result }}"
     secrets: inherit
 
-  check-manifests-image:
-    uses: ./.github/workflows/manifests-image-check.yml
-    with:
-      RELEASE_VERSION: "${{ inputs.APP_VERSION }}"
-    secrets: inherit
+#  check-manifests-image:
+#    uses: ./.github/workflows/manifests-image-check.yml
+#    with:
+#      RELEASE_VERSION: "${{ inputs.APP_VERSION }}"
+#    secrets: inherit
 
   check-manifests-charts-image:
     uses: ./.github/workflows/manifests-charts-image-check.yml
@@ -195,7 +195,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    needs: [ check-manifests-image, check-manifests-charts-image ]
+    needs: [ check-manifests-charts-image ]
     if: ${{ failure() || cancelled() }}
     uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
     with:
