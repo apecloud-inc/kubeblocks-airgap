@@ -1,2 +1,2 @@
-kubeblocks-cloud:v2.0.0-alpha.45
-kb-cloud-installer:2.0.0-alpha.45
+kubeblocks-cloud:v2.0.0-alpha.46
+kb-cloud-installer:2.0.0-alpha.46
