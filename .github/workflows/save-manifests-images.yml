@@ -31,11 +31,11 @@ env:
   VALUES_FILE: "apecloud/manifests/deploy-values.yaml"
 
 jobs:
-  check-manifests-image:
-    uses: ./.github/workflows/manifests-image-check.yml
-    with:
-      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
-    secrets: inherit
+#  check-manifests-image:
+#    uses: ./.github/workflows/manifests-image-check.yml
+#    with:
+#      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
+#    secrets: inherit
 
   check-manifests-charts-image:
     uses: ./.github/workflows/manifests-charts-image-check.yml
@@ -45,7 +45,7 @@ jobs:
 
   save-cloud-images:
     if: ${{ inputs.ENABLE_ARM64 == 'false' }}
-    needs: [ check-manifests-image, check-manifests-charts-image ]
+    needs: [ check-manifests-charts-image ]
     uses: ./.github/workflows/manifests-images-save.yml
     with:
       RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
@@ -54,7 +54,7 @@ jobs:
 
   enable-self-runner:
     if: ${{ inputs.ENABLE_ARM64 == 'true' }}
-    needs: [ check-manifests-image, check-manifests-charts-image ]
+    needs: [ check-manifests-charts-image ]
     uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
     with:
       CLOUD_PROVIDER: "eks"
@@ -73,7 +73,7 @@ jobs:
     secrets: inherit
 
   get-enbale-addons:
-    needs: [ check-manifests-image, check-manifests-charts-image ]
+    needs: [ check-manifests-charts-image ]
     if: ${{ inputs.ENABLE_ADDONS != 'false' && inputs.ENABLE_ADDONS != '' }}
     runs-on: ubuntu-latest
     outputs:
@@ -163,7 +163,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    needs: [ check-manifests-image, check-manifests-charts-image ]
+    needs: [ check-manifests-charts-image ]
     if: ${{ failure() || cancelled() }}
     uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
     with:
