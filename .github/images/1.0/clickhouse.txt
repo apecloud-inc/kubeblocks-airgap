@@ -1,4 +1,4 @@
-# clickhouse v1.0.1
+# clickhouse v1.0.2
 docker.io/apecloud/clickhouse:22.3.20
 docker.io/apecloud/clickhouse:22.3.18-debian-11-r3
 docker.io/apecloud/clickhouse:22.8.21-debian-11-r33
