@@ -54,3 +54,4 @@ influxdb:0.9.3
 tdengine:0.9.1
 csi-driver-nfs:v4.10.0
 pulsar:0.9.1
+kubebench:0.0.1
