@@ -87,3 +87,4 @@ tdengine:0.9.1
 tdengine:1.0.1
 oracle:0.9.0
 oracle:1.0.1-beta.0
+kubebench:0.0.1
