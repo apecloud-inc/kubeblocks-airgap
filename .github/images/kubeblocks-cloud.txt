@@ -23,7 +23,7 @@ docker.io/apecloud/workflow-controller:v3.5.5
 docker.io/apecloud/argocli:v3.5.5
 docker.io/apecloud/argoexec:v3.5.5
 docker.io/apecloud/cloudshell:1.7.9
-docker.io/apecloud/servicemirror:0.4.2
+docker.io/apecloud/servicemirror:0.4.3
 docker.io/apecloud/apecloud-website:latest
 docker.io/apecloud/busybox:latest
 docker.io/apecloud/netshoot:0.13
