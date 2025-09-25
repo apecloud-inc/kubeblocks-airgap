@@ -149,7 +149,7 @@ change_kubeblocks_versions() {
         IFS='.' read -r major_v minor_v rest_v <<< "${KUBEBLOCKS_VERSION}"
         KUBEBLOCKS_VERSION_HEAD="$major_v.$minor_v."
 
-        imageFiles=("kubeblocks.txt" "kubeblocks-enterprise.txt" "kubeblocks-enterprise-patch.txt")
+        imageFiles=("kubeblocks.txt" "kubeblocks-enterprise.txt" "kubeblocks-enterprise-patch.txt" "gemini.txt")
         for imageFile in "${imageFiles[@]}"; do
             echo "change ${imageFile} images tag"
             image_file_path=.github/images/${imageFile}

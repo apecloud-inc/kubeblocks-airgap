@@ -111,7 +111,7 @@ save_images_package() {
         fi
     fi
     
-    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch" || "$APP_NAME" == "gemini") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
         echo "change KubeBlocks images tag"
         for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
             if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
