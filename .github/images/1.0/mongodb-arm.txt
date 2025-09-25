@@ -1,4 +1,4 @@
-# mongodb v1.0.1-beta.1
+# mongodb v1.0.2
 docker.io/apecloud/kubectl:1.29
 docker.io/apecloud/mongodb_exporter:0.44.0
 docker.io/apecloud/percona-backup-mongodb:2.5.0-multi
