@@ -15,5 +15,5 @@ docker.io/apecloud/spilo:17.5
 docker.io/apecloud/wal-g-pg:3.0.0
 docker.io/apecloud/pgbouncer:1.19.0
 docker.io/apecloud/postgres-exporter:v0.15.0
-docker.io/apecloud/spilo-init:0.1
+docker.io/apecloud/spilo-init:0.2
 

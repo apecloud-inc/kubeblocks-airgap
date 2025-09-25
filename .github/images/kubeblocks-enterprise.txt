@@ -59,7 +59,7 @@ docker.io/apecloud/apecloud-addon-charts:oceanbase-0.9.5
 docker.io/apecloud/apecloud-addon-charts:oceanbase-1.0.1-beta.0
 docker.io/apecloud/apecloud-addon-charts:oceanbase-proxy-0.9.2
 docker.io/apecloud/apecloud-addon-charts:oceanbase-proxy-1.0.1-beta.0
-docker.io/apecloud/apecloud-addon-charts:postgresql-0.9.7-beta.0
+docker.io/apecloud/apecloud-addon-charts:postgresql-0.9.7
 docker.io/apecloud/apecloud-addon-charts:postgresql-1.0.2
 docker.io/apecloud/apecloud-addon-charts:pulsar-0.9.1
 docker.io/apecloud/apecloud-addon-charts:qdrant-0.9.1
