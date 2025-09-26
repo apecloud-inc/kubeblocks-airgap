@@ -1,4 +1,4 @@
-# rabbitmq v1.0.1-beta.0
+# rabbitmq v1.0.2
 docker.io/apecloud/rabbitmq:3.8.14-management
 docker.io/apecloud/rabbitmq:3.9.29-management
 docker.io/apecloud/rabbitmq:3.10.25-management
