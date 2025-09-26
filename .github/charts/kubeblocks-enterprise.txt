@@ -2,12 +2,12 @@ kubeblocks:0.9.6-beta.1
 kubeblocks:1.0.2-beta.7
 kubeblocks-cloud:v2.0.18
 kb-cloud-installer:2.0.18
-gemini:0.10.0-beta.6
-gemini-monitor:0.10.0-beta.6
+gemini:0.10.0-beta.9
+gemini-monitor:0.10.0-beta.9
 casdoor-helm-charts:v1.721.0
 ingress-nginx:4.12.1
 metallb:0.14.4
-ape-local-csi-driver:0.3.2
+ape-local-csi-driver:0.4.3
 servicemirror:0.4.3
 servicemirror:0.3.1
 spiderpool:0.9.3
