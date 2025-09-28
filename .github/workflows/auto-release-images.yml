@@ -8,6 +8,12 @@ on:
       - '.github/images/0.9/*.txt'
       - '.github/images/1.0/*.txt'
       - '.github/images/kubebench.txt'
+      - '.github/images/ape-local-csi-driver.txt'
+      - '.github/images/cert-manager.txt'
+      - '.github/images/ingress-nginx.txt'
+      - '.github/images/metallb.txt'
+      - '.github/images/metrics-server.txt'
+      - '.github/images/postgres-operator.txt'
 
 env:
   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -24,7 +30,11 @@ jobs:
       - name: auto release images
         run: |
           for filePath in $( git diff --name-only HEAD HEAD^ ); do
-              if [[ "$filePath" == ".github/images/0.9/"*".txt" || "$filePath" == ".github/images/1.0/"*".txt" || "$filePath" == ".github/images/kubebench.txt" ]]; then
+              if [[ "$filePath" == ".github/images/0.9/"*".txt" || "$filePath" == ".github/images/1.0/"*".txt" 
+                  || "$filePath" == ".github/images/kubebench.txt" || "$filePath" == ".github/images/ape-local-csi-driver.txt"
+                  || "$filePath" == ".github/images/cert-manager.txt" || "$filePath" == ".github/images/ingress-nginx.txt"
+                  || "$filePath" == ".github/images/metallb.txt" || "$filePath" == ".github/images/metrics-server.txt" 
+                  || "$filePath" == ".github/images/postgres-operator.txt" ]]; then
                   if [[ -f "$filePath" ]]; then
                       echo "release $filePath images"
                       release_version="$(head -n 1 $filePath | (awk '{print $3}'|| true))"
@@ -33,7 +43,9 @@ jobs:
           
                       release_dir=${filePath%/*}
                       release_dir=${release_dir##*/}
-                      if [[ ${release_dir} =~ ^[0-9.]+$ ]]; then
+                      if [[ ${release_dir} =~ ^[0-9.]+$ || "${filePath}" == *"kubebench.txt" || "${filePath}" == *"ape-local-csi-driver.txt"
+                          || "${filePath}" == *"cert-manager.txt" || "${filePath}" == *"ingress-nginx.txt" || "${filePath}" == *"metallb.txt" 
+                          || "${filePath}" == *"metrics-server.txt" || "${filePath}" == *"postgres-operator.txt" ]]; then
                           echo "release_dir: $release_dir"
                       else
                           echo "$(tput -T xterm setaf 3)Not found $filePath$(tput -T xterm sgr0)"
@@ -49,8 +61,13 @@ jobs:
                       cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
                       cmd=$cmd"--github-repo \"${{ github.repository }}\" "
                       cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
-                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_DIR=${release_dir}#APP_VERSION=${release_version}\" "
           
+                      if [[ ${release_dir} =~ ^[0-9.]+$ ]]; then
+                          cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_DIR=${release_dir}#APP_VERSION=${release_version}\" "
+                      else
+                          cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_VERSION=${release_version}\" "
+                      fi
+                      
                       if [[ "${release_name}" == *"-arm" ]]; then
                           cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
                       elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* || "${release_name}" == "mssql"*  || "${release_name}" == "kingbase"* || "${release_name}" == "goldendb"* || "${release_name}" == "mongodb"* ]]; then
