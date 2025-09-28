@@ -112,6 +112,10 @@ check_addon_charts_images() {
         if [[ -z "$chart_name" || "$chart_name" == "#"* || "$chart_name" == "kata" ]]; then
             continue
         fi
+
+        if [[ "$chart_name" == "apecloud-mysql" || "$chart_name" == "mogdb" || "$chart_name" == "greatsql" ]]; then
+            continue
+        fi
         chart_versions=$(yq e '[.'${chart_name}'[].version] | join("|")' ${MANIFESTS_FILE})
         chart_index=0
         for chart_version in $(echo "$chart_versions" | sed 's/|/ /g'); do
@@ -163,6 +167,10 @@ check_charts_images() {
         if [[ -z "$chart_name" || "$chart_name" == "#"* || "$chart_name" == "kata" ]]; then
             continue
         fi
+
+        if [[ "$chart_name" == "apecloud-mysql" || "$chart_name" == "mogdb" || "$chart_name" == "greatsql" ]]; then
+            continue
+        fi
         set_values=""
         chart_versions=$(yq e '[.'${chart_name}'[].version] | join("|")' ${MANIFESTS_FILE})
         chart_index=0
@@ -190,12 +198,16 @@ check_charts_images() {
                     set_values="${set_values} --set controller.admissionWebhooks.patch.image.digest= "
                 ;;
                 gemini)
-                    set_values="${set_values} --set cr-exporter.enabled=true "
+                    set_values="${set_values} --set victoria-metrics-cluster.enabled=false "
+                    set_values="${set_values} --set loki.enabled=false "
+                    set_values="${set_values} --set kubeviewer.enabled=false "
+                    set_values="${set_values} --set cr-exporter.enabled=false "
                 ;;
                 kubebench)
                     set_values="${set_values} --set image.tag=0.0.12 "
                     set_values="${set_values} --set kubebenchImages.exporter=apecloud/kubebench:0.0.12"
                     set_values="${set_values} --set kubebenchImages.tools=apecloud/kubebench:0.0.12"
+                    set_values="${set_values} --set kubebenchImages.tpcc=apecloud/benchmarksql:1.0"
                 ;;
                 dbdrag)
                     continue

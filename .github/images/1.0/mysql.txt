@@ -1,4 +1,4 @@
-# mysql v1.0.1-beta.0
+# mysql v1.0.2
 docker.io/apecloud/mysql:5.7.44
 docker.io/apecloud/mysql:8.0.30
 docker.io/apecloud/mysql:8.0.31
@@ -16,18 +16,15 @@ docker.io/apecloud/mysql:8.4.2
 docker.io/apecloud/mysql_audit_log:5.7.44
 docker.io/apecloud/mysql_audit_log:8.0.33
 docker.io/apecloud/orc-tools:1.0.2
-docker.io/apecloud/orc-tools:1.0.3
 docker.io/apecloud/percona-xtrabackup:2.4
 docker.io/apecloud/percona-xtrabackup:8.0
 docker.io/apecloud/percona-xtrabackup:8.4
 docker.io/apecloud/percona-xtrabackup:8.0.32
 docker.io/apecloud/proxysql:2.4.4
 docker.io/apecloud/syncer:0.5.0
-docker.io/apecloud/syncer:0.3.2
-docker.io/apecloud/wal-g-mysql:2.0.1-1-ubuntu
+docker.io/apecloud/wal-g-mysql:3.0.0-ubuntu
 docker.io/apecloud/xtrabackup:2.4
 docker.io/apecloud/xtrabackup:8.0
 docker.io/apecloud/xtrabackup:8.4
 docker.io/apecloud/mysqld-exporter:0.15.1
 docker.io/apecloud/jemalloc:5.3.0
-docker.io/apecloud/agamotto:0.1.2-beta.1

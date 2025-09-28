@@ -1,19 +1,21 @@
-# KubeBlocks-Cloud v2.0.0-alpha.13
-docker.io/apecloud/openconsole:v2.0.0-alpha.13
-docker.io/apecloud/openconsole:v2.0.0-alpha.13-console
-docker.io/apecloud/openconsole:v2.0.0-alpha.13-admin
-docker.io/apecloud/apiserver:v2.0.0-alpha.13
-docker.io/apecloud/cubetran-front:v2.0.0-alpha.13
+# KubeBlocks-Cloud v2.0.23
+docker.io/apecloud/openconsole:v2.0.23
+docker.io/apecloud/openconsole:v2.0.23-console
+docker.io/apecloud/openconsole:v2.0.23-admin
+docker.io/apecloud/apiserver:v2.0.23
+docker.io/apecloud/cubetran-front:v2.0.23
 docker.io/apecloud/cubetran-core:0.2.2
-docker.io/apecloud/cr4w:v2.0.0-alpha.13
-docker.io/apecloud/apecloud-addon-charts:v2.0.0-alpha.13
-docker.io/apecloud/kb-cloud-hook:v2.0.0-alpha.13
-docker.io/apecloud/kb-cloud-docs:v2.0.0-alpha.13
-docker.io/apecloud/kubeblocks-installer:v2.0.0-alpha.13-offline
-docker.io/apecloud/dms:0.0.3-alpha.13
+docker.io/apecloud/cr4w:v2.0.23
+docker.io/apecloud/apecloud-addon-charts:v2.0.23
+docker.io/apecloud/kb-cloud-hook:v2.0.23
+docker.io/apecloud/kb-cloud-docs:v2.0.23
+docker.io/apecloud/kb-cloud-installer:v2.0.23
+docker.io/apecloud/kubeblocks-installer:v2.0.23-offline
+docker.io/apecloud/dms:0.0.3-alpha.15
 docker.io/apecloud/apecloud-mcp:1.2.0-alpha.5
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.70.0
+docker.io/apecloud/zoonavigator:1.1.3
 docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:10.1.1
 docker.io/apecloud/bats:v1.4.1
@@ -21,11 +23,9 @@ docker.io/apecloud/workflow-controller:v3.5.5
 docker.io/apecloud/argocli:v3.5.5
 docker.io/apecloud/argoexec:v3.5.5
 docker.io/apecloud/cloudshell:1.7.9
-docker.io/apecloud/servicemirror:0.4.2
-docker.io/apecloud/apecloud-website:latest
+docker.io/apecloud/servicemirror:0.4.3
 docker.io/apecloud/busybox:latest
 docker.io/apecloud/netshoot:0.13
-docker.io/apecloud/kubebench:0.0.12
 docker.io/apecloud/curl:latest
 # casdoor-helm-charts v0.1.4
 docker.io/apecloud/casdoor:v1.721.0

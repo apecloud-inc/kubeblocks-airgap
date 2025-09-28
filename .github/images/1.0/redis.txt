@@ -1,4 +1,4 @@
-# redis v1.0.1
+# redis v1.0.2
 docker.io/apecloud/ape-dts:2.0.24
 docker.io/apecloud/ape-dts:redis.reshard.2.0.9
 docker.io/apecloud/busybox:1.36

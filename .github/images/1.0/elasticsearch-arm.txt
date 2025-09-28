@@ -1,4 +1,4 @@
-# elasticsearch v1.0.1-beta.0
+# elasticsearch v1.0.2
 docker.io/apecloud/curl-jq:0.1.0
 docker.io/apecloud/elasticsearch-plugins:8.8.2
 docker.io/apecloud/elasticsearch:8.1.3
