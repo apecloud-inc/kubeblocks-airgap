@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/images/0.9/*.txt'
       - '.github/images/1.0/*.txt'
+      - '.github/images/kubebench.txt'
 
 env:
   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -23,7 +24,7 @@ jobs:
       - name: auto release images
         run: |
           for filePath in $( git diff --name-only HEAD HEAD^ ); do
-              if [[ "$filePath" == ".github/images/0.9/"*".txt" || "$filePath" == ".github/images/1.0/"*".txt" ]]; then
+              if [[ "$filePath" == ".github/images/0.9/"*".txt" || "$filePath" == ".github/images/1.0/"*".txt" || "$filePath" == ".github/images/kubebench.txt" ]]; then
                   if [[ -f "$filePath" ]]; then
                       echo "release $filePath images"
                       release_version="$(head -n 1 $filePath | (awk '{print $3}'|| true))"
