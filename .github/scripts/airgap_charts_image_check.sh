@@ -91,7 +91,12 @@ check_images() {
             done
 
             if [[ $check_flag -eq 0 ]]; then
-                echo "$(tput -T xterm setaf 1)::error title=Not found ${chart_name_tmp} ${chart_version_tmp} image:$repository in ${chart_name_tmp}.txt$(tput -T xterm sgr0)"
+                check_result_tmp="$(tput -T xterm setaf 1)Not found ${chart_name_tmp} ${chart_version_tmp} image:$repository in ${IMAGES_TXT_DIR}/${chart_name_tmp}.txt$(tput -T xterm sgr0)"
+                echo "${check_result_tmp}"
+                CHECK_RESULTS="$(cat check_airgap_result)"
+                if [[ "${CHECK_RESULTS}" != *"${check_result_tmp}"* ]]; then
+                    echo "${check_result_tmp}" >> check_airgap_result
+                fi
                 echo 1 > exit_result
             fi
             repository=""
@@ -105,15 +110,16 @@ check_images() {
 }
 
 check_charts_images() {
-    touch exit_result
+    touch exit_result check_airgap_result
     echo 0 > exit_result
+    echo "" > check_airgap_result
     if [[ ! -d "${IMAGES_TXT_DIR}" ]]; then
-        echo "$(tput -T xterm setaf 1)::error title=Not found images path:${IMAGES_TXT_DIR} $(tput -T xterm sgr0)"
+        echo "$(tput -T xterm setaf 1)Not found images path:${IMAGES_TXT_DIR} $(tput -T xterm sgr0)"
         return
     fi
 
     if [[ ! -f "${MANIFESTS_FILE}" ]]; then
-        echo "$(tput -T xterm setaf 1)::error title=Not found manifests file:${MANIFESTS_FILE} $(tput -T xterm sgr0)"
+        echo "$(tput -T xterm setaf 1)Not found manifests file:${MANIFESTS_FILE} $(tput -T xterm sgr0)"
         return
     fi
 
@@ -203,6 +209,7 @@ check_charts_images() {
         check_images "$is_enterprise" "$chart_version" "$chart_name" "$chart_images" "$set_values" &
     done
     wait
+    cat check_airgap_result
     cat exit_result
     exit $(cat exit_result)
 }
