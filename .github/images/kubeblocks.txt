@@ -12,4 +12,4 @@ docker.io/apecloud/kubeblocks:1.0.2-beta.10
 docker.io/apecloud/kubeblocks-dataprotection:1.0.2-beta.10
 docker.io/apecloud/kubeblocks-tools:1.0.2-beta.10
 docker.io/apecloud/kubeblocks-charts:1.0.2-beta.10
-docker.io/apecloud/datasafed:0.2.1
+docker.io/apecloud/datasafed:0.2.2
