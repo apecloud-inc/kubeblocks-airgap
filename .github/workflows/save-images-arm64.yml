@@ -236,6 +236,46 @@ jobs:
           else
               exit 1
           fi
+      
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME_ARM64}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME_ARM64} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}  --read-timeout=420 --retry-times=5
+              upload_ret=$?
+          
+              if [[ -d "ossutil_output" ]]; then
+                  ossutil_report_files=$(ls ossutil_output)
+                  if [[ -n "${ossutil_report_files}" ]]; then
+                      ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
+                      if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_MD} to oss error, retry..."
+                          cat "${ossutil_report_file_name}"
+                          rm -rf ossutil_output/ossutil_report_*.report
+                          upload_ret=1
+                      fi
+                  fi
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          fi
 
       - name: get self runner name
         id: get_runner_name
