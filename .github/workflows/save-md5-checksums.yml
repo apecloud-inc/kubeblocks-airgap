@@ -1,4 +1,4 @@
-name: Upload MD5 Checksums
+name: Save MD5 Checksums
 
 on:
   workflow_dispatch:
