@@ -51,10 +51,11 @@ jobs:
               MD5_VERSION="$major.$minor"
           else
               REF_NAME="${{ github.ref_name }}"
-              if [[ "${REF_NAME}" == "release-" ]]; then 
+              if [[ "${REF_NAME}" == "release-"* ]]; then 
                   MD5_VERSION="${REF_NAME/release-/v}"
               fi
           fi
+          echo "MD5_VERSION:${MD5_VERSION}"
           echo 'md5_version='${MD5_VERSION} >> $GITHUB_OUTPUT
 
       - name: Upload md5 checksums to oss
@@ -69,8 +70,10 @@ jobs:
           fi
           
           if [[ -f "${CHECKSUM_MD5_TMP}" ]]; then
-              echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
-              cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+              if [[ "${CHECKSUM_MD5_TMP}" != "${CHECKSUM_MD5}" ]]; then
+                  echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
+                  cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+              fi
           else
               echo "$(tput -T xterm setaf 1)${CHECKSUM_MD5_TMP} file not exists$(tput -T xterm sgr0)"
               exit 1
@@ -91,8 +94,10 @@ jobs:
           RELEASE_VERSION="${{ inputs.VERSION }}"
           CHECKSUM_MD5="checksums-${RELEASE_VERSION}.md5"
           CHECKSUM_MD5_TMP="${{ env.CHECKSUM_MD5 }}"
-          echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
-          cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+          if [[ "${CHECKSUM_MD5_TMP}" != "${CHECKSUM_MD5}" ]]; then
+              echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
+              cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+          fi
           
           OSS_URL="oss://${{ env.OSS_BUCKET }}/images/md5/${CHECKSUM_MD5}"
           ossutil cp -rf ./${CHECKSUM_MD5} ${OSS_URL}
