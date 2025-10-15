@@ -84,7 +84,7 @@ generate_checksums_md5() {
 
             check_exists=0
             for i in {1..5}; do
-                md5_stat_info=$(ossutilmac64 stat "${OSS_MD5_URL}")
+                md5_stat_info=$(ossutil stat "${OSS_MD5_URL}")
                 md5_stat_ret=$?
                 if [[ "${md5_stat_info}" == *"404"* && "${md5_stat_info}" == *"The specified key does not exist."*  ]]; then
                     echo "$(tput -T xterm setaf 1)${image_md5_tmp} does not exist$(tput -T xterm sgr0)"
@@ -106,7 +106,7 @@ generate_checksums_md5() {
 
             echo "download ${image_md5_tmp} ..."
             for i in {1..5}; do
-                ossutilmac64 cp -rf ${OSS_MD5_URL} ./
+                ossutil cp -rf ${OSS_MD5_URL} ./
                 download_ret=$?
                 if [[ $download_ret -eq 0 && -f ${image_md5_tmp} ]]; then
                     echo "$(tput -T xterm setaf 2)download ${image_md5_tmp} success$(tput -T xterm sgr0)"
@@ -135,7 +135,7 @@ upload_checksums_md5() {
     OSS_MD5_URL="oss://kubeblocks-oss/images/md5/${CHECKSUM_MD5}"
     for i in {1..5}; do
         echo "upload ${CHECKSUM_MD5} ..."
-        ossutilmac64 cp -rf ${CHECKSUM_MD5} ${OSS_MD5_URL}
+        ossutil cp -rf ${CHECKSUM_MD5} ${OSS_MD5_URL}
         upload_ret=$?
         if [[ $upload_ret -eq 0 ]]; then
             echo "$(tput -T xterm setaf 2)upload ${CHECKSUM_MD5} success$(tput -T xterm sgr0)"
