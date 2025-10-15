@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       VERSION:
-        description: 'app version'
+        description: 'release version'
         required: false
         default: ''
 
