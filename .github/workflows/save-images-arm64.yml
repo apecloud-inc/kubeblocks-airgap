@@ -347,7 +347,7 @@ jobs:
           cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
           cmd=$cmd"--github-repo \"${{ github.repository }}\" "
           cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
-          cmd=$cmd"--workflow-id \"upload-md5-checksums.yml\" "
+          cmd=$cmd"--workflow-id \"save-md5-checksums.yml\" "
           
           APP_NAME="${{ inputs.APP_NAME }}"
           RELEASE_VERSION="${{ inputs.APP_VERSION }}"
