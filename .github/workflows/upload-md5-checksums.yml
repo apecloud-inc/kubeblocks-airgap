@@ -1,0 +1,137 @@
+name: Upload MD5 Checksums
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'app version'
+        required: false
+        default: ''
+
+
+run-name: upload md5 checksums ${{ inputs.VERSION }}
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
+  OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+  OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
+  OSS_BUCKET: "kubeblocks-oss"
+  CHECKSUM_MD5: "checksums.md5"
+
+jobs:
+  upload-md5-checksums:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ref ${{ inputs.VERSION }}
+        if: ${{ inputs.VERSION != '' }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.VERSION }}
+
+      - name: Checkout Ref ${{ github.ref_name }}
+        if: ${{ inputs.VERSION == '' }}
+        uses: actions/checkout@v4
+
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
+
+      - name: get md5 version
+        id: get_md5_version
+        run: |
+          MD5_VERSION=""
+          RELEASE_VERSION="${{ inputs.VERSION }}"
+          if [[ -n "${RELEASE_VERSION}" ]]; then
+              major=${RELEASE_VERSION%%.*}
+              minor_patch=${RELEASE_VERSION#*.}
+              minor=${minor_patch%%.*}
+              MD5_VERSION="$major.$minor"
+          else
+              REF_NAME="${{ github.ref_name }}"
+              if [[ "${REF_NAME}" == "release-" ]]; then 
+                  MD5_VERSION="${REF_NAME/release-/v}"
+              fi
+          fi
+          echo 'md5_version='${MD5_VERSION} >> $GITHUB_OUTPUT
+
+      - name: Upload md5 checksums to oss
+        run: |
+          CHECKSUM_MD5_TMP="${{ env.CHECKSUM_MD5 }}"
+          bash .github/scripts/generate_image_md5.sh "${CHECKSUM_MD5_TMP}"
+          CHECKSUM_MD5="${CHECKSUM_MD5_TMP}"
+          
+          MD5_VERSION="${{ steps.get_md5_version.outputs.md5_version }}"
+          if [[ -n "${MD5_VERSION}" ]]; then
+              CHECKSUM_MD5="checksums-${MD5_VERSION}.md5"
+          fi
+          
+          if [[ -f "${CHECKSUM_MD5_TMP}" ]]; then
+              echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
+              cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+          else
+              echo "$(tput -T xterm setaf 1)${CHECKSUM_MD5_TMP} file not exists$(tput -T xterm sgr0)"
+              exit 1
+          fi
+          
+          OSS_URL="oss://${{ env.OSS_BUCKET }}/images/md5/${CHECKSUM_MD5}"
+          ossutil cp -rf ./${CHECKSUM_MD5} ${OSS_URL}
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${CHECKSUM_MD5} to oss successfully"
+          else
+              exit 1
+          fi 
+
+      - name: Upload md5 checksums ${{ inputs.VERSION }} to oss
+        if: ${{ inputs.VERSION != '' }}
+        run: |
+          RELEASE_VERSION="${{ inputs.VERSION }}"
+          CHECKSUM_MD5="checksums-${RELEASE_VERSION}.md5"
+          CHECKSUM_MD5_TMP="${{ env.CHECKSUM_MD5 }}"
+          echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
+          cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+          
+          OSS_URL="oss://${{ env.OSS_BUCKET }}/images/md5/${CHECKSUM_MD5}"
+          ossutil cp -rf ./${CHECKSUM_MD5} ${OSS_URL}
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${CHECKSUM_MD5} to oss successfully"
+          else
+              exit 1
+          fi 
+
+  save-result:
+    runs-on: ubuntu-latest
+    needs: [ upload-md5-checksums ]
+    if: ${{ always() && inputs.VERSION != '' }}
+    outputs:
+      chart-pkg-name: ${{ steps.save_result.outputs.chart_pkg_name }}
+      save-result: ${{ steps.save_result.outputs.save_result }}
+    steps:
+      - name: save result
+        id: save_result
+        run: |
+          SAVE_RESULT="error"
+          RELEASE_VERSION="${{ inputs.VERSION }}"
+          CHART_PKG_NAME="checksums-${RELEASE_VERSION}.md5"
+          if [[ "${{ needs.upload-md5-checksums.result }}" == "success" ]]; then
+              SAVE_RESULT="success"
+              CHART_PKG_NAME="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/images/md5/${CHART_PKG_NAME}"
+          fi
+          echo 'save_result='$SAVE_RESULT >> $GITHUB_OUTPUT
+          echo 'chart_pkg_name='${CHART_PKG_NAME} >> $GITHUB_OUTPUT
+
+  send-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() && inputs.VERSION != '' }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "upload md5 checksums ${{ needs.save-result.outputs.chart-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
+    secrets: inherit

@@ -216,8 +216,8 @@ jobs:
 
       - uses: manyuanrong/setup-ossutil@v2.0
         with:
-          access-key-id: "${{ secrets.OSS_KEY_ID }}"
-          access-key-secret: "${{ secrets.OSS_KEY_SECRET }}"
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
           endpoint: "${{ env.OSS_ENDPOINT }}"
 
       - name: Upload images to oss
@@ -293,3 +293,30 @@ jobs:
       TYPE: "2"
       CONTENT: "save image ${{ needs.save-result.outputs.image-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
     secrets: inherit
+
+  upload-md5-checksums:
+    needs: [ save-app-images ]
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: auto release images
+        run: |
+          cmd="bash .github/scripts/trigger_workflow.sh "
+          cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
+          cmd=$cmd"--github-repo \"${{ github.repository }}\" "
+          cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
+          cmd=$cmd"--workflow-id \"upload-md5-checksums.yml\" "
+          
+          APP_NAME="${{ inputs.APP_NAME }}"
+          RELEASE_VERSION="${{ inputs.APP_VERSION }}"
+          if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+              RELEASE_VERSION="v${RELEASE_VERSION}"
+          fi
+          if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -z "${APP_VERSION}" ]]; then
+              cmd=$cmd"--version \"${RELEASE_VERSION}\" "
+          fi
+          
+          echo "$cmd"
+          eval "$cmd"
