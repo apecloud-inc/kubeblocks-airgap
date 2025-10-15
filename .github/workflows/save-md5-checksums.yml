@@ -138,5 +138,5 @@ jobs:
     uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
     with:
       TYPE: "2"
-      CONTENT: "upload md5 checksums ${{ needs.save-result.outputs.chart-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
+      CONTENT: "save md5 checksums ${{ needs.save-result.outputs.chart-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
     secrets: inherit
