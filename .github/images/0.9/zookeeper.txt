@@ -1,4 +1,4 @@
-# Zookeeper v0.9.0
+# zookeeper v0.9.0
 docker.io/apecloud/zoocreeper:1.0.1
 docker.io/apecloud/zookeeper:3.4.14
 docker.io/apecloud/zookeeper:3.6.4
