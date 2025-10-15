@@ -75,6 +75,8 @@ change_charts_version() {
         fi
         HEAD_APP_VERSION="${APP_VERSION%%.*}"
         if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -90,6 +92,8 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         else
+            sed -i "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
