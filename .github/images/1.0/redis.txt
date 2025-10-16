@@ -9,11 +9,15 @@ docker.io/apecloud/redis-stack-server:7.0.6-RC4
 docker.io/apecloud/redis-stack-server:7.0.6-RC8
 docker.io/apecloud/redis-stack-server:7.2.0-v10
 docker.io/apecloud/redis-stack-server:7.2.0-v14
+docker.io/apecloud/redis-stack-server:7.2.0-v19
 docker.io/apecloud/redis-stack-server:7.4.0-v3
+docker.io/apecloud/redis-stack-server:7.4.0-v7
 docker.io/apecloud/oteld:0.7.3
 docker.io/apecloud/redis:5.0.12
 docker.io/apecloud/redis:8.0.1
 docker.io/apecloud/redis:8.0.3
+docker.io/apecloud/redis:8.0.4
+docker.io/apecloud/redis:8.2.2
 docker.io/apecloud/redis:8.2.1
 docker.io/apecloud/redis-stack-server:7.2.0-v18
 docker.io/apecloud/redis-stack-server:7.4.0-v6
