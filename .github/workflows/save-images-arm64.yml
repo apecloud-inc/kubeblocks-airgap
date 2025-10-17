@@ -9,7 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - dm-8.1.3-162-20240827-sec
+          - dm
           - busybox
           - syncer
           - redisinsight
