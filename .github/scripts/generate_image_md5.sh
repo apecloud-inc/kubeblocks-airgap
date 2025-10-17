@@ -6,8 +6,59 @@ set -o nounset
 
 CHECKSUM_MD5=${1:-"checksums.md5"}
 IMAGES_PATH=${2:-".github/images"}
+IMAGES_ARTIFACT=${3:-"extra/artifact-md5.txt"}
 OSS_URL=""
 OSS_URL_ARM64=""
+
+generate_artifact_checksums_md5() {
+    if [[ ! -f "${IMAGES_ARTIFACT}" ]]; then
+        echo "${IMAGES_ARTIFACT} not found"
+        return
+    fi
+
+    for image_pkg in $(cat ${IMAGES_ARTIFACT}); do
+        image_md5="${image_pkg}.md5"
+        OSS_URL="oss://kubeblocks-oss/artifact/${image_md5}"
+        # check image md5 exists
+        OSS_MD5_URL="${OSS_URL}"
+        check_exists=0
+        for i in {1..5}; do
+            md5_stat_info=$(ossutil stat "${OSS_MD5_URL}")
+            md5_stat_ret=$?
+            if [[ "${md5_stat_info}" == *"404"* && "${md5_stat_info}" == *"The specified key does not exist."*  ]]; then
+                echo "$(tput -T xterm setaf 1)${image_md5} does not exist$(tput -T xterm sgr0)"
+                check_exists=2
+            elif [[ $md5_stat_ret -eq 0 && "${md5_stat_info}" == *"Etag"* ]]; then
+                echo "$(tput -T xterm setaf 2)${image_md5} exist$(tput -T xterm sgr0)"
+                check_exists=1
+            fi
+
+            if [[ $check_exists -ne 0 ]]; then
+                break
+            fi
+            sleep 1
+        done
+
+        if [[ $check_exists -eq 2 ]]; then
+            continue
+        fi
+
+        echo "download ${image_md5} ..."
+        for i in {1..5}; do
+            ossutil cp -rf ${OSS_MD5_URL} ./
+            download_ret=$?
+            if [[ $download_ret -eq 0 && -f ${image_md5} ]]; then
+                echo "$(tput -T xterm setaf 2)download ${image_md5} success$(tput -T xterm sgr0)"
+                cat ${image_md5} >> ${CHECKSUM_MD5}
+                rm -rf ${image_md5}
+                break
+            else
+                rm -rf ${image_md5}*
+            fi
+            sleep 1
+        done
+    done
+}
 
 generate_checksums_md5() {
     if [[ ! -d "${IMAGES_PATH}" ]]; then
@@ -17,6 +68,8 @@ generate_checksums_md5() {
 
     rm -rf ${CHECKSUM_MD5}
     touch ${CHECKSUM_MD5}
+
+    generate_artifact_checksums_md5
 
     for image_file in $(find ${IMAGES_PATH} -name "*.txt"|sort -V); do
         check_flag=0
