@@ -147,17 +147,14 @@ jobs:
     if: ${{ inputs.VERSION != '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
+
       - name: download md5 checksums
         id: download_md5_checksums
         run: |
           RELEASE_VERSION="${{ inputs.VERSION }}"
-          major=${RELEASE_VERSION%%.*}
-          minor_patch=${RELEASE_VERSION#*.}
-          minor=${minor_patch%%.*}
-          MD5_VERSION="$major.$minor"
-          echo "MD5_VERSION:${MD5_VERSION}"
-          CHECKSUM_MD5="checksums-${MD5_VERSION}.md5"
-          
+          CHECKSUM_MD5="checksums-${RELEASE_VERSION}.md5"
           MD5_CHECKSUMS_URL="${{ needs.save-result.outputs.chart-pkg-name }}"
           if [[ -n "${MD5_CHECKSUMS_URL}" ]]; then
               for i in {1..5}; do
@@ -165,6 +162,7 @@ jobs:
                   download_ret=$?
                   if [[ $download_ret -eq 0 && -f ${CHECKSUM_MD5} ]]; then
                       echo "$(tput -T xterm setaf 2)download ${CHECKSUM_MD5} success$(tput -T xterm sgr0)"
+                      break
                   fi
                   sleep 1
               done
