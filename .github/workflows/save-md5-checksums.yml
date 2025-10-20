@@ -168,7 +168,7 @@ jobs:
                   fi
                   sleep 1
               done
-         fi
+          fi
           
           MD5_DIR="./docs/md5"
           mkdir -p ${MD5_DIR}
