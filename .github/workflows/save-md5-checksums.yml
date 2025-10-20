@@ -140,3 +140,50 @@ jobs:
       TYPE: "2"
       CONTENT: "save md5 checksums ${{ needs.save-result.outputs.chart-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
     secrets: inherit
+
+  push-md5-checksums:
+    runs-on: ubuntu-latest
+    needs: [ upload-md5-checksums ]
+    if: ${{ inputs.VERSION != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: generate md5 checksums
+        id: generate_md5_checksums
+        run: |
+          CHECKSUM_MD5_TMP="${{ env.CHECKSUM_MD5 }}"
+          bash .github/scripts/generate_image_md5.sh "${CHECKSUM_MD5_TMP}"
+          
+          RELEASE_VERSION="${{ inputs.VERSION }}"
+          major=${RELEASE_VERSION%%.*}
+          minor_patch=${RELEASE_VERSION#*.}
+          minor=${minor_patch%%.*}
+          MD5_VERSION="$major.$minor"
+          echo "MD5_VERSION:${MD5_VERSION}"
+          
+          MD5_DIR="./docs/md5"
+          mkdir -p ${MD5_DIR}
+          CHECKSUM_MD5="${MD5_DIR}/checksums-${MD5_VERSION}.md5"
+          
+          echo "copy ${CHECKSUM_MD5_TMP} to ${CHECKSUM_MD5}"
+          cp -r ${CHECKSUM_MD5_TMP} ${CHECKSUM_MD5}
+          
+          if [[ -f "${CHECKSUM_MD5}" ]]; then
+              git add ${CHECKSUM_MD5}
+          fi
+          
+          commit_message="chore: generate md5 checksums ${RELEASE_VERSION}"
+          FILE_CHANGES=`git diff --name-only ${{ github.sha }}`
+          if [[ -n "$FILE_CHANGES" ]]; then
+              echo $FILE_CHANGES
+              git config --local user.name "$GITHUB_ACTOR"
+              git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+              git commit -a -m "${commit_message}"
+          fi
+          echo file_changes=$FILE_CHANGES >> $GITHUB_OUTPUT
+
+      - name: push md5 checksums
+        if: ${{ steps.generate_md5_checksums.outputs.file_changes && inputs.VERSION != '' }}
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.ref }}
+          github_token: ${{ env.GITHUB_TOKEN }}
