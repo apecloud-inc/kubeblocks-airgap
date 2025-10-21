@@ -19,11 +19,11 @@ on:
           - mysql-arm
           - mongodb-arm
           - damengdb-arm
-          - apecloud-mysql
           - clickhouse
           - gaussdb
-          - greatsql
           - greatdb
+          - hadoop
+          - hive
           - influxdb
           - etcd
           - kafka

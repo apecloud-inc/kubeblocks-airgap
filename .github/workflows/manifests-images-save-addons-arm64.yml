@@ -9,7 +9,7 @@ on:
         required: true
         default: ''
       ENABLE_ADDONS:
-        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        description: 'Enable save addon images (e.g. clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
         type: string
         required: true
         default: ''
@@ -21,7 +21,7 @@ on:
         required: true
         default: ''
       ENABLE_ADDONS:
-        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        description: 'Enable save addon images (e.g. clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
         type: string
         required: true
         default: ''
