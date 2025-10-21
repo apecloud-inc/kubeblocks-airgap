@@ -154,6 +154,24 @@ jobs:
         id: download_md5_checksums
         run: |
           RELEASE_VERSION="${{ inputs.VERSION }}"
+          MD5_VERSION=""
+          major=${RELEASE_VERSION%%.*}
+          minor_patch=${RELEASE_VERSION#*.}
+          minor=${minor_patch%%.*}
+          MD5_VERSION="$major.$minor"
+          echo "MD5_VERSION:${MD5_VERSION}"
+          CHECKSUM_MD5_LATEST="checksums-${MD5_VERSION}.md5"
+          MD5_CHECKSUMS_LATEST_URL="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/images/md5/${CHECKSUM_MD5_LATEST}"
+          for i in {1..5}; do
+              wget "${MD5_CHECKSUMS_LATEST_URL}"
+              download_ret=$?
+              if [[ $download_ret -eq 0 && -f ${CHECKSUM_MD5_LATEST} ]]; then
+                  echo "$(tput -T xterm setaf 2)download ${CHECKSUM_MD5_LATEST} success$(tput -T xterm sgr0)"
+                  break
+              fi
+              sleep 1
+          done
+          
           CHECKSUM_MD5="checksums-${RELEASE_VERSION}.md5"
           MD5_CHECKSUMS_URL="${{ needs.save-result.outputs.chart-pkg-name }}"
           if [[ -n "${MD5_CHECKSUMS_URL}" ]]; then
@@ -171,9 +189,11 @@ jobs:
           MD5_DIR="./docs/md5"
           mkdir -p ${MD5_DIR}
           CHECKSUM_MD5_PATH="${MD5_DIR}/${CHECKSUM_MD5}"
+          CHECKSUM_MD5_LATEST_PATH="${MD5_DIR}/${CHECKSUM_MD5_LATEST}"
           cp -r ${CHECKSUM_MD5} ${CHECKSUM_MD5_PATH}
+          cp -r ${CHECKSUM_MD5_LATEST} ${CHECKSUM_MD5_LATEST_PATH}
           if [[ -f "${CHECKSUM_MD5_PATH}" ]]; then
-              git add ${CHECKSUM_MD5_PATH}
+              git add ${CHECKSUM_MD5_PATH} ${CHECKSUM_MD5_LATEST_PATH}
           fi
           
           commit_message="chore: generate md5 checksums ${RELEASE_VERSION}"
