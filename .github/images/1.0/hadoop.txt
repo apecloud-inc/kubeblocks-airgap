@@ -1,0 +1,4 @@
+# hadoop v1.0.2
+docker.io/apecloud/hadoop-common:3.3.6
+docker.io/apecloud/hadoop-common:3.3.1
+docker.io/apecloud/jmx-exporter:1.4.0

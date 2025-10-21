@@ -16,7 +16,6 @@ on:
           - cert-manager
           - gemini
           - ape-local-csi-driver
-          - apecloud-mysql
           - clickhouse
           - damengdb
           - influxdb
@@ -25,8 +24,9 @@ on:
           - gaussdb
           - gbase
           - goldendb
-          - greatsql
           - greatdb
+          - hadoop
+          - hive
           - kafka
           - kata
           - kingbase
@@ -60,8 +60,6 @@ on:
           - starrocks-3.4.1
           - spiderpool
           - victoria-metrics
-          - xinference-cpu
-          - xinference-gpu
           - zookeeper
           - ingress-nginx
           - nvidia-device-plugin
@@ -70,8 +68,6 @@ on:
           - tdsql
           - tidb
           - vastbase
-          - mogdb
-          - polardbx
           - pulsar
           - calico
           - csi-driver-nfs

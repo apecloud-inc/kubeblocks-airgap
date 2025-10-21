@@ -70,7 +70,7 @@ check_images() {
                 continue
             fi
 
-            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"*) ]]; then
+            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.3-162-20240827-sec"* || "$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"*) ]]; then
                 repository=""
                 continue
             fi
@@ -219,7 +219,7 @@ main() {
     local KB_REPO_URL="https://apecloud.github.io/helm-charts"
     local KB_ENT_REPO_NAME="kb-ent-charts"
     local KB_ENT_REPO_URL="https://jihulab.com/api/v4/projects/${CHART_PROJECT_ID}/packages/helm/stable"
-    #add_chart_repo
+    add_chart_repo
     check_charts_images
 }
 
