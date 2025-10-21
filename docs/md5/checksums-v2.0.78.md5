@@ -87,11 +87,11 @@ a0e7472aff54e01ac6baff31193373da  milvus-v1.0.1-beta.0.tar.gz
 0996e06f35bced3c6003b13a9466e6fc  milvus-v1.0.1-beta.0-arm64.tar.gz
 c5ae4a1b2cfac5aea91d325b019019b9  minio-v1.0.1-beta.0.tar.gz
 1a0c2308d63f58b116375c92dc82cba5  minio-v1.0.1-beta.0-arm64.tar.gz
-b21174d798bbb0f1480a193089254811  mongodb-v1.0.2.tar.gz
-ac1e13e7dd82a101d6032079daf5da07  mongodb-arm-v1.0.2-arm64.tar.gz
+4060521db0b0819493647dc2088e8107  mongodb-v1.0.2.tar.gz
+660a165440d978d58252619bbeb9b844  mongodb-arm-v1.0.2-arm64.tar.gz
 4f389f5849eb6c5678161df2f82331b8  mssql-v1.0.0.tar.gz
-13983a89e80fcaba66715cacbc85fa69  mysql-v1.0.2.tar.gz
-398c4d02a951696d7ed96c8bb8871bf1  mysql-arm-v1.0.2-arm64.tar.gz
+c1a9c4af82b1c18ae06e187dc60d20bb  mysql-v1.0.2.tar.gz
+7626e34aa56392da2dfb72ffb9cb7974  mysql-arm-v1.0.2-arm64.tar.gz
 5162d5d489437da1a9fd2d721de735a7  nebula-v1.0.1.tar.gz
 d880356c29149bffb2f6bec83b728b1a  oceanbase-v1.0.2.tar.gz
 82291e14b1782707da603f9732d1e48f  oceanbase-v1.0.2-arm64.tar.gz
@@ -128,6 +128,7 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 d3dc7b16aedc8d2c8ed8ee170df6d88a  kubebench-v0.0.12.tar.gz
 d524548aca3c429ce880d6fac048ce09  kubebench-v0.0.12-arm64.tar.gz
 4f5e7524312c9f1c4a7d8606363496a1  kubeblocks-enterprise-v2.0.78.tar.gz
+f867daecf49eb3ccce3e90525345e02e  kubeblocks-enterprise-v2.0.78-arm64.tar.gz
 b97bac1b48a9682b63ed9d442e9f0a94  kubeblocks-enterprise-patch-v2.0.78.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
