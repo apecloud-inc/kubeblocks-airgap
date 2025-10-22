@@ -132,6 +132,7 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 d3dc7b16aedc8d2c8ed8ee170df6d88a  kubebench-v0.0.12.tar.gz
 d524548aca3c429ce880d6fac048ce09  kubebench-v0.0.12-arm64.tar.gz
 593f2deb9b94d9638f2443de630a638a  kubeblocks-enterprise-v2.0.81.tar.gz
+c17c4c077932487539f1d2aa186e82e6  kubeblocks-enterprise-v2.0.81-arm64.tar.gz
 a05426ae6fd713bc2f5dc4136cbffdec  kubeblocks-enterprise-patch-v2.0.81.tar.gz
 aa96df502cb620bdee85949329e1a0e6  kubeblocks-enterprise-patch-v2.0.81-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
