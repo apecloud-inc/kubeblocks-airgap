@@ -42,12 +42,12 @@ save_k8s_images_package() {
 
     # 3. save images tar
     declare -A images_map=(
-        [kubernetes-airgap]="apecloud/kubernetes-airgap:${K8S_VERSION}"
-        [helm]="labring/helm:${HELM_VERSION_TMP}"
-        [calico-airgap]="apecloud/calico-airgap:${CALICO_VERSION_TMP}"
-        [metrics-server]="labring/metrics-server:${METRICS_SERVER_VERSION_TMP}"
-        [coredns]="labring/coredns:${COREDNS_VERSION_TMP}"
-        [openebs]="labring/openebs:${OPENEBS_VERSION_TMP}"
+        [kubernetes-airgap]="docker.io/apecloud/kubernetes-airgap:${K8S_VERSION}"
+        [helm]="docker.io/labring/helm:${HELM_VERSION_TMP}"
+        [calico-airgap]="docker.io/apecloud/calico-airgap:${CALICO_VERSION_TMP}"
+        [metrics-server]="docker.io/labring/metrics-server:${METRICS_SERVER_VERSION_TMP}"
+        [coredns]="docker.io/labring/coredns:${COREDNS_VERSION_TMP}"
+        [openebs]="docker.io/labring/openebs:${OPENEBS_VERSION_TMP}"
     )
 
     for image_name in ${!images_map[@]}; do
