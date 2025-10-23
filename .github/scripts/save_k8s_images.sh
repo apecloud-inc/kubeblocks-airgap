@@ -65,7 +65,7 @@ save_k8s_images_package() {
         echo "pull image $image"
         for i in {1..10}; do
             if [[ "${K8S_NAME}" == *"-arm64" ]]; then
-                sealos pull "$image"
+                podman pull --platform linux/arm64 "$image"
             else
                 podman pull "$image"
             fi
