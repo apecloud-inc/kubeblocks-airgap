@@ -56,8 +56,10 @@ save_k8s_images_package() {
         echo "pull image $image"
         for i in {1..10}; do
             if [[ "${K8S_NAME}" == *"-arm64" ]]; then
+                echo "podman pull --platform linux/arm64 $image"
                 podman pull --platform linux/arm64 "$image"
             else
+                echo "podman pull $image"
                 podman pull "$image"
             fi
             ret_msg=$?
@@ -66,6 +68,19 @@ save_k8s_images_package() {
                 break
             fi
             echo "$(tput -T xterm setaf 3)pull image $image_name ...$(tput -T xterm sgr0)"
+            sleep 1
+        done
+
+        # check image pulled
+        echo "check image pulled"
+        for i in {1..10}; do
+            check_image=$(sealos images | awk '{print $1":"$2}' | (grep "${image}" || true))
+            if [[ -n "${check_image}" ]]; then
+                echo "$(tput -T xterm setaf 2)check image $image success$(tput -T xterm sgr0)"
+                sealos images
+                break
+            fi
+            echo "$(tput -T xterm setaf 3)check image $image_name ...$(tput -T xterm sgr0)"
             sleep 1
         done
 
@@ -120,26 +135,26 @@ main() {
     else
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
-    SEALOS_DOWNLOAD_URL_AMD64="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
 
-    # download sealos cli package
-    sealos_cli_pkg_name_amd64="sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
-    echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_AMD64}"
+    # download sealos cli
+    sealos_cli_pkg_name_2="sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+    SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/${sealos_cli_pkg_name_2}"
+    echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_2}"
     for i in {1..10}; do
-        wget ${SEALOS_DOWNLOAD_URL_AMD64}
+        wget ${SEALOS_DOWNLOAD_URL_2}
         ret_msg=$?
         if [[ $ret_msg -eq 0 ]]; then
-            echo "$(tput -T xterm setaf 2)download ${sealos_cli_pkg_name_amd64} success$(tput -T xterm sgr0)"
+            echo "$(tput -T xterm setaf 2)download ${sealos_cli_pkg_name_2} success$(tput -T xterm sgr0)"
             break
         fi
         echo "$(tput -T xterm setaf 3)download sealos cli ...$(tput -T xterm sgr0)"
-        rm -rf ${sealos_cli_pkg_name_amd64}*
+        rm -rf ${sealos_cli_pkg_name_2}*
         sleep 1
     done
 
-    # install sealos
+    # install sealos cli
     mkdir -p sealos_cli
-    tar -zxvf ${sealos_cli_pkg_name_amd64} -C ./sealos_cli
+    tar -zxvf ${sealos_cli_pkg_name_2} -C ./sealos_cli
     sudo chmod a+x ./sealos_cli/sealos
     sudo mv ./sealos_cli/sealos /usr/bin/
     sudo sealos version
