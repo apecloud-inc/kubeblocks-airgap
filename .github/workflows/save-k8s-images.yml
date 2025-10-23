@@ -54,10 +54,6 @@ jobs:
     name: save k8s images
     runs-on: ubuntu-22.04
     steps:
-      - name: stop docker
-        run: |
-          sudo systemctl stop docker
-
       - uses: actions/checkout@v4
 
       - name: save k8s images
