@@ -41,7 +41,7 @@ save_k8s_images_package() {
     done
 
     # install sealos cli
-    if [[ -f "${sealos_cli_pkg_name}" ]]; then
+    if [[ -f "${sealos_cli_pkg_name}" && "${K8S_NAME}" != *"-arm64" ]]; then
         mkdir -p ../sealos
         tar -zxvf ${sealos_cli_pkg_name} -C ../sealos
         sudo chmod a+x ../sealos/sealos
@@ -64,7 +64,11 @@ save_k8s_images_package() {
         image_pkg_name="${image_name}.tar"
         echo "pull image $image"
         for i in {1..10}; do
-            podman pull "$image"
+            if [[ "${K8S_NAME}" == *"-arm64" ]]; then
+                podman pull "$image" --platform linux/arm64
+            else
+                podman pull "$image"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $image success$(tput -T xterm sgr0)"
