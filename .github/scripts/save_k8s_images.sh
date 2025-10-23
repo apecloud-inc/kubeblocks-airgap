@@ -43,11 +43,11 @@ save_k8s_images_package() {
     # 3. save images tar
     declare -A images_map=(
         [kubernetes-airgap]="apecloud/kubernetes-airgap:${K8S_VERSION}"
-        [helm]="labring/helm:${HELM_VERSION}"
-        [calico-airgap]="apecloud/calico-airgap:${CALICO_VERSION}"
-        [metrics-server]="labring/metrics-server:${METRICS_SERVER_VERSION}"
-        [coredns]="labring/coredns:${COREDNS_VERSION}"
-        [openebs]="labring/openebs:${OPENEBS_VERSION}"
+        [helm]="labring/helm:${HELM_VERSION_TMP}"
+        [calico-airgap]="apecloud/calico-airgap:${CALICO_VERSION_TMP}"
+        [metrics-server]="labring/metrics-server:${METRICS_SERVER_VERSION_TMP}"
+        [coredns]="labring/coredns:${COREDNS_VERSION_TMP}"
+        [openebs]="labring/openebs:${OPENEBS_VERSION_TMP}"
     )
 
     for image in ${!images_map[@]}; do
@@ -96,36 +96,43 @@ main() {
     local K8S_PACKAGE_NAME="${K8S_NAME}-${K8S_VERSION}.tar.gz"
     local SEALOS_DOWNLOAD_URL="https://github.com/labring/sealos/releases/download/"
 
-    if [[ -z "${SEALOS_VERSION}"  ]]; then
-        SEALOS_VERSION="5.1.0-rc3"
-    elif [[ "${SEALOS_VERSION}" == "v"* ]]; then
-        SEALOS_VERSION="${SEALOS_VERSION/v/}"
-    fi
+    echo SEALOS_VERSION_TMP=${SEALOS_VERSION}
+    echo HELM_VERSION_TMP=${HELM_VERSION}
+    echo METRICS_SERVER_VERSION_TMP=${METRICS_SERVER_VERSION}
+    echo CALICO_VERSION_TMP=${CALICO_VERSION}
+    echo COREDNS_VERSION_TMP=${COREDNS_VERSION}
+    echo OPENEBS_VERSION_TMP=${OPENEBS_VERSION}
 
-    if [[ -z "${HELM_VERSION}"  ]]; then
-        HELM_VERSION="v3.18.4"
-    fi
-
-    if [[ -z "${METRICS_SERVER_VERSION}"  ]]; then
-        METRICS_SERVER_VERSION="v0.7.1"
-    fi
-
-    if [[ -z "${CALICO_VERSION}"  ]]; then
-        CALICO_VERSION="v3.28.0"
-    fi
-
-    if [[ -z "${COREDNS_VERSION}"  ]]; then
-        COREDNS_VERSION="v0.0.1"
-    fi
-
-    if [[ -z "${OPENEBS_VERSION}"  ]]; then
-        OPENEBS_VERSION="v3.10.0"
+    if [[ -z "${SEALOS_VERSION_TMP}"  ]]; then
+        SEALOS_VERSION_TMP="5.1.0-rc3"
+    elif [[ "${SEALOS_VERSION_TMP}" == "v"* ]]; then
+        SEALOS_VERSION_TMP="${SEALOS_VERSION_TMP/v/}"
     fi
 
     if [[ "${K8S_NAME}" == *"-arm64"  ]]; then
-        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION}/sealos_${SEALOS_VERSION}_linux_arm64.tar.gz"
+        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
     else
-        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION}/sealos_${SEALOS_VERSION}_linux_amd64.tar.gz"
+        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+    fi
+
+    if [[ -z "${HELM_VERSION_TMP}"  ]]; then
+        HELM_VERSION_TMP="v3.18.4"
+    fi
+
+    if [[ -z "${METRICS_SERVER_VERSION_TMP}"  ]]; then
+        METRICS_SERVER_VERSION_TMP="v0.7.1"
+    fi
+
+    if [[ -z "${CALICO_VERSION_TMP}"  ]]; then
+        CALICO_VERSION_TMP="v3.28.0"
+    fi
+
+    if [[ -z "${COREDNS_VERSION_TMP}"  ]]; then
+        COREDNS_VERSION_TMP="v0.0.1"
+    fi
+
+    if [[ -z "${OPENEBS_VERSION_TMP}"  ]]; then
+        OPENEBS_VERSION_TMP="v3.10.0"
     fi
 
     save_k8s_images_package
