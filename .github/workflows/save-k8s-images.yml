@@ -55,6 +55,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
 
       - name: save k8s images
         env:
