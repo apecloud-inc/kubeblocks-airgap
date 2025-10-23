@@ -211,17 +211,17 @@ jobs:
           echo 'save_result='$SAVE_RESULT >> $GITHUB_OUTPUT
           echo 'image_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
 
-  send-message:
-    permissions:
-      id-token: write
-      contents: read
-    needs: [ save-result ]
-    if: ${{ always() }}
-    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
-    with:
-      TYPE: "2"
-      CONTENT: "save image ${{ needs.save-result.outputs.image-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
-    secrets: inherit
+#  send-message:
+#    permissions:
+#      id-token: write
+#      contents: read
+#    needs: [ save-result ]
+#    if: ${{ always() }}
+#    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+#    with:
+#      TYPE: "2"
+#      CONTENT: "save image ${{ needs.save-result.outputs.image-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
+#    secrets: inherit
 
   disable-self-runner:
     if: ${{ always() }}
