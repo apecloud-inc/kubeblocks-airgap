@@ -50,7 +50,7 @@ env:
 
 jobs:
   save-k8s-images:
-    name: save k8s images ${{ matrix.arch }}
+    name: save k8s images[${{ matrix.arch }}]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -173,26 +173,26 @@ jobs:
           echo 'save_arm64_result='$SAVE_RESULT >> $GITHUB_OUTPUT
           echo 'image_arm64_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
 
-#  send-amd64-message:
-#    permissions:
-#      id-token: write
-#      contents: read
-#    needs: [ save-result ]
-#    if: ${{ always() }}
-#    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
-#    with:
-#      TYPE: "2"
-#      CONTENT: "save k8s image ${{ needs.save-result.outputs.image-amd64-pkg-name }} ${{ needs.save-result.outputs.save-amd64-result }}"
-#    secrets: inherit
-#
-#  send-arm64-message:
-#    permissions:
-#      id-token: write
-#      contents: read
-#    needs: [ save-result ]
-#    if: ${{ always() }}
-#    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
-#    with:
-#      TYPE: "2"
-#      CONTENT: "save k8s image ${{ needs.save-result.outputs.image-arm64-pkg-name }} ${{ needs.save-result.outputs.save-arm64-result }}"
-#    secrets: inherit
+  send-amd64-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "save k8s image ${{ needs.save-result.outputs.image-amd64-pkg-name }} ${{ needs.save-result.outputs.save-amd64-result }}"
+    secrets: inherit
+
+  send-arm64-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "save k8s image ${{ needs.save-result.outputs.image-arm64-pkg-name }} ${{ needs.save-result.outputs.save-arm64-result }}"
+    secrets: inherit

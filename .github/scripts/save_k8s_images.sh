@@ -73,7 +73,7 @@ save_k8s_images_package() {
 
         # check image pulled
         echo "check image pulled"
-        for i in {1..60}; do
+        for i in {1..10}; do
             check_image=$(sealos images | awk '{print $1":"$2}' | (grep "${image}" || true))
             if [[ -n "${check_image}" ]]; then
                 echo "$(tput -T xterm setaf 2)check image $image success$(tput -T xterm sgr0)"
