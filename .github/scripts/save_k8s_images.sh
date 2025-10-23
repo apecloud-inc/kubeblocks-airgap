@@ -56,10 +56,10 @@ save_k8s_images_package() {
         echo "pull image $image"
         for i in {1..10}; do
             if [[ "${K8S_NAME}" == *"-arm64" ]]; then
-                echo "podman pull --platform linux/arm64 $image
+                echo "podman pull --platform linux/arm64 $image"
                 podman pull --platform linux/arm64 "$image"
             else
-                echo "podman pull $image
+                echo "podman pull $image"
                 podman pull "$image"
             fi
             ret_msg=$?
