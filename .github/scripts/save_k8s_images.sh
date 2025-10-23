@@ -120,6 +120,29 @@ main() {
     else
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
+    SEALOS_DOWNLOAD_URL_AMD64="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+
+    # download sealos cli package
+    sealos_cli_pkg_name_amd64="sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+    echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_AMD64}"
+    for i in {1..10}; do
+        wget ${SEALOS_DOWNLOAD_URL_AMD64}
+        ret_msg=$?
+        if [[ $ret_msg -eq 0 ]]; then
+            echo "$(tput -T xterm setaf 2)download ${sealos_cli_pkg_name_amd64} success$(tput -T xterm sgr0)"
+            break
+        fi
+        echo "$(tput -T xterm setaf 3)download sealos cli ...$(tput -T xterm sgr0)"
+        rm -rf ${sealos_cli_pkg_name_amd64}*
+        sleep 1
+    done
+
+    # install sealos
+    mkdir -p sealos_cli
+    tar -zxvf ${sealos_cli_pkg_name_amd64} -C ./sealos_cli
+    sudo chmod a+x ./sealos_cli/sealos
+    sudo mv ./sealos_cli/sealos /usr/bin/
+    sudo sealos version
 
     if [[ -z "${HELM_VERSION_TMP}" ]]; then
         HELM_VERSION_TMP="v3.18.4"
