@@ -1,4 +1,4 @@
-name: Save K8S Images
+name: Save K8s Images
 
 on:
   workflow_dispatch:
