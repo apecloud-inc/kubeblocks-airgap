@@ -50,7 +50,9 @@ save_k8s_images_package() {
         [openebs]="labring/openebs:${OPENEBS_VERSION_TMP}"
     )
 
-    for image in ${!images_map[@]}; do
+    for image_name in ${!images_map[@]}; do
+        image=${images_map[$image_name]}
+        image_pkg_name="${image_name}.tar"
         echo "pull image $image"
         for i in {1..10}; do
             sealos pull "$image"
@@ -59,19 +61,19 @@ save_k8s_images_package() {
                 echo "$(tput -T xterm setaf 2)pull image $image success$(tput -T xterm sgr0)"
                 break
             fi
-            echo "$(tput -T xterm setaf 3)pull image $image ...$(tput -T xterm sgr0)"
+            echo "$(tput -T xterm setaf 3)pull image $image_name ...$(tput -T xterm sgr0)"
             sleep 1
         done
 
-        echo "save image ${image}.tar"
+        echo "save image ${image_pkg_name}"
         for i in {1..10}; do
-            sealos save ${images_map[$image]} -o ${image}.tar
+            sealos save ${image} -o ${image_pkg_name}
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
-                echo "$(tput -T xterm setaf 2)save ${K8S_PACKAGE_NAME} success$(tput -T xterm sgr0)"
+                echo "$(tput -T xterm setaf 2)save ${image_pkg_name} success$(tput -T xterm sgr0)"
                 break
             fi
-            echo "$(tput -T xterm setaf 3)save ${image}.tar ...$(tput -T xterm sgr0)"
+            echo "$(tput -T xterm setaf 3)save package ${image_name} ...$(tput -T xterm sgr0)"
             sleep 1
         done
     done
@@ -80,7 +82,7 @@ save_k8s_images_package() {
     cd ..
     ls kube-airgap
     for i in {1..10}; do
-        tar -cvzf ${K8S_PACKAGE_NAME} kube-airgap
+        tar -czvf ${K8S_PACKAGE_NAME} kube-airgap
         ret_msg=$?
         if [[ $ret_msg -eq 0 ]]; then
             echo "$(tput -T xterm setaf 2)save ${K8S_PACKAGE_NAME} success$(tput -T xterm sgr0)"
