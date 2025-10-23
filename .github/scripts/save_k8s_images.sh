@@ -41,7 +41,7 @@ save_k8s_images_package() {
     done
 
     # install sealos cli
-    if [[ -f "${sealos_cli_pkg_name}" ]]; then
+    if [[ -f "${sealos_cli_pkg_name}" && "${K8S_NAME}" != *"-arm64" ]]; then
         mkdir -p ../sealos
         tar -zxvf ${sealos_cli_pkg_name} -C ../sealos
         sudo chmod a+x ../sealos/sealos
@@ -113,35 +113,58 @@ main() {
     local COREDNS_VERSION_TMP=${COREDNS_VERSION}
     local OPENEBS_VERSION_TMP=${OPENEBS_VERSION}
 
-    if [[ -z "${SEALOS_VERSION_TMP}"  ]]; then
+    if [[ -z "${SEALOS_VERSION_TMP}" ]]; then
         SEALOS_VERSION_TMP="5.1.0-rc3"
     elif [[ "${SEALOS_VERSION_TMP}" == "v"* ]]; then
         SEALOS_VERSION_TMP="${SEALOS_VERSION_TMP/v/}"
     fi
 
-    if [[ "${K8S_NAME}" == *"-arm64"  ]]; then
+    if [[ "${K8S_NAME}" == *"-arm64" ]]; then
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
+
+        # download sealos cli package
+        sealos_cli_pkg_name_2="sealos_5.0.0_linux_arm64.tar.gz"
+        SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL}/v5.0.0/${sealos_cli_pkg_name_2}"
+        echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_2}"
+        for i in {1..10}; do
+            wget ${SEALOS_DOWNLOAD_URL_2}
+            ret_msg=$?
+            if [[ $ret_msg -eq 0 ]]; then
+                echo "$(tput -T xterm setaf 2)download ${sealos_cli_pkg_name_2} success$(tput -T xterm sgr0)"
+                break
+            fi
+            echo "$(tput -T xterm setaf 3)download sealos cli ...$(tput -T xterm sgr0)"
+            rm -rf ${sealos_cli_pkg_name_2}*
+            sleep 1
+        done
+
+        # install sealos
+        mkdir -p sealos_cli
+        tar -zxvf ${sealos_cli_pkg_name_2} -C ./sealos_cli
+        sudo chmod a+x ./sealos_cli/sealos
+        sudo mv ./sealos_cli/sealos /usr/bin/
+        sudo sealos version
     else
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
 
-    if [[ -z "${HELM_VERSION_TMP}"  ]]; then
+    if [[ -z "${HELM_VERSION_TMP}" ]]; then
         HELM_VERSION_TMP="v3.18.4"
     fi
 
-    if [[ -z "${METRICS_SERVER_VERSION_TMP}"  ]]; then
+    if [[ -z "${METRICS_SERVER_VERSION_TMP}" ]]; then
         METRICS_SERVER_VERSION_TMP="v0.7.1"
     fi
 
-    if [[ -z "${CALICO_VERSION_TMP}"  ]]; then
+    if [[ -z "${CALICO_VERSION_TMP}" ]]; then
         CALICO_VERSION_TMP="v3.28.0"
     fi
 
-    if [[ -z "${COREDNS_VERSION_TMP}"  ]]; then
+    if [[ -z "${COREDNS_VERSION_TMP}" ]]; then
         COREDNS_VERSION_TMP="v0.0.1"
     fi
 
-    if [[ -z "${OPENEBS_VERSION_TMP}"  ]]; then
+    if [[ -z "${OPENEBS_VERSION_TMP}" ]]; then
         OPENEBS_VERSION_TMP="v3.10.0"
     fi
 
