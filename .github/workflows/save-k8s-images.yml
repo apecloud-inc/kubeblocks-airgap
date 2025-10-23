@@ -50,7 +50,7 @@ env:
 
 jobs:
   save-k8s-images:
-    name: save k8s images ${{ matrix.arch }}
+    name: save k8s images[${{ matrix.arch }}]
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
