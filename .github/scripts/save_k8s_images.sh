@@ -146,7 +146,7 @@ main() {
         sudo mv ./sealos_cli/sealos /usr/bin/
         sudo sealos version
     else
-        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
 
     if [[ -z "${HELM_VERSION_TMP}" ]]; then
