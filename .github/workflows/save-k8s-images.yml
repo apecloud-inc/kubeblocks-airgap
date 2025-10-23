@@ -55,11 +55,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: image=moby/buildkit:master
-
       - name: save k8s images
         env:
           k8s_name: ${{ env.K8S_NAME }}
