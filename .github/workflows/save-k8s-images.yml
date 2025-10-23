@@ -54,7 +54,30 @@ jobs:
     name: save k8s images
     runs-on: ubuntu-22.04
     steps:
+      - name: Free disk space
+        run: |
+          echo "Free space first:"
+          df -h
+          
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
+          
+          sudo mkdir -p /mnt/new-storage
+          sudo touch /etc/docker/daemon.json
+          sudo tee /etc/docker/daemon.json <<EOF
+          {
+            "data-root": "/mnt/new-storage"
+          }
+          EOF
+          sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
+
       - uses: actions/checkout@v4
+
       - name: save k8s images
         env:
           k8s_name: ${{ env.K8S_NAME }}
