@@ -109,9 +109,9 @@ main() {
     fi
 
     if [[ "${K8S_NAME}" == *"-arm64"  ]]; then
-        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
     else
-        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
 
     if [[ -z "${HELM_VERSION_TMP}"  ]]; then
