@@ -65,9 +65,9 @@ save_k8s_images_package() {
         echo "pull image $image"
         for i in {1..10}; do
             if [[ "${K8S_NAME}" == *"-arm64" ]]; then
-                podman pull "$image" --platform linux/arm64
+                sealos pull "$image" --platform linux/arm64
             else
-                podman pull "$image"
+                sealos pull "$image"
             fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
@@ -128,8 +128,8 @@ main() {
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
 
         # download sealos cli package
-        sealos_cli_pkg_name_2="sealos_5.0.0_linux_arm64.tar.gz"
-        SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL_HEAD}/v5.0.0/${sealos_cli_pkg_name_2}"
+        sealos_cli_pkg_name_2="sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+        SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/${sealos_cli_pkg_name_2}"
         echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_2}"
         for i in {1..10}; do
             wget ${SEALOS_DOWNLOAD_URL_2}
