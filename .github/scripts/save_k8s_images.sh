@@ -40,6 +40,15 @@ save_k8s_images_package() {
         sleep 1
     done
 
+    # install sealos cli
+    if [[ -f "${sealos_cli_pkg_name}" ]]; then
+        mkdir -p ../sealos
+        tar -zxvf ${sealos_cli_pkg_name} -C ../sealos
+        sudo chmod a+x ../sealos/sealos
+        sudo mv ../sealos/sealos /usr/bin/
+        sudo sealos version
+    fi
+
     # 3. save images tar
     declare -A images_map=(
         [kubernetes-airgap]="docker.io/apecloud/kubernetes-airgap:${K8S_VERSION}"

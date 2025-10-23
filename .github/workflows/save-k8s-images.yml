@@ -55,8 +55,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - name: Download buildah and sealos
-        run: .github/scripts/download.sh
 
       - name: save k8s images
         env:
