@@ -40,15 +40,6 @@ save_k8s_images_package() {
         sleep 1
     done
 
-    # install sealos cli
-    if [[ -f "${sealos_cli_pkg_name}" && "${K8S_NAME}" != *"-arm64" ]]; then
-        mkdir -p ../sealos
-        tar -zxvf ${sealos_cli_pkg_name} -C ../sealos
-        sudo chmod a+x ../sealos/sealos
-        sudo mv ../sealos/sealos /usr/bin/
-        sudo sealos version
-    fi
-
     # 3. save images tar
     declare -A images_map=(
         [kubernetes-airgap]="docker.io/apecloud/kubernetes-airgap:${K8S_VERSION}"
@@ -77,7 +68,7 @@ save_k8s_images_package() {
             echo "$(tput -T xterm setaf 3)pull image $image_name ...$(tput -T xterm sgr0)"
             sleep 1
         done
-        sealos images
+
         echo "save image ${image_pkg_name}"
         for i in {1..10}; do
             sealos save -o ${image_pkg_name} ${image}
@@ -126,29 +117,6 @@ main() {
 
     if [[ "${K8S_NAME}" == *"-arm64" ]]; then
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
-
-        # download sealos cli package
-        sealos_cli_pkg_name_2="sealos_5.0.0_linux_arm64.tar.gz"
-        SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL_HEAD}/v5.0.0/${sealos_cli_pkg_name_2}"
-        echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_2}"
-        for i in {1..10}; do
-            wget ${SEALOS_DOWNLOAD_URL_2}
-            ret_msg=$?
-            if [[ $ret_msg -eq 0 ]]; then
-                echo "$(tput -T xterm setaf 2)download ${sealos_cli_pkg_name_2} success$(tput -T xterm sgr0)"
-                break
-            fi
-            echo "$(tput -T xterm setaf 3)download sealos cli ...$(tput -T xterm sgr0)"
-            rm -rf ${sealos_cli_pkg_name_2}*
-            sleep 1
-        done
-
-        # install sealos
-        mkdir -p sealos_cli
-        tar -zxvf ${sealos_cli_pkg_name_2} -C ./sealos_cli
-        sudo chmod a+x ./sealos_cli/sealos
-        sudo mv ./sealos_cli/sealos /usr/bin/
-        sudo sealos version
     else
         SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi

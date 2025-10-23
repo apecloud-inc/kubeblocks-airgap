@@ -61,6 +61,8 @@ jobs:
       arm64-result: ${{ steps.upload_to_oss.outputs.arm64-result }}
     steps:
       - uses: actions/checkout@v4
+      - name: Download buildah and sealos
+        run: .github/scripts/download.sh
 
       - name: set k8s name
         run: |
