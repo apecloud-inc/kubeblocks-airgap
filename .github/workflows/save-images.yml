@@ -310,7 +310,7 @@ jobs:
           if [[ "${RELEASE_VERSION}" != "v"* ]]; then
               RELEASE_VERSION="v${RELEASE_VERSION}"
           fi
-          if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -z "${APP_VERSION}" ]]; then
+          if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "${RELEASE_VERSION}" ]]; then
               cmd=$cmd"--version \"${RELEASE_VERSION}\" "
           fi
           
