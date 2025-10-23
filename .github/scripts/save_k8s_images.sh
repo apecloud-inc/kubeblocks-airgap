@@ -42,15 +42,17 @@ save_k8s_images_package() {
 
     # 3. save images tar
     declare -A images_map=(
-        [kubernetes-airgap]="apecloud/kubernetes-airgap:${K8S_VERSION}"
-        [helm]="labring/helm:${HELM_VERSION_TMP}"
-        [calico-airgap]="apecloud/calico-airgap:${CALICO_VERSION_TMP}"
-        [metrics-server]="labring/metrics-server:${METRICS_SERVER_VERSION_TMP}"
-        [coredns]="labring/coredns:${COREDNS_VERSION_TMP}"
-        [openebs]="labring/openebs:${OPENEBS_VERSION_TMP}"
+        [kubernetes-airgap]="docker.io/apecloud/kubernetes-airgap:${K8S_VERSION}"
+        [helm]="docker.io/labring/helm:${HELM_VERSION_TMP}"
+        [calico-airgap]="docker.io/apecloud/calico-airgap:${CALICO_VERSION_TMP}"
+        [metrics-server]="docker.io/labring/metrics-server:${METRICS_SERVER_VERSION_TMP}"
+        [coredns]="docker.io/labring/coredns:${COREDNS_VERSION_TMP}"
+        [openebs]="docker.io/labring/openebs:${OPENEBS_VERSION_TMP}"
     )
 
-    for image in ${!images_map[@]}; do
+    for image_name in ${!images_map[@]}; do
+        image=${images_map[$image_name]}
+        image_pkg_name="${image_name}.tar"
         echo "pull image $image"
         for i in {1..10}; do
             sealos pull "$image"
@@ -59,19 +61,19 @@ save_k8s_images_package() {
                 echo "$(tput -T xterm setaf 2)pull image $image success$(tput -T xterm sgr0)"
                 break
             fi
-            echo "$(tput -T xterm setaf 3)pull image $image ...$(tput -T xterm sgr0)"
+            echo "$(tput -T xterm setaf 3)pull image $image_name ...$(tput -T xterm sgr0)"
             sleep 1
         done
 
-        echo "save image ${image}.tar"
+        echo "save image ${image_pkg_name}"
         for i in {1..10}; do
-            sealos save ${images_map[$image]} -o ${image}.tar
+            sealos save ${image} -o ${image_pkg_name}
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
-                echo "$(tput -T xterm setaf 2)save ${K8S_PACKAGE_NAME} success$(tput -T xterm sgr0)"
+                echo "$(tput -T xterm setaf 2)save ${image_pkg_name} success$(tput -T xterm sgr0)"
                 break
             fi
-            echo "$(tput -T xterm setaf 3)save ${image}.tar ...$(tput -T xterm sgr0)"
+            echo "$(tput -T xterm setaf 3)save package ${image_name} ...$(tput -T xterm sgr0)"
             sleep 1
         done
     done
@@ -80,7 +82,7 @@ save_k8s_images_package() {
     cd ..
     ls kube-airgap
     for i in {1..10}; do
-        tar -cvzf ${K8S_PACKAGE_NAME} kube-airgap
+        tar -czvf ${K8S_PACKAGE_NAME} kube-airgap
         ret_msg=$?
         if [[ $ret_msg -eq 0 ]]; then
             echo "$(tput -T xterm setaf 2)save ${K8S_PACKAGE_NAME} success$(tput -T xterm sgr0)"
@@ -95,13 +97,12 @@ save_k8s_images_package() {
 main() {
     local K8S_PACKAGE_NAME="${K8S_NAME}-${K8S_VERSION}.tar.gz"
     local SEALOS_DOWNLOAD_URL="https://github.com/labring/sealos/releases/download/"
-
-    echo SEALOS_VERSION_TMP=${SEALOS_VERSION}
-    echo HELM_VERSION_TMP=${HELM_VERSION}
-    echo METRICS_SERVER_VERSION_TMP=${METRICS_SERVER_VERSION}
-    echo CALICO_VERSION_TMP=${CALICO_VERSION}
-    echo COREDNS_VERSION_TMP=${COREDNS_VERSION}
-    echo OPENEBS_VERSION_TMP=${OPENEBS_VERSION}
+    local SEALOS_VERSION_TMP=${SEALOS_VERSION}
+    local HELM_VERSION_TMP=${HELM_VERSION}
+    local METRICS_SERVER_VERSION_TMP=${METRICS_SERVER_VERSION}
+    local CALICO_VERSION_TMP=${CALICO_VERSION}
+    local COREDNS_VERSION_TMP=${COREDNS_VERSION}
+    local OPENEBS_VERSION_TMP=${OPENEBS_VERSION}
 
     if [[ -z "${SEALOS_VERSION_TMP}"  ]]; then
         SEALOS_VERSION_TMP="5.1.0-rc3"
@@ -110,9 +111,9 @@ main() {
     fi
 
     if [[ "${K8S_NAME}" == *"-arm64"  ]]; then
-        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
     else
-        SEALOS_DOWNLOAD_URL="v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
 
     if [[ -z "${HELM_VERSION_TMP}"  ]]; then
