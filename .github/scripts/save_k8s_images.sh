@@ -64,7 +64,11 @@ save_k8s_images_package() {
         image_pkg_name="${image_name}.tar"
         echo "pull image $image"
         for i in {1..10}; do
-            podman pull "$image"
+            if [[ "${K8S_NAME}" == *"-arm64" ]]; then
+                sealos pull "$image"
+            else
+                podman pull "$image"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $image success$(tput -T xterm sgr0)"
