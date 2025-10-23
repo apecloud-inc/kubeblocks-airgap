@@ -55,7 +55,11 @@ save_k8s_images_package() {
         image_pkg_name="${image_name}.tar"
         echo "pull image $image"
         for i in {1..10}; do
-            sealos pull "$image"
+            if [[ "${K8S_NAME}" == *"-arm64" ]]; then
+                podman pull --platform linux/arm64 "$image"
+            else
+                podman pull "$image"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $image success$(tput -T xterm sgr0)"
@@ -67,7 +71,7 @@ save_k8s_images_package() {
 
         echo "save image ${image_pkg_name}"
         for i in {1..10}; do
-            sealos save ${image} -o ${image_pkg_name}
+            sealos save -o ${image_pkg_name} ${image}
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)save ${image_pkg_name} success$(tput -T xterm sgr0)"
@@ -96,7 +100,8 @@ save_k8s_images_package() {
 
 main() {
     local K8S_PACKAGE_NAME="${K8S_NAME}-${K8S_VERSION}.tar.gz"
-    local SEALOS_DOWNLOAD_URL="https://github.com/labring/sealos/releases/download/"
+    local SEALOS_DOWNLOAD_URL_HEAD="https://github.com/labring/sealos/releases/download"
+    local SEALOS_DOWNLOAD_URL=""
     local SEALOS_VERSION_TMP=${SEALOS_VERSION}
     local HELM_VERSION_TMP=${HELM_VERSION}
     local METRICS_SERVER_VERSION_TMP=${METRICS_SERVER_VERSION}
@@ -104,35 +109,35 @@ main() {
     local COREDNS_VERSION_TMP=${COREDNS_VERSION}
     local OPENEBS_VERSION_TMP=${OPENEBS_VERSION}
 
-    if [[ -z "${SEALOS_VERSION_TMP}"  ]]; then
+    if [[ -z "${SEALOS_VERSION_TMP}" ]]; then
         SEALOS_VERSION_TMP="5.1.0-rc3"
     elif [[ "${SEALOS_VERSION_TMP}" == "v"* ]]; then
         SEALOS_VERSION_TMP="${SEALOS_VERSION_TMP/v/}"
     fi
 
-    if [[ "${K8S_NAME}" == *"-arm64"  ]]; then
-        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
+    if [[ "${K8S_NAME}" == *"-arm64" ]]; then
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
     else
-        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_amd64.tar.gz"
     fi
 
-    if [[ -z "${HELM_VERSION_TMP}"  ]]; then
+    if [[ -z "${HELM_VERSION_TMP}" ]]; then
         HELM_VERSION_TMP="v3.18.4"
     fi
 
-    if [[ -z "${METRICS_SERVER_VERSION_TMP}"  ]]; then
+    if [[ -z "${METRICS_SERVER_VERSION_TMP}" ]]; then
         METRICS_SERVER_VERSION_TMP="v0.7.1"
     fi
 
-    if [[ -z "${CALICO_VERSION_TMP}"  ]]; then
+    if [[ -z "${CALICO_VERSION_TMP}" ]]; then
         CALICO_VERSION_TMP="v3.28.0"
     fi
 
-    if [[ -z "${COREDNS_VERSION_TMP}"  ]]; then
+    if [[ -z "${COREDNS_VERSION_TMP}" ]]; then
         COREDNS_VERSION_TMP="v0.0.1"
     fi
 
-    if [[ -z "${OPENEBS_VERSION_TMP}"  ]]; then
+    if [[ -z "${OPENEBS_VERSION_TMP}" ]]; then
         OPENEBS_VERSION_TMP="v3.10.0"
     fi
 
