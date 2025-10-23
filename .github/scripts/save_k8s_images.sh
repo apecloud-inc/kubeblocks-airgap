@@ -56,9 +56,11 @@ save_k8s_images_package() {
         echo "pull image $image"
         for i in {1..10}; do
             if [[ "${K8S_NAME}" == *"-arm64" ]]; then
-                podman pull --platform linux/arm64 "$image"
+                echo "sealos pull --platform linux/arm64 $image"
+                sealos pull --platform linux/arm64 $image
             else
-                podman pull "$image"
+                echo "sealos pull $image"
+                sealos pull $image
             fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
@@ -66,6 +68,18 @@ save_k8s_images_package() {
                 break
             fi
             echo "$(tput -T xterm setaf 3)pull image $image_name ...$(tput -T xterm sgr0)"
+            sleep 1
+        done
+
+        # check image pulled
+        echo "check image pulled"
+        for i in {1..60}; do
+            check_image=$(sealos images | awk '{print $1":"$2}' | (grep "${image}" || true))
+            if [[ -n "${check_image}" ]]; then
+                echo "$(tput -T xterm setaf 2)check image $image success$(tput -T xterm sgr0)"
+                break
+            fi
+            echo "$(tput -T xterm setaf 3)check image $image_name ...$(tput -T xterm sgr0)"
             sleep 1
         done
 
