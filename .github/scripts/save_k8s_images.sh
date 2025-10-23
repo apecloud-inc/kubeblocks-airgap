@@ -105,7 +105,8 @@ save_k8s_images_package() {
 
 main() {
     local K8S_PACKAGE_NAME="${K8S_NAME}-${K8S_VERSION}.tar.gz"
-    local SEALOS_DOWNLOAD_URL="https://github.com/labring/sealos/releases/download/"
+    local SEALOS_DOWNLOAD_URL_HEAD="https://github.com/labring/sealos/releases/download"
+    local SEALOS_DOWNLOAD_URL=""
     local SEALOS_VERSION_TMP=${SEALOS_VERSION}
     local HELM_VERSION_TMP=${HELM_VERSION}
     local METRICS_SERVER_VERSION_TMP=${METRICS_SERVER_VERSION}
@@ -120,11 +121,11 @@ main() {
     fi
 
     if [[ "${K8S_NAME}" == *"-arm64" ]]; then
-        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
+        SEALOS_DOWNLOAD_URL="${SEALOS_DOWNLOAD_URL_HEAD}/v${SEALOS_VERSION_TMP}/sealos_${SEALOS_VERSION_TMP}_linux_arm64.tar.gz"
 
         # download sealos cli package
         sealos_cli_pkg_name_2="sealos_5.0.0_linux_arm64.tar.gz"
-        SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL}/v5.0.0/${sealos_cli_pkg_name_2}"
+        SEALOS_DOWNLOAD_URL_2="${SEALOS_DOWNLOAD_URL_HEAD}/v5.0.0/${sealos_cli_pkg_name_2}"
         echo "download sealos cli: ${SEALOS_DOWNLOAD_URL_2}"
         for i in {1..10}; do
             wget ${SEALOS_DOWNLOAD_URL_2}
