@@ -39,7 +39,7 @@ on:
         default: 'v3.10.0'
 
 
-run-name: save Arm64 K8s:${{ inputs.K8S_VERSION }} ${{ inputs.SEALOS_VERSION }}
+run-name: save Arm64 K8s:${{ inputs.K8S_VERSION }} sealos:${{ inputs.SEALOS_VERSION }}
 
 env:
   K8S_NAME: "apecloud-kube-airgap-arm64"
