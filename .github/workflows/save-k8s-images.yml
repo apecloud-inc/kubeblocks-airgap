@@ -39,7 +39,7 @@ on:
         default: 'v3.10.0'
 
 
-run-name: save K8s:${{ inputs.K8S_VERSION }} sealos:${{ inputs.SEALOS_VERSION }}
+run-name: save k8s:${{ inputs.K8S_VERSION }} sealos:${{ inputs.SEALOS_VERSION }}
 
 env:
   GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -61,8 +61,6 @@ jobs:
       arm64-result: ${{ steps.upload_to_oss.outputs.arm64-result }}
     steps:
       - uses: actions/checkout@v4
-      - name: Download buildah and sealos
-        run: .github/scripts/download.sh
 
       - name: set k8s name
         run: |
@@ -175,7 +173,7 @@ jobs:
           echo 'save_arm64_result='$SAVE_RESULT >> $GITHUB_OUTPUT
           echo 'image_arm64_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
 
-  send0-amd64-message:
+  send-amd64-message:
     permissions:
       id-token: write
       contents: read
