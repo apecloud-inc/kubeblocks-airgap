@@ -64,10 +64,10 @@ save_k8s_images_package() {
             echo "$(tput -T xterm setaf 3)pull image $image_name ...$(tput -T xterm sgr0)"
             sleep 1
         done
-
+        sealos images
         echo "save image ${image_pkg_name}"
         for i in {1..10}; do
-            sealos save ${image} -o ${image_pkg_name}
+            sealos save -o ${image_pkg_name} ${image}
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)save ${image_pkg_name} success$(tput -T xterm sgr0)"
