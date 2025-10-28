@@ -245,13 +245,16 @@ save_images_package() {
             if [[ -z "$image" || "$image" == "#"* ]]; then
                 continue
             fi
-            echo "pull image $image"
+
+            if [[ "${PLATFORM}" == *"arm64"* ]]; then
+                echo "docker pull --platform linux/arm64 $image"
+            else
+                echo "docker pull $image"
+            fi
             for j in {1..10}; do
                 if [[ "${PLATFORM}" == *"arm64"* ]]; then
-                    echo "docker pull --platform linux/arm64 $image"
                     docker pull --platform linux/arm64 "$image"
                 else
-                    echo "docker pull $image"
                     docker pull "$image"
                 fi
                 ret_msg=$?
