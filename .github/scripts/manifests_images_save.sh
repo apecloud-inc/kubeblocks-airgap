@@ -15,13 +15,13 @@ pull_chart_images() {
     images_file_tmp=""
     for image in $(echo "$chart_images_tmp"); do
         repository="${SRC_REGISTRY}/${image}"
-        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+        if [[ "${ARM64_IMAGE}" == "true" ]]; then
             echo "docker pull --platform linux/arm64 $repository"
         else
             echo "docker pull $repository"
         fi
         for i in {1..10}; do
-            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            if [[ "${ARM64_IMAGE}" == "true" ]]; then
                 docker pull --platform linux/arm64 "$repository"
             else
                 docker pull "$repository"
