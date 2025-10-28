@@ -215,7 +215,7 @@ jobs:
           upload_ret=0
           for i in {1..10}; do
               echo "ossutil cp ${IMAGE_PKG_NAME_ARM64} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_ARM64} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64}  --read-timeout=420 --retry-times=5
+              ossutil cp -rf ./${IMAGE_PKG_NAME_ARM64} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64}
               upload_ret=$?
                 
               if [[ -d "ossutil_output" ]]; then
@@ -257,7 +257,7 @@ jobs:
               fi
           
               echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}  --read-timeout=420 --retry-times=5
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}
               upload_ret=$?
           
               if [[ -d "ossutil_output" ]]; then
