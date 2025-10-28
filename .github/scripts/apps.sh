@@ -29,6 +29,10 @@ if [[ -d "applications/$APP_NAME/latest" ]] && ! [[ -d "applications/$APP_NAME/$
     cp -af "applications/$APP_NAME/latest" "applications/$APP_NAME/$APP_VERSION"
 fi
 
+if [[ "${APP_NAME}" == "kubernetes" ]]; then
+    sed -i "s/^FROM labring/kubernetes:.*/FROM labring/kubernetes:${APP_VERSION}/" applications/${APP_NAME}/${APP_VERSION}/Kubefile
+fi
+
 cp -rf "applications/$APP_NAME/$APP_VERSION"/* $buildDir
 
 cd $buildDir && {
