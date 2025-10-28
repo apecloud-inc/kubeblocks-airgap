@@ -42,26 +42,33 @@ env:
 
 jobs:
   save-images:
-    runs-on: [ self-hosted, arm-yq-runner ]
+    runs-on: ubuntu-22.04
     outputs:
       release-version: ${{ steps.manifests-images-save.outputs.release-version }}
       image-name: ${{ steps.get-version.outputs.image-name }}
-      runner-name: ${{ steps.get_runner_name.outputs.runner-name }}
     steps:
-      - name: setup ossutil
-        continue-on-error: true
+      - name: Free disk space
         run: |
-          sudo apt-get update
-          sudo apt-get install unzip
-          sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
-
-      - name: ossutil config
-        env:
-          OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
-          OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
-        run: |
-          ossutil config --access-key-id="${{ env.OSS_KEY_ID }}" --access-key-secret="${{ env.OSS_KEY_SECRET }}" --endpoint="${{ env.OSS_ENDPOINT }}"
-
+          echo "Free space first:"
+          df -h
+          
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
+          
+          sudo mkdir -p /mnt/new-storage
+          sudo touch /etc/docker/daemon.json
+          sudo tee /etc/docker/daemon.json <<EOF
+          {
+            "data-root": "/mnt/new-storage"
+          }
+          EOF
+          sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
+      
       - name: get version
         id: get-version
         run: |
@@ -101,8 +108,17 @@ jobs:
           echo "save addons manifests images"
           bash .github/scripts/manifests_addons_images_save.sh "${MANIFESTS_FILE}" "${IMAGE_NAME}" "true"
           
+          echo "Free space:"
+          df -h
+          
           RELEASE_VERSION=$(yq e "."${IMAGE_NAME}"[0].version" ${MANIFESTS_FILE})
           echo "release-version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
 
       - name: get images size
         run: |
@@ -117,7 +133,7 @@ jobs:
           upload_ret=0
           for i in {1..10}; do
               echo "ossutil cp ${IMAGE_PKG_NAME} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME}  --read-timeout=420 --retry-times=5
+              ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME}
               upload_ret=$?
           
               if [[ -d "ossutil_output" ]]; then
@@ -159,7 +175,7 @@ jobs:
               fi
           
               echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}  --read-timeout=420 --retry-times=5
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}
               upload_ret=$?
           
               if [[ -d "ossutil_output" ]]; then
@@ -183,20 +199,6 @@ jobs:
           if [[ $upload_ret -eq 0 ]]; then
               echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
           fi
-
-      - name: get self runner name
-        id: get_runner_name
-        if: ${{ always() }}
-        run: |
-          echo runner-name=${RUNNER_NAME} >> $GITHUB_OUTPUT
-
-  delete-self-runner:
-    if: ${{ always() }}
-    needs: [ save-images ]
-    uses: apecloud-inc/apecloud-cd/.github/workflows/delete-self-runner.yml@v0.5.0
-    with:
-      RUNNER_NAME: "${{ needs.save-images.outputs.runner-name }}"
-    secrets: inherit
 
   save-result:
     runs-on: ubuntu-latest

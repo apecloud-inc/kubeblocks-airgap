@@ -52,20 +52,9 @@ jobs:
       IS_ADDON: "false"
     secrets: inherit
 
-  enable-self-runner:
-    if: ${{ inputs.ENABLE_ARM64 == 'true' }}
-    needs: [ check-manifests-image, check-manifests-charts-image ]
-    uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
-    with:
-      CLOUD_PROVIDER: "eks"
-      GITHUB_REPO: "apecloud-inc/kubeblocks-airgap"
-      RUNNER_LABEL: "kubeblocks-airgap-yq-arm-runner"
-      RUNNER_REPLICAS: 1
-    secrets: inherit
-
   save-cloud-images-arm:
     if: ${{ inputs.ENABLE_ARM64 == 'true' }}
-    needs: [ enable-self-runner ]
+    needs: [ check-manifests-image, check-manifests-charts-image ]
     uses: ./.github/workflows/manifests-images-save-arm64.yml
     with:
       RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
@@ -146,17 +135,6 @@ jobs:
     with:
       RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
       ENABLE_ADDONS: "${{ matrix.addon-name }}"
-    secrets: inherit
-
-  disable-self-runner:
-    if: ${{ always() }}
-    needs: [ save-addon-images-arm64 ]
-    uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
-    with:
-      CLOUD_PROVIDER: "eks"
-      GITHUB_REPO: "apecloud-inc/kubeblocks-airgap"
-      RUNNER_LABEL: "kubeblocks-airgap-yq-arm-runner"
-      ENABLE: "disable"
     secrets: inherit
 
   send-message:
