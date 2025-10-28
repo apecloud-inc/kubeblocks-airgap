@@ -21,13 +21,13 @@ pull_chart_images() {
         fi
 
         repository="${SRC_REGISTRY}/${image}"
-        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+        if [[ "${ARM64_IMAGE}" == "true" ]]; then
             echo "docker pull --platform linux/arm64 $repository"
         else
             echo "docker pull $repository"
         fi
         for i in {1..10}; do
-            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            if [[ "${ARM64_IMAGE}" == "true" ]]; then
                 docker pull --platform linux/arm64 "$repository"
             else
                 docker pull "$repository"
@@ -44,13 +44,13 @@ pull_chart_images() {
 
     if [[ "${ARM64_IMAGE}" == "true" && "$image_name_tmp" == "damengdb" ]]; then
         repository="${SRC_REGISTRY}/apecloud/dm:8.1.4-6-20241231"
-        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+        if [[ "${ARM64_IMAGE}" == "true" ]]; then
             echo "docker pull --platform linux/arm64 $repository"
         else
             echo "docker pull $repository"
         fi
         for i in {1..10}; do
-            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            if [[ "${ARM64_IMAGE}" == "true" ]]; then
                 docker pull --platform linux/arm64 "$repository"
             else
                 docker pull "$repository"
@@ -65,13 +65,13 @@ pull_chart_images() {
         SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
 
         repository="${SRC_REGISTRY}/apecloud/dmdb-exporter:8.1.4"
-        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+        if [[ "${ARM64_IMAGE}" == "true" ]]; then
             echo "docker pull --platform linux/arm64 $repository"
         else
             echo "docker pull $repository"
         fi
         for i in {1..10}; do
-            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            if [[ "${ARM64_IMAGE}" == "true" ]]; then
                 docker pull --platform linux/arm64 "$repository"
             else
                 docker pull "$repository"
@@ -86,13 +86,13 @@ pull_chart_images() {
         SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
 
         repository="${SRC_REGISTRY}/apecloud/dmdb-tool:8.1.4"
-        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+        if [[ "${ARM64_IMAGE}" == "true" ]]; then
             echo "docker pull --platform linux/arm64 $repository"
         else
             echo "docker pull $repository"
         fi
         for i in {1..10}; do
-            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            if [[ "${ARM64_IMAGE}" == "true" ]]; then
                 docker pull --platform linux/arm64 "$repository"
             else
                 docker pull "$repository"
