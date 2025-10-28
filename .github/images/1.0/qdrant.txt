@@ -7,3 +7,4 @@ docker.io/apecloud/qdrant:v1.8.4
 docker.io/apecloud/qdrant:v1.10.0
 docker.io/apecloud/qdrant:v1.13.4
 docker.io/apecloud/qdrant:v1.15.4
+docker.io/apecloud/qdrant-tools:0.1.0
