@@ -21,9 +21,17 @@ pull_chart_images() {
         fi
 
         repository="${SRC_REGISTRY}/${image}"
-        echo "pull image $repository"
+        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            echo "docker pull --platform linux/arm64 $repository"
+        else
+            echo "docker pull $repository"
+        fi
         for i in {1..10}; do
-            docker pull "$repository"
+            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+                docker pull --platform linux/arm64 "$repository"
+            else
+                docker pull "$repository"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
@@ -36,9 +44,17 @@ pull_chart_images() {
 
     if [[ "${ARM64_IMAGE}" == "true" && "$image_name_tmp" == "damengdb" ]]; then
         repository="${SRC_REGISTRY}/apecloud/dm:8.1.4-6-20241231"
-        echo "pull image $repository"
+        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            echo "docker pull --platform linux/arm64 $repository"
+        else
+            echo "docker pull $repository"
+        fi
         for i in {1..10}; do
-            docker pull "$repository"
+            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+                docker pull --platform linux/arm64 "$repository"
+            else
+                docker pull "$repository"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
@@ -49,9 +65,17 @@ pull_chart_images() {
         SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
 
         repository="${SRC_REGISTRY}/apecloud/dmdb-exporter:8.1.4"
-        echo "pull image $repository"
+        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            echo "docker pull --platform linux/arm64 $repository"
+        else
+            echo "docker pull $repository"
+        fi
         for i in {1..10}; do
-            docker pull "$repository"
+            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+                docker pull --platform linux/arm64 "$repository"
+            else
+                docker pull "$repository"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
@@ -62,9 +86,17 @@ pull_chart_images() {
         SAVE_CHART_IMAGES="$SAVE_CHART_IMAGES $repository"
 
         repository="${SRC_REGISTRY}/apecloud/dmdb-tool:8.1.4"
-        echo "pull image $repository"
+        if [[ "${ARM64_IMAGE}" == "true" ]]; the
+            echo "docker pull --platform linux/arm64 $repository"
+        else
+            echo "docker pull $repository"
+        fi
         for i in {1..10}; do
-            docker pull "$repository"
+            if [[ "${ARM64_IMAGE}" == "true" ]]; the
+                docker pull --platform linux/arm64 "$repository"
+            else
+                docker pull "$repository"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
