@@ -70,7 +70,7 @@ check_images() {
                 continue
             fi
 
-            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.3-162-20240827-sec"* || "$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"* || "$repository" == *"apecloud/be-ubuntu"*) ]]; then
+            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.3-162-20240827-sec"* || "$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"* || "$repository" == *"apecloud/be-ubuntu"* || "$repository" == *"apecloud/"*"ubuntu:3.2.2"* || "$repository" == *"apecloud/"*"ubuntu:3.3.0"*  || "$repository" == *"apecloud/"*"ubuntu:3.3.2"*) ]]; then
                 repository=""
                 continue
             fi
