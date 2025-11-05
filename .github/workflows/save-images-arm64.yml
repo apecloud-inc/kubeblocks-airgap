@@ -14,6 +14,7 @@ on:
           - kubeblocks
           - kubeblocks-cloud
           - cert-manager
+          - doris
           - gemini
           - elasticsearch-arm
           - mysql-arm
