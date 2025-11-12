@@ -1,17 +1,17 @@
-# kubeblocks-enterprise v2.0.111
-# KubeBlocks-Cloud v2.0.111
-docker.io/apecloud/openconsole:v2.0.111
-docker.io/apecloud/openconsole:v2.0.111-console
-docker.io/apecloud/openconsole:v2.0.111-admin
-docker.io/apecloud/apiserver:v2.0.111
-docker.io/apecloud/cubetran-front:v2.0.111
+# kubeblocks-enterprise v2.0.140
+# KubeBlocks-Cloud v2.0.140
+docker.io/apecloud/openconsole:v2.0.140
+docker.io/apecloud/openconsole:v2.0.140-console
+docker.io/apecloud/openconsole:v2.0.140-admin
+docker.io/apecloud/apiserver:v2.0.140
+docker.io/apecloud/cubetran-front:v2.0.140
 docker.io/apecloud/cubetran-core:0.2.2
-docker.io/apecloud/cr4w:v2.0.111
-docker.io/apecloud/apecloud-addon-charts:v2.0.111
-docker.io/apecloud/kb-cloud-hook:v2.0.111
-docker.io/apecloud/kb-cloud-docs:v2.0.111
-docker.io/apecloud/kubeblocks-installer:v2.0.111-offline
-docker.io/apecloud/kb-cloud-installer:v2.0.111
+docker.io/apecloud/cr4w:v2.0.140
+docker.io/apecloud/apecloud-addon-charts:v2.0.140
+docker.io/apecloud/kb-cloud-hook:v2.0.140
+docker.io/apecloud/kb-cloud-docs:v2.0.140
+docker.io/apecloud/kubeblocks-installer:v2.0.140-offline
+docker.io/apecloud/kb-cloud-installer:v2.0.140
 docker.io/apecloud/dms:0.0.3-alpha.16
 docker.io/apecloud/apecloud-mcp:1.2.0-alpha.5
 docker.io/apecloud/ob-grpc-server:0.1.5
@@ -44,7 +44,7 @@ docker.io/apecloud/apecloud-addon-charts:loki-0.9.2
 docker.io/apecloud/apecloud-addon-charts:loki-1.0.2
 docker.io/apecloud/apecloud-addon-charts:minio-0.9.1
 docker.io/apecloud/apecloud-addon-charts:minio-1.0.1-beta.0
-docker.io/apecloud/apecloud-addon-charts:mongodb-0.9.4
+docker.io/apecloud/apecloud-addon-charts:mongodb-0.9.5
 docker.io/apecloud/apecloud-addon-charts:mongodb-1.0.2
 docker.io/apecloud/apecloud-addon-charts:mssql-0.9.2
 docker.io/apecloud/apecloud-addon-charts:mssql-1.0.2
@@ -95,6 +95,7 @@ docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
 docker.io/apecloud/apecloud-addon-charts:oracle-1.0.2
 docker.io/apecloud/apecloud-addon-charts:hadoop-1.0.2
 docker.io/apecloud/apecloud-addon-charts:hive-1.0.2
+docker.io/apecloud/apecloud-addon-charts:doris-1.0.2
 # KubeBlocks v0.9.6-beta.2
 docker.io/apecloud/kubeblocks:0.9.6-beta.2
 docker.io/apecloud/kubeblocks-dataprotection:0.9.6-beta.2

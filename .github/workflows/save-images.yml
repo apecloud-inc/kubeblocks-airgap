@@ -18,6 +18,7 @@ on:
           - ape-local-csi-driver
           - clickhouse
           - damengdb
+          - doris
           - influxdb
           - etcd
           - elasticsearch
