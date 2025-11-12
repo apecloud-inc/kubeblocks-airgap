@@ -13,6 +13,8 @@ docker.io/apecloud/mysql:8.0.39
 docker.io/apecloud/mysql:8.4.0
 docker.io/apecloud/mysql:8.4.1
 docker.io/apecloud/mysql:8.4.2
+docker.io/apecloud/mysql:8.4.3
+docker.io/apecloud/mysql:8.4.7
 docker.io/apecloud/mysql_audit_log:5.7.44
 docker.io/apecloud/mysql_audit_log:8.0.33
 docker.io/apecloud/orc-tools:1.0.2
