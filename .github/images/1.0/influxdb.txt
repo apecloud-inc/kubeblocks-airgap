@@ -1,6 +1,3 @@
-# influxdb v1.0.3-beta.0
+# influxdb v1.0.2
 docker.io/apecloud/influxdb:2.7.11-debian-12-r18
-docker.io/apecloud/influxdb:1.8.10-c1.1.2-meta
-docker.io/apecloud/influxdb:1.8.10-c1.1.2-data
 docker.io/apecloud/os-shell:11-debian-11-r93
-docker.io/apecloud/curl-jq:0.1.0
