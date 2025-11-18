@@ -1,18 +1,18 @@
-# kubeblocks-enterprise v2.0.156
-# KubeBlocks-Cloud v2.0.156
-docker.io/apecloud/openconsole:v2.0.156
-docker.io/apecloud/openconsole:v2.0.156-console
-docker.io/apecloud/openconsole:v2.0.156-admin
-docker.io/apecloud/apiserver:v2.0.156
-docker.io/apecloud/cubetran-front:v2.0.156
+# kubeblocks-enterprise v2.0.157
+# KubeBlocks-Cloud v2.0.157
+docker.io/apecloud/openconsole:v2.0.157
+docker.io/apecloud/openconsole:v2.0.157-console
+docker.io/apecloud/openconsole:v2.0.157-admin
+docker.io/apecloud/apiserver:v2.0.157
+docker.io/apecloud/cubetran-front:v2.0.157
 docker.io/apecloud/cubetran-core:0.2.2
-docker.io/apecloud/cr4w:v2.0.156
-docker.io/apecloud/apecloud-addon-charts:v2.0.156
-docker.io/apecloud/kb-cloud-hook:v2.0.156
-docker.io/apecloud/kb-cloud-docs:v2.0.156
-docker.io/apecloud/kubeblocks-installer:v2.0.156-offline
-docker.io/apecloud/kb-cloud-installer:v2.0.156
-docker.io/apecloud/dms:0.0.3-alpha.16
+docker.io/apecloud/cr4w:v2.0.157
+docker.io/apecloud/apecloud-addon-charts:v2.0.157
+docker.io/apecloud/kb-cloud-hook:v2.0.157
+docker.io/apecloud/kb-cloud-docs:v2.0.157
+docker.io/apecloud/kubeblocks-installer:v2.0.157-offline
+docker.io/apecloud/kb-cloud-installer:v2.0.157
+docker.io/apecloud/dms:0.0.3-alpha.17
 docker.io/apecloud/apecloud-mcp:1.2.0-alpha.5
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.70.0
