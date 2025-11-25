@@ -5,3 +5,4 @@ docker.io/apecloud/zookeeper:3.6.4
 docker.io/apecloud/zookeeper:3.7.2
 docker.io/apecloud/zookeeper:3.8.4
 docker.io/apecloud/zookeeper:3.9.2
+docker.io/apecloud/zookeeper:3.9.4
