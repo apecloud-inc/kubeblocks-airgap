@@ -26,6 +26,7 @@ env:
   CHART_ACCESS_USER: ${{ secrets.JIHULAB_ACCESS_USER }}
   CHART_ACCESS_TOKEN: ${{ secrets.JIHULAB_ACCESS_TOKEN }}
   MANIFESTS_FILE: "apecloud/manifests/deploy-manifests.yaml"
+  CHECK_ENGINE_FILE: "apecloud/fountain/hack/check-engine-images.py"
 
 jobs:
   images-check:
@@ -60,4 +61,9 @@ jobs:
       - name: manifests images check
         run: |
           MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
-          bash .github/scripts/manifests_charts_image_check.sh "${MANIFESTS_FILE}"
+          CHECK_ENGINE_FILE="${{ env.CHECK_ENGINE_FILE }}"
+          if [[ -n "${CHECK_ENGINE_FILE}" && -f "${CHECK_ENGINE_FILE}" ]]; then
+              bash .github/scripts/manifests_charts_image_check.sh "${MANIFESTS_FILE}" "true" "${CHECK_ENGINE_FILE}"
+          else
+              bash .github/scripts/manifests_charts_image_check.sh "${MANIFESTS_FILE}"
+          fi
