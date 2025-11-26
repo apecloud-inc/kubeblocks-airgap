@@ -1,16 +1,16 @@
-# KubeBlocks-Cloud v2.0.184
-docker.io/apecloud/openconsole:v2.0.184
-docker.io/apecloud/openconsole:v2.0.184-console
-docker.io/apecloud/openconsole:v2.0.184-admin
-docker.io/apecloud/apiserver:v2.0.184
-docker.io/apecloud/cubetran-front:v2.0.184
+# KubeBlocks-Cloud v2.0.185
+docker.io/apecloud/openconsole:v2.0.185
+docker.io/apecloud/openconsole:v2.0.185-console
+docker.io/apecloud/openconsole:v2.0.185-admin
+docker.io/apecloud/apiserver:v2.0.185
+docker.io/apecloud/cubetran-front:v2.0.185
 docker.io/apecloud/cubetran-core:0.2.2
-docker.io/apecloud/cr4w:v2.0.184
-docker.io/apecloud/apecloud-addon-charts:v2.0.184
-docker.io/apecloud/kb-cloud-hook:v2.0.184
-docker.io/apecloud/kb-cloud-docs:v2.0.184
-docker.io/apecloud/kb-cloud-installer:v2.0.184
-docker.io/apecloud/kubeblocks-installer:v2.0.184-offline
+docker.io/apecloud/cr4w:v2.0.185
+docker.io/apecloud/apecloud-addon-charts:v2.0.185
+docker.io/apecloud/kb-cloud-hook:v2.0.185
+docker.io/apecloud/kb-cloud-docs:v2.0.185
+docker.io/apecloud/kb-cloud-installer:v2.0.185
+docker.io/apecloud/kubeblocks-installer:v2.0.185-offline
 docker.io/apecloud/dms:0.0.3-alpha.18
 docker.io/apecloud/apecloud-mcp:1.2.0-alpha.5
 docker.io/apecloud/ob-grpc-server:0.1.5
