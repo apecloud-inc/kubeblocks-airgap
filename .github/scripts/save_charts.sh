@@ -204,15 +204,15 @@ change_charts_version() {
         fi
     fi
 
-    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$CUBETRAN_CORE_VERSION" ]]; then
-        echo "change cubetran-core images tag"
-        imageFiles=("gemini.txt" "kubeblocks-enterprise.txt")
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$APE_DTS_VERSION" ]]; then
+        echo "change ape-dts images tag"
+        imageFiles=("gemini.txt")
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             else
-                sed -i "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             fi
         done
     fi
@@ -401,9 +401,9 @@ check_manifests_version() {
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
 
-    CUBETRAN_CORE_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/cubetran-core:" || true))
-    if [[ -n "$CUBETRAN_CORE_IMAGE" ]]; then
-        CUBETRAN_CORE_VERSION="${CUBETRAN_CORE_IMAGE#*:}"
+    APE_DTS_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
+    if [[ -n "$APE_DTS_IMAGE" ]]; then
+        APE_DTS_VERSION="${APE_DTS_IMAGE#*:}"
     fi
 
     KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
@@ -419,7 +419,7 @@ check_manifests_version() {
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
-    echo "MANIFESTS CUBETRAN_CORE_VERSION:${CUBETRAN_CORE_VERSION}"
+    echo "MANIFESTS APE_DTS_VERSION:${APE_DTS_VERSION}"
     echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
 }
 
@@ -439,7 +439,7 @@ main() {
     local APP_PKG_NAME="${KB_CHART_NAME}-${APP_VERSION}.tar.gz"
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
-    local CUBETRAN_CORE_VERSION=""
+    local APE_DTS_VERSION=""
     local KUBEBENCH_VERSION=""
 
     check_manifests_version
