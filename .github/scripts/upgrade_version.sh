@@ -402,27 +402,27 @@ main() {
                 GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
                 APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
 
-                OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/oteld:")
+                OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
                 if [[ -n "$OTELD_IMAGE" ]]; then
                     OTELD_VERSION="${OTELD_IMAGE#*:}"
                 fi
 
-                OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubeblocks-installer:")
+                OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubeblocks-installer:" || true))
                 if [[ -n "$OFFLINE_INSTALLER_IMAGE" ]]; then
                     OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_IMAGE#*:}"
                 fi
 
-                DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/dms:")
+                DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/dms:" || true))
                 if [[ -n "$DMS_IMAGE" ]]; then
                     DMS_VERSION="${DMS_IMAGE#*:}"
                 fi
 
-                CUBETRAN_CORE_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/cubetran-core:")
+                CUBETRAN_CORE_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/cubetran-core:" || true))
                 if [[ -n "$CUBETRAN_CORE_IMAGE" ]]; then
                     CUBETRAN_CORE_VERSION="${CUBETRAN_CORE_IMAGE#*:}"
                 fi
 
-                KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubebench:")
+                KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
                 if [[ -n "$KUBEBENCH_IMAGE" ]]; then
                     KUBEBENCH_VERSION="${KUBEBENCH_IMAGE#*:}"
                 fi
