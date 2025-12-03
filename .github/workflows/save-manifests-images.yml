@@ -31,18 +31,6 @@ env:
   VALUES_FILE: "apecloud/manifests/deploy-values.yaml"
 
 jobs:
-#  check-manifests-image:
-#    uses: ./.github/workflows/manifests-image-check.yml
-#    with:
-#      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
-#    secrets: inherit
-
-#  check-manifests-charts-image:
-#    uses: ./.github/workflows/manifests-charts-image-check.yml
-#    with:
-#      RELEASE_VERSION: "${{ inputs.RELEASE_VERSION }}"
-#    secrets: inherit
-
   save-cloud-images:
     if: ${{ inputs.ENABLE_ARM64 == 'false' }}
     uses: ./.github/workflows/manifests-images-save.yml
