@@ -25,7 +25,7 @@ check_images() {
             template_repo="${KB_ENT_REPO_NAME}"
         fi
         echo "helm template ${chart_name_tmp} ${template_repo}/${chart_name_tmp} --version ${chart_version_tmp} ${set_values_tmp}"
-        images=$( helm template ${chart_name_tmp} ${template_repo}/${chart_name_tmp} --version ${chart_version_tmp} ${set_values_tmp} | egrep 'image:|repository:|tag:|docker.io/|apecloud-registry.cn-zhangjiakou.cr.aliyuncs.com/|infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/|ghcr.io/|quay.io/' | awk '{print $2}' | sed 's/"//g' )
+        images=$( helm template ${chart_name_tmp} ${template_repo}/${chart_name_tmp} --version ${chart_version_tmp} ${set_values_tmp} | egrep 'image:|repository:|tag:|docker.io/|apecloud-registry.cn-zhangjiakou.cr.aliyuncs.com/|infracreate-registry.cn-zhangjiakou.cr.aliyuncs.com/|ghcr.io/|quay.io/' | (grep -v '[A-Z]' || true) | awk '{print $2}' | sed 's/"//g' )
         ret_tmp=$?
         repository=""
         for image in $( echo "$images" ); do
@@ -70,7 +70,7 @@ check_images() {
                 continue
             fi
 
-            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"*) ]]; then
+            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-48_pack4"* || "$repository" == *"apecloud/dm:8.1.3-162-20240827-sec"* || "$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"* || "$repository" == *"apecloud/be-ubuntu"* || "$repository" == *"apecloud/"*"ubuntu:3.2.2"* || "$repository" == *"apecloud/"*"ubuntu:3.3.0"*  || "$repository" == *"apecloud/"*"ubuntu:3.3.2"*) ]]; then
                 repository=""
                 continue
             fi
@@ -91,7 +91,12 @@ check_images() {
             done
 
             if [[ $check_flag -eq 0 ]]; then
-                echo "$(tput -T xterm setaf 1)::error title=Not found ${chart_name_tmp} ${chart_version_tmp} image:$repository in ${chart_name_tmp}.txt$(tput -T xterm sgr0)"
+                check_result_tmp="$(tput -T xterm setaf 1)Not found ${chart_name_tmp} ${chart_version_tmp} image:$repository in ${IMAGES_TXT_DIR}/${chart_name_tmp}.txt$(tput -T xterm sgr0)"
+                echo "${check_result_tmp}"
+                CHECK_RESULTS="$(cat check_airgap_result)"
+                if [[ "${CHECK_RESULTS}" != *"${check_result_tmp}"* ]]; then
+                    echo "${check_result_tmp}" >> check_airgap_result
+                fi
                 echo 1 > exit_result
             fi
             repository=""
@@ -105,15 +110,16 @@ check_images() {
 }
 
 check_charts_images() {
-    touch exit_result
+    touch exit_result check_airgap_result
     echo 0 > exit_result
+    echo "" > check_airgap_result
     if [[ ! -d "${IMAGES_TXT_DIR}" ]]; then
-        echo "$(tput -T xterm setaf 1)::error title=Not found images path:${IMAGES_TXT_DIR} $(tput -T xterm sgr0)"
+        echo "$(tput -T xterm setaf 1)Not found images path:${IMAGES_TXT_DIR} $(tput -T xterm sgr0)"
         return
     fi
 
     if [[ ! -f "${MANIFESTS_FILE}" ]]; then
-        echo "$(tput -T xterm setaf 1)::error title=Not found manifests file:${MANIFESTS_FILE} $(tput -T xterm sgr0)"
+        echo "$(tput -T xterm setaf 1)Not found manifests file:${MANIFESTS_FILE} $(tput -T xterm sgr0)"
         return
     fi
 
@@ -188,17 +194,22 @@ check_charts_images() {
                 set_values="${set_values} --set controller.admissionWebhooks.patch.image.digest= "
             ;;
             gemini)
-                set_values="${set_values} --set cr-exporter.enabled=true "
+                set_values="${set_values} --set victoria-metrics-cluster.enabled=false "
+                set_values="${set_values} --set loki.enabled=false "
+                set_values="${set_values} --set kubeviewer.enabled=false "
+                set_values="${set_values} --set cr-exporter.enabled=false "
             ;;
             kubebench)
                 set_values="${set_values} --set image.tag=0.0.12 "
                 set_values="${set_values} --set kubebenchImages.exporter=apecloud/kubebench:0.0.12"
                 set_values="${set_values} --set kubebenchImages.tools=apecloud/kubebench:0.0.12"
+                set_values="${set_values} --set kubebenchImages.tpcc=apecloud/benchmarksql:1.0"
             ;;
         esac
         check_images "$is_enterprise" "$chart_version" "$chart_name" "$chart_images" "$set_values" &
     done
     wait
+    cat check_airgap_result
     cat exit_result
     exit $(cat exit_result)
 }
@@ -208,7 +219,7 @@ main() {
     local KB_REPO_URL="https://apecloud.github.io/helm-charts"
     local KB_ENT_REPO_NAME="kb-ent-charts"
     local KB_ENT_REPO_URL="https://jihulab.com/api/v4/projects/${CHART_PROJECT_ID}/packages/helm/stable"
-    #add_chart_repo
+    add_chart_repo
     check_charts_images
 }
 

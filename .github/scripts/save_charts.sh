@@ -75,6 +75,8 @@ change_charts_version() {
         fi
         HEAD_APP_VERSION="${APP_VERSION%%.*}"
         if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -90,6 +92,8 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         else
+            sed -i "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -107,7 +111,7 @@ change_charts_version() {
         fi
     fi
 
-    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch" || "$APP_NAME" == "gemini") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
         for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
             if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
                 KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION/v/}"
@@ -200,15 +204,15 @@ change_charts_version() {
         fi
     fi
 
-    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$CUBETRAN_CORE_VERSION" ]]; then
-        echo "change cubetran-core images tag"
-        imageFiles=("gemini.txt" "kubeblocks-enterprise.txt")
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$APE_DTS_VERSION" ]]; then
+        echo "change ape-dts images tag"
+        imageFiles=("gemini.txt")
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             else
-                sed -i "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             fi
         done
     fi
@@ -382,27 +386,27 @@ check_manifests_version() {
     GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
     APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
 
-    OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/oteld:")
+    OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
     if [[ -n "$OTELD_IMAGE" ]]; then
         OTELD_VERSION="${OTELD_IMAGE#*:}"
     fi
 
-    OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubeblocks-installer:")
+    OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubeblocks-installer:" || true))
     if [[ -n "$OFFLINE_INSTALLER_IMAGE" ]]; then
         OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_IMAGE#*:}"
     fi
 
-    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/dms:")
+    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/dms:" || true))
     if [[ -n "$DMS_IMAGE" ]]; then
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
 
-    CUBETRAN_CORE_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/cubetran-core:")
-    if [[ -n "$CUBETRAN_CORE_IMAGE" ]]; then
-        CUBETRAN_CORE_VERSION="${CUBETRAN_CORE_IMAGE#*:}"
+    APE_DTS_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
+    if [[ -n "$APE_DTS_IMAGE" ]]; then
+        APE_DTS_VERSION="${APE_DTS_IMAGE#*:}"
     fi
 
-    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubebench:")
+    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
     if [[ -n "$KUBEBENCH_IMAGE" ]]; then
         KUBEBENCH_VERSION="${KUBEBENCH_IMAGE#*:}"
     fi
@@ -415,7 +419,7 @@ check_manifests_version() {
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
-    echo "MANIFESTS CUBETRAN_CORE_VERSION:${CUBETRAN_CORE_VERSION}"
+    echo "MANIFESTS APE_DTS_VERSION:${APE_DTS_VERSION}"
     echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
 }
 
@@ -435,7 +439,7 @@ main() {
     local APP_PKG_NAME="${KB_CHART_NAME}-${APP_VERSION}.tar.gz"
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
-    local CUBETRAN_CORE_VERSION=""
+    local APE_DTS_VERSION=""
     local KUBEBENCH_VERSION=""
 
     check_manifests_version

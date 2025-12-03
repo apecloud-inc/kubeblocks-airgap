@@ -1,4 +1,4 @@
-# oracle v1.0.1-beta.0
+# oracle v1.0.2
 docker.io/apecloud/oracle:12.2.0.1-ee
 docker.io/apecloud/oracle:23.6.0.0-free
 docker.io/apecloud/observability-exporter:2.0.2

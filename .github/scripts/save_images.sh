@@ -11,6 +11,7 @@ readonly GEMINI_VERSION_TMP="${gemini_version?}"
 readonly OTELD_VERSION_TMP="${oteld_version?}"
 readonly OFFLINE_INSTALLER_VERSION_TMP="${installer_version?}"
 readonly DMS_VERSION_TMP="${dms_version?}"
+readonly PLATFORM="${platform?}"
 
 echo "ADD_IMAGES_LIST:"${ADD_IMAGES_LIST}
 echo "APP_NAME:"${APP_NAME}
@@ -22,6 +23,7 @@ echo "GEMINI_VERSION:"${GEMINI_VERSION_TMP}
 echo "OTELD_VERSION:"${OTELD_VERSION_TMP}
 echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION_TMP}
 echo "DMS_VERSION:"${DMS_VERSION_TMP}
+echo "PLATFORM:"${PLATFORM}
 
 add_images_list() {
     if [[ -z "${ADD_IMAGES_LIST}" ]]; then
@@ -79,6 +81,8 @@ save_images_package() {
         HEAD_APP_VERSION="${APP_VERSION%%.*}"
         echo "change ${APP_NAME}.txt images tag"
         if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -94,6 +98,8 @@ save_images_package() {
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         else
+            sed -i "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -111,7 +117,7 @@ save_images_package() {
         fi
     fi
     
-    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch" || "$APP_NAME" == "gemini") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
         echo "change KubeBlocks images tag"
         for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
             if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
@@ -204,15 +210,15 @@ save_images_package() {
         fi
     fi
 
-    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$CUBETRAN_CORE_VERSION" ]]; then
-        echo "change cubetran-core images tag"
-        imageFiles=("gemini.txt" "kubeblocks-enterprise.txt")
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$APE_DTS_VERSION" ]]; then
+        echo "change ape-dts images tag"
+        imageFiles=("gemini.txt")
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             else
-                sed -i "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             fi
         done
     fi
@@ -239,9 +245,18 @@ save_images_package() {
             if [[ -z "$image" || "$image" == "#"* ]]; then
                 continue
             fi
-            echo "pull image $image"
+
+            if [[ "${PLATFORM}" == *"arm64"* ]]; then
+                echo "docker pull --platform linux/arm64 $image"
+            else
+                echo "docker pull $image"
+            fi
             for j in {1..10}; do
-                docker pull "$image"
+                if [[ "${PLATFORM}" == *"arm64"* ]]; then
+                    docker pull --platform linux/arm64 "$image"
+                else
+                    docker pull "$image"
+                fi
                 ret_msg=$?
                 if [[ $ret_msg -eq 0 ]]; then
                     echo "$(tput -T xterm setaf 2)pull image $image success$(tput -T xterm sgr0)"
@@ -278,27 +293,27 @@ check_manifests_version() {
     GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
     APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
 
-    OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/oteld:")
+    OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
     if [[ -n "$OTELD_IMAGE" ]]; then
         OTELD_VERSION="${OTELD_IMAGE#*:}"
     fi
 
-    OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubeblocks-installer:")
+    OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubeblocks-installer:" || true))
     if [[ -n "$OFFLINE_INSTALLER_IMAGE" ]]; then
         OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_IMAGE#*:}"
     fi
 
-    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/dms:")
+    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/dms:" || true))
     if [[ -n "$DMS_IMAGE" ]]; then
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
 
-    CUBETRAN_CORE_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/cubetran-core:")
-    if [[ -n "$CUBETRAN_CORE_IMAGE" ]]; then
-        CUBETRAN_CORE_VERSION="${CUBETRAN_CORE_IMAGE#*:}"
+    APE_DTS_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
+    if [[ -n "$APE_DTS_IMAGE" ]]; then
+        APE_DTS_VERSION="${APE_DTS_IMAGE#*:}"
     fi
 
-    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubebench:")
+    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
     if [[ -n "$KUBEBENCH_IMAGE" ]]; then
         KUBEBENCH_VERSION="${KUBEBENCH_IMAGE#*:}"
     fi
@@ -311,7 +326,7 @@ check_manifests_version() {
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
-    echo "MANIFESTS CUBETRAN_CORE_VERSION:${CUBETRAN_CORE_VERSION}"
+    echo "MANIFESTS APE_DTS_VERSION:${APE_DTS_VERSION}"
     echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
 }
 
@@ -325,7 +340,7 @@ main() {
     local DMS_VERSION="${DMS_VERSION_TMP}"
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
-    local CUBETRAN_CORE_VERSION=""
+    local APE_DTS_VERSION=""
     local KUBEBENCH_VERSION=""
 
     check_manifests_version

@@ -116,6 +116,7 @@ jobs:
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
           images_file: .github/images/${{ inputs.APP_NAME }}.txt
+          platform: "linux/amd64"
         run: |
           bash .github/scripts/save_images.sh
 
@@ -126,8 +127,8 @@ jobs:
 
       - uses: manyuanrong/setup-ossutil@v2.0
         with:
-          access-key-id: "${{ secrets.OSS_KEY_ID }}"
-          access-key-secret: "${{ secrets.OSS_KEY_SECRET }}"
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
           endpoint: "${{ env.OSS_ENDPOINT }}"
 
       - name: Upload images to oss
@@ -142,6 +143,34 @@ jobs:
               echo "upload ${IMAGE_PKG_NAME} to oss successfully"
           else
               exit 1
+          fi
+          
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD}
+              upload_ret=$?
+          
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
           fi
 
   save-result:

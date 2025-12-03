@@ -1,4 +1,4 @@
-# mysql v0.9.3
+# mysql v0.9.4
 docker.io/apecloud/jemalloc:5.3.0
 docker.io/apecloud/mysql:5.7.44
 docker.io/apecloud/mysql:8.0.30
@@ -25,7 +25,7 @@ docker.io/apecloud/percona-xtrabackup:8.0.32
 docker.io/apecloud/proxysql:2.4.4
 docker.io/apecloud/syncer:0.3.2
 docker.io/apecloud/syncer:0.5.0
-docker.io/apecloud/wal-g-mysql:2.0.1-1-ubuntu
+docker.io/apecloud/wal-g-mysql:3.0.0-ubuntu
 docker.io/apecloud/xtrabackup:2.4
 docker.io/apecloud/xtrabackup:8.0
 docker.io/apecloud/xtrabackup:8.4
