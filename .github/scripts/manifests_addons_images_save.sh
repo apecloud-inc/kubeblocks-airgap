@@ -122,7 +122,7 @@ save_charts_images() {
     RELEASE_VERSIONS=$(yq e '[.'${IMAGE_NAME}'[].version] | join("|")' ${MANIFESTS_FILE})
     version_index=0
     for release_version in $(echo "${RELEASE_VERSIONS}" | sed 's/|/ /g'); do
-        IMAGE_PKG_NAME="${IMAGE_NAME}-images-${RELEASE_VERSION}.tar.gz"
+        IMAGE_PKG_NAME="${IMAGE_NAME}-images-${release_version}.tar.gz"
         chart_images=$(yq e "."${IMAGE_NAME}"[].images[]" "${MANIFESTS_FILE}")
         if [[ -z "$chart_images" ]]; then
             echo "$(tput -T xterm setaf 3)Not found ${chart_name} images$(tput -T xterm sgr0)"
