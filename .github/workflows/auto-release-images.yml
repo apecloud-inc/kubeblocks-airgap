@@ -70,7 +70,7 @@ jobs:
                       
                       if [[ "${release_name}" == *"-arm" ]]; then
                           cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
-                      elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* || "${release_name}" == "mssql"*  || "${release_name}" == "kingbase"* || "${release_name}" == "goldendb"* || "${release_name}" == "mongodb"* ]]; then
+                      elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* || "${release_name}" == "mssql"* || "${release_name}" == "goldendb"* || "${release_name}" == "mongodb"* ]]; then
                           cmd=$cmd"--workflow-id \"save-images.yml\" "
                       else
                           cmd=$cmd"--workflow-id \"save-images.yml|save-images-arm64.yml\" "
