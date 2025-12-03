@@ -119,36 +119,40 @@ save_charts_images() {
         return
     fi
 
-    RELEASE_VERSION=$(yq e "."${IMAGE_NAME}"[0].version" ${MANIFESTS_FILE})
-    IMAGE_PKG_NAME="${IMAGE_NAME}-images-${RELEASE_VERSION}.tar.gz"
-    chart_images=$(yq e "."${IMAGE_NAME}"[].images[]" "${MANIFESTS_FILE}")
-    if [[ -z "$chart_images" ]]; then
-        echo "$(tput -T xterm setaf 3)Not found ${chart_name} images$(tput -T xterm sgr0)"
-        exit 1
-    fi
-
-    pull_chart_images "$chart_images" "${IMAGE_NAME}"
-
-    echo " Pull images done!"
-    df -h
-    save_cmd="docker save ${SAVE_CHART_IMAGES} | gzip > ${IMAGE_PKG_NAME}"
-    echo "$save_cmd"
-    save_flag=0
-    for i in {1..10}; do
-        eval "$save_cmd"
-        ret_msg=$?
-        if [[ $ret_msg -eq 0 ]]; then
-            echo "$(tput -T xterm setaf 2)save ${IMAGE_PKG_NAME} success$(tput -T xterm sgr0)"
-            save_flag=1
-            break
+    RELEASE_VERSIONS=$(yq e '[.'${IMAGE_NAME}'[].version] | join("|")' ${MANIFESTS_FILE})
+    version_index=0
+    for release_version in $(echo "${RELEASE_VERSIONS}" | sed 's/|/ /g'); do
+        IMAGE_PKG_NAME="${IMAGE_NAME}-images-${RELEASE_VERSION}.tar.gz"
+        chart_images=$(yq e "."${IMAGE_NAME}"[].images[]" "${MANIFESTS_FILE}")
+        if [[ -z "$chart_images" ]]; then
+            echo "$(tput -T xterm setaf 3)Not found ${chart_name} images$(tput -T xterm sgr0)"
+            exit 1
         fi
-        sleep 1
+
+        pull_chart_images "$chart_images" "${IMAGE_NAME}"
+
+        echo " Pull images done!"
+        df -h
+        save_cmd="docker save ${SAVE_CHART_IMAGES} | gzip > ${IMAGE_PKG_NAME}"
+        echo "$save_cmd"
+        save_flag=0
+        for i in {1..10}; do
+            eval "$save_cmd"
+            ret_msg=$?
+            if [[ $ret_msg -eq 0 ]]; then
+                echo "$(tput -T xterm setaf 2)save ${IMAGE_PKG_NAME} success$(tput -T xterm sgr0)"
+                save_flag=1
+                break
+            fi
+            sleep 1
+        done
+        rm -rf ${IMAGES_FILE_DIR}
+        if [[ $save_flag -eq 0 ]]; then
+            echo "$(tput -T xterm setaf 1)save ${IMAGE_PKG_NAME} error$(tput -T xterm sgr0)"
+            exit 1
+        fi
+        version_index=$(( $version_index + 1 ))
     done
-    rm -rf ${IMAGES_FILE_DIR}
-    if [[ $save_flag -eq 0 ]]; then
-        echo "$(tput -T xterm setaf 1)save ${IMAGE_PKG_NAME} error$(tput -T xterm sgr0)"
-        exit 1
-    fi
 }
 
 main() {
