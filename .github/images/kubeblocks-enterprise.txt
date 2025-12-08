@@ -6,7 +6,6 @@ docker.io/apecloud/openconsole:v2.0.216-admin
 docker.io/apecloud/apiserver:v2.0.216
 docker.io/apecloud/cubetran-front:v2.0.216
 docker.io/apecloud/cr4w:v2.0.216
-docker.io/apecloud/apecloud-addon-charts:v2.0.216
 docker.io/apecloud/kb-cloud-hook:v2.0.216
 docker.io/apecloud/kb-cloud-docs:v2.0.216
 docker.io/apecloud/kubeblocks-installer:v2.0.216-offline
