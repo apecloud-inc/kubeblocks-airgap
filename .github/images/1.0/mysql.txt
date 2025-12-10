@@ -1,8 +1,5 @@
 # mysql v1.0.2
 docker.io/apecloud/mysql:5.7.44
-docker.io/apecloud/mysql:8.0.30
-docker.io/apecloud/mysql:8.0.31
-docker.io/apecloud/mysql:8.0.32
 docker.io/apecloud/mysql:8.0.33
 docker.io/apecloud/mysql:8.0.34
 docker.io/apecloud/mysql:8.0.35
@@ -10,6 +7,8 @@ docker.io/apecloud/mysql:8.0.36
 docker.io/apecloud/mysql:8.0.37
 docker.io/apecloud/mysql:8.0.38
 docker.io/apecloud/mysql:8.0.39
+docker.io/apecloud/mysql:8.0.41
+docker.io/apecloud/mysql:8.0.44
 docker.io/apecloud/mysql:8.4.0
 docker.io/apecloud/mysql:8.4.1
 docker.io/apecloud/mysql:8.4.2
