@@ -42,20 +42,18 @@ while IFS= read -r image; do
     new_image="${new_image_name}:${image_tag}"
     new_image_amd64="${new_image_name}:${image_tag}-amd64"
     new_image_arm64="${new_image_name}:${image_tag}-arm64"
-    # 对镜像执行 sealos manifest
+    # 对镜像执行 nerdctl manifest
     set +e
-    sealos manifest create "$new_image" "$new_image_amd64"
-    sealos manifest add "$new_image" "$new_image_amd64"
-    sealos manifest add "$new_image" "$new_image_arm64"
-    sealos manifest annotate "$new_image" "$new_image_amd64" --os linux --arch amd64
-    sealos manifest annotate "$new_image" "$new_image_arm64" --os linux --arch arm64
+    nerdctl manifest create "$new_image" "$new_image_amd64" "$new_image_arm64"
+    nerdctl manifest annotate "$new_image" "$new_image_amd64" --os linux --arch amd64
+    nerdctl manifest annotate "$new_image" "$new_image_arm64" --os linux --arch arm64
     tag_ret=$?
     set -e
     if [[ "$tag_ret" != "0" ]]; then
         echo "❌ $(tput -T xterm setaf 1) $new_image create manifest failed $(tput -T xterm sgr0)"
     else
         # 推送镜像 manifest 到指定的 registry
-        sealos manifest push "$new_image" docker://${new_image_name}
+        nerdctl manifest push "$new_image"
         echo "✅ $(tput -T xterm setaf 2) $new_image manifest pushed successfully $(tput -T xterm sgr0)"
     fi
 

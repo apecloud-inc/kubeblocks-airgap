@@ -20,7 +20,7 @@ if [ ! -f "$IMAGES_LIST_FILE" ]; then
 fi
 # 读取镜像列表文件，对每个镜像修改 tag 并 push
 while IFS= read -r image; do
-    if [[ $image = \#* ||  -z "$image" ]]; then
+    if [[ $image = \#* || -z "$image" ]]; then
         continue
     fi
     # 提取镜像名和标签
