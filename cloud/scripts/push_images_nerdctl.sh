@@ -13,7 +13,7 @@ shift # 移除第一个参数，剩下的都是镜像文件
 # 对每个镜像文件执行 load 操作
 for DOCKER_IMAGE_FILE in "$@"; do
     echo "Loading image from file: $DOCKER_IMAGE_FILE"
-    sealos load -i "$DOCKER_IMAGE_FILE"
+    nerdctl load -i "$DOCKER_IMAGE_FILE"
 done
 
 IMAGES_LIST_FILE="kubeblocks-image-list.txt"
@@ -47,7 +47,7 @@ while IFS= read -r image; do
     fi
 
     new_image="${new_image_name}:${image_tag}"
-    # 对镜像执行 sealos tag
+    # 对镜像执行 nerdctl tag
     image_tmp="$image"
     if [[ "$image" == "docker.io/library/"* ]]; then
         image=${image/docker.io\/library\//localhost\/}
@@ -55,21 +55,21 @@ while IFS= read -r image; do
         image=${image/docker.io\//localhost\/}
     fi
     set +e
-    sealos tag "$image" "$new_image"
+    nerdctl tag "$image" "$new_image"
     tag_ret=$?
     set -e
     if [[ "$tag_ret" != "0" ]]; then
         set +e
-        sealos tag "$image_tmp" "$new_image"
+        nerdctl tag "$image_tmp" "$new_image"
         tag_ret_2=$?
         set -e
         if [[ "$tag_ret_2" != "0" ]]; then
             image_tmp_2=${image_tmp/docker.io\//}
-            sealos tag "$image_tmp_2" "$new_image"
+            nerdctl tag "$image_tmp_2" "$new_image"
         fi
     fi
     # 推送镜像到指定的 registry
-    sealos push "$new_image"
+    nerdctl push "$new_image"
     echo "✅ $(tput -T xterm setaf 2) $new_image pushed successfully $(tput -T xterm sgr0)"
 
 done < "$IMAGES_LIST_FILE"
