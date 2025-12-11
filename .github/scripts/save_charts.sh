@@ -335,7 +335,8 @@ tar_charts_package() {
 
             case "$chart_tmp" in
                 "kubeblocks-cloud"*|"ape-local-csi-driver"*|"damengdb"*|"gaussdb"*|"gbase"*|\
-                "kingbase"*|"mssql"*|"oceanbase"*|"starrocks"*|"vastbase"*|"goldendb"*|"tdsql"*|"oracle"*|"greatdb"*)
+                "kingbase"*|"mssql"*|"oceanbase"*|"starrocks"*|"vastbase"*|"goldendb"*|"tdsql"*|\
+                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*)
                     helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
