@@ -9,31 +9,22 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - dm
-          - busybox
-          - syncer
-          - redisinsight
-          - oteld
-          - clickhouse-22.3
-          - kubebench-0.0.10
-          - cilium
-          - swhy-upgrade
-          - damengdb-8.1.4
-          - cr-exporter
-          - elasticsearch-arm
-          - mysql-arm
-          - mongodb-arm
-          - damengdb-arm
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
           - kubeblocks-cloud
           - cert-manager
+          - doris
           - gemini
-          - apecloud-mysql
+          - elasticsearch-arm
+          - mysql-arm
+          - mongodb-arm
+          - damengdb-arm
           - clickhouse
           - gaussdb
-          - greatsql
+          - greatdb
+          - hadoop
+          - hive
           - influxdb
           - etcd
           - kafka
@@ -42,7 +33,6 @@ on:
           - loki
           - milvus
           - minio
-          - mongodb
           - metallb
           - mssql
           - nebula
@@ -55,7 +45,6 @@ on:
           - ape-local-csi-driver
           - spiderpool
           - metrics-server
-          - elasticsearch
           - kubechat
           - postgres-operator
           - rabbitmq
@@ -72,6 +61,15 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
+      APP_DIR:
+        description: 'select addon dir'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - '0.9'
+          - '1.0'
       APP_VERSION:
         description: 'app version'
         required: true
@@ -114,35 +112,31 @@ env:
   OSS_BUCKET: "kubeblocks-oss"
 
 jobs:
-  enable-self-runner:
-    uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
-    with:
-      CLOUD_PROVIDER: "eks"
-      GITHUB_REPO: "apecloud-inc/kubeblocks-airgap"
-      RUNNER_LABEL: "kubeblocks-airgap-yq-arm-runner"
-      RUNNER_REPLICAS: 1
-    secrets: inherit
-
   save-app-images:
-    needs: [ enable-self-runner ]
     name: save app images
-    runs-on: [ self-hosted, arm-yq-runner ]
-    outputs:
-      runner-name: ${{ steps.get_runner_name.outputs.runner-name }}
+    runs-on: ubuntu-22.04
     steps:
-      - name: setup ossutil
-        continue-on-error: true
+      - name: Free disk space
         run: |
-          sudo apt-get update
-          sudo apt-get install unzip
-          sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
-
-      - name: ossutil config
-        env:
-          OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
-          OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
-        run: |
-          ossutil config --access-key-id="${{ env.OSS_KEY_ID }}" --access-key-secret="${{ env.OSS_KEY_SECRET }}" --endpoint="${{ env.OSS_ENDPOINT }}"
+          echo "Free space first:"
+          df -h
+          
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
+          
+          sudo mkdir -p /mnt/new-storage
+          sudo touch /etc/docker/daemon.json
+          sudo tee /etc/docker/daemon.json <<EOF
+          {
+            "data-root": "/mnt/new-storage"
+          }
+          EOF
+          sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
 
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -156,6 +150,17 @@ jobs:
               RELEASE_VERSION="v${RELEASE_VERSION}"
           fi
           echo "release-version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: get images file
+        id: get-images-file
+        run: |
+          APP_DIR="${{ inputs.APP_DIR }}"
+          APP_NAME="${{ inputs.APP_NAME }}"
+          IMAGES_FILE=".github/images/${APP_NAME}.txt"
+          if [[ -n "${APP_DIR}" ]]; then
+              IMAGES_FILE=".github/images/${APP_DIR}/${APP_NAME}.txt"
+          fi
+          echo "images-file=${IMAGES_FILE}" >> $GITHUB_OUTPUT
 
       - name: Checkout apecloud Code
         uses: actions/checkout@v4
@@ -183,7 +188,8 @@ jobs:
           oteld_version: ${{ inputs.OTELD_VERSION }}
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
-          images_file: .github/images/${{ inputs.APP_NAME }}.txt
+          images_file: ${{ steps.get-images-file.outputs.images-file }}
+          platform: "linux/arm64"
         run: |
           bash .github/scripts/save_images.sh
 
@@ -192,9 +198,17 @@ jobs:
           docker images
           du -sh ${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz 
 
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
+
       - name: Upload arm64 images to oss
         id: upload_to_oss
         run: |
+          echo "Free space:"
+          df -h
           IMAGE_PKG_NAME="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz"
           IMAGE_PKG_NAME_ARM64="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}-arm64.tar.gz"
           mv ${IMAGE_PKG_NAME} ${IMAGE_PKG_NAME_ARM64}
@@ -202,7 +216,7 @@ jobs:
           upload_ret=0
           for i in {1..10}; do
               echo "ossutil cp ${IMAGE_PKG_NAME_ARM64} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_ARM64} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64}  --read-timeout=420 --retry-times=5
+              ossutil cp -rf ./${IMAGE_PKG_NAME_ARM64} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64}
               upload_ret=$?
                 
               if [[ -d "ossutil_output" ]]; then
@@ -228,20 +242,46 @@ jobs:
           else
               exit 1
           fi
-
-      - name: get self runner name
-        id: get_runner_name
-        if: ${{ always() }}
-        run: |
-          echo runner-name=${RUNNER_NAME} >> $GITHUB_OUTPUT
-
-  delete-self-runner:
-    if: ${{ always() }}
-    needs: [ save-app-images ]
-    uses: apecloud-inc/apecloud-cd/.github/workflows/delete-self-runner.yml@v0.5.0
-    with:
-      RUNNER_NAME: "${{ needs.save-app-images.outputs.runner-name }}"
-    secrets: inherit
+      
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME_ARM64}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME_ARM64} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}
+              upload_ret=$?
+          
+              if [[ -d "ossutil_output" ]]; then
+                  ossutil_report_files=$(ls ossutil_output)
+                  if [[ -n "${ossutil_report_files}" ]]; then
+                      ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
+                      if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_MD} to oss error, retry..."
+                          cat "${ossutil_report_file_name}"
+                          rm -rf ossutil_output/ossutil_report_*.report
+                          upload_ret=1
+                      fi
+                  fi
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          fi
 
   save-result:
     runs-on: ubuntu-latest
@@ -275,14 +315,29 @@ jobs:
       CONTENT: "save image ${{ needs.save-result.outputs.image-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
     secrets: inherit
 
-  disable-self-runner:
-    if: ${{ always() }}
+  upload-md5-checksums:
     needs: [ save-app-images ]
-    uses: apecloud-inc/apecloud-cd/.github/workflows/enable-self-runner.yml@v0.4.0
-    with:
-      CLOUD_PROVIDER: "eks"
-      GITHUB_REPO: "apecloud-inc/kubeblocks-airgap"
-      RUNNER_LABEL: "kubeblocks-airgap-yq-arm-runner"
-      ENABLE: "disable"
-    secrets: inherit
-
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: auto release images
+        run: |
+          cmd="bash .github/scripts/trigger_workflow.sh "
+          cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
+          cmd=$cmd"--github-repo \"${{ github.repository }}\" "
+          cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
+          cmd=$cmd"--workflow-id \"save-md5-checksums.yml\" "
+          
+          APP_NAME="${{ inputs.APP_NAME }}"
+          RELEASE_VERSION="${{ inputs.APP_VERSION }}"
+          if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+              RELEASE_VERSION="v${RELEASE_VERSION}"
+          fi
+          if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "${RELEASE_VERSION}" ]]; then
+              cmd=$cmd"--version \"${RELEASE_VERSION}\" "
+          fi
+          
+          echo "$cmd"
+          eval "$cmd"

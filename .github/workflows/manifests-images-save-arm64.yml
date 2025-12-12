@@ -1,4 +1,4 @@
-name: Manifests Images Save  Arm64
+name: Manifests Images Save Arm64
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ on:
           - false
           - true
       ENABLE_ADDONS:
-        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        description: 'Enable save addon images (e.g. clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
         type: string
         required: false
         default: ''
@@ -34,7 +34,7 @@ on:
         type: string
         required: true
       ENABLE_ADDONS:
-        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        description: 'Enable save addon images (e.g. clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
         type: string
         required: false
         default: ''
@@ -56,26 +56,33 @@ env:
 
 jobs:
   save-images:
-    runs-on: [ self-hosted, arm-yq-runner ]
+    runs-on: ubuntu-22.04
     outputs:
       release-version: ${{ steps.get-version.outputs.release-version }}
       image-name: ${{ steps.get-image-name.outputs.image-name }}
-      runner-name: ${{ steps.get_runner_name.outputs.runner-name }}
     steps:
-      - name: setup ossutil
-        continue-on-error: true
+      - name: Free disk space
         run: |
-          sudo apt-get update
-          sudo apt-get install unzip
-          sudo -v ; curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
-
-      - name: ossutil config
-        env:
-          OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
-          OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
-        run: |
-          ossutil config --access-key-id="${{ env.OSS_KEY_ID }}" --access-key-secret="${{ env.OSS_KEY_SECRET }}" --endpoint="${{ env.OSS_ENDPOINT }}"
-
+          echo "Free space first:"
+          df -h
+          
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
+          
+          sudo mkdir -p /mnt/new-storage
+          sudo touch /etc/docker/daemon.json
+          sudo tee /etc/docker/daemon.json <<EOF
+          {
+            "data-root": "/mnt/new-storage"
+          }
+          EOF
+          sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
+          
       - name: get version
         id: get-version
         run: |
@@ -95,7 +102,7 @@ jobs:
           ref: ${{ steps.get-version.outputs.release-version }}
 
       - uses: docker/setup-qemu-action@v3
-      - if: ${{ env.DOCKER_USER != '' && env.DOCKER_PASSWORD != '' && (inputs.ENABLE_ADDONS == 'damengdb' || inputs.ENABLE_ADDONS == 'goldendb') }}
+      - if: ${{ env.DOCKER_USER != '' && env.DOCKER_PASSWORD != '' && (inputs.ENABLE_ADDONS == 'damengdb' || inputs.ENABLE_ADDONS == 'goldendb' || inputs.ENABLE_ADDONS == 'oceanbase' || inputs.ENABLE_ADDONS == 'hadoop' || inputs.ENABLE_ADDONS == 'hive' || inputs.ENABLE_ADDONS == 'kubeblocks-enterprise' || inputs.ENABLE_ADDONS == 'ape-local-csi-driver' || inputs.ENABLE_ADDONS == '') }}
         name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -130,8 +137,17 @@ jobs:
           ENABLE_ADDONS="${{ inputs.ENABLE_ADDONS }}"
        
           echo "save manifests images"
-          bash .github/scripts/manifests_images_save.sh "${MANIFESTS_FILE}" "${VALUES_FILE}" "${RELEASE_VERSION}" "${IMAGES_NAME}" "${IS_ADDON}" "${ENABLE_ADDONS}"
+          bash .github/scripts/manifests_images_save.sh "${MANIFESTS_FILE}" "${VALUES_FILE}" "${RELEASE_VERSION}" "${IMAGES_NAME}" "${IS_ADDON}" "${ENABLE_ADDONS}" "true"
+          
+          echo "Free space:"
+          df -h
 
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
+          
       - name: Upload manifests to oss
         run: |
           MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
@@ -160,7 +176,7 @@ jobs:
           upload_ret=0
           for i in {1..10}; do
               echo "ossutil cp ${IMAGE_PKG_NAME} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME}  --read-timeout=420 --retry-times=5
+              ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME}
               upload_ret=$?
           
               if [[ -d "ossutil_output" ]]; then
@@ -186,20 +202,46 @@ jobs:
           else
               exit 1
           fi
-
-      - name: get self runner name
-        id: get_runner_name
-        if: ${{ always() }}
-        run: |
-          echo runner-name=${RUNNER_NAME} >> $GITHUB_OUTPUT
-
-  delete-self-runner:
-    if: ${{ always() }}
-    needs: [ save-images ]
-    uses: apecloud-inc/apecloud-cd/.github/workflows/delete-self-runner.yml@v0.5.0
-    with:
-      RUNNER_NAME: "${{ needs.save-images.outputs.runner-name }}"
-    secrets: inherit
+          
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}
+              upload_ret=$?
+          
+              if [[ -d "ossutil_output" ]]; then
+                  ossutil_report_files=$(ls ossutil_output)
+                  if [[ -n "${ossutil_report_files}" ]]; then
+                      ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
+                      if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_MD} to oss error, retry..."
+                          cat "${ossutil_report_file_name}"
+                          rm -rf ossutil_output/ossutil_report_*.report
+                          upload_ret=1
+                      fi
+                  fi
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          fi
 
   save-result:
     runs-on: ubuntu-latest

@@ -1,0 +1,198 @@
+name: Save K8s Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      K8S_VERSION:
+        description: 'kubernetes-airgap version'
+        required: true
+        default: 'v1.33.3'
+        type: choice
+        options:
+          - v1.27.7
+          - v1.30.13
+          - v1.32.5
+          - v1.33.3
+      SEALOS_VERSION:
+        description: 'sealos version'
+        required: false
+        default: 'v5.1.0-rc3'
+      HELM_VERSION:
+        description: 'helm version'
+        required: false
+        default: 'v3.18.4'
+      METRICS_SERVER_VERSION:
+        description: 'metrics-server version'
+        required: false
+        default: 'v0.7.1'
+      CALICO_VERSION:
+        description: 'calico-airgap version'
+        required: false
+        default: 'v3.28.0'
+      COREDNS_VERSION:
+        description: 'coredns version'
+        required: false
+        default: 'v0.0.1'
+      OPENEBS_VERSION:
+        description: 'openebs version'
+        required: false
+        default: 'v3.10.0'
+
+
+run-name: save k8s:${{ inputs.K8S_VERSION }} sealos:${{ inputs.SEALOS_VERSION }}
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
+  OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+  OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
+  OSS_BUCKET: "kubeblocks-oss"
+
+jobs:
+  save-k8s-images:
+    name: save k8s images[${{ matrix.arch }}]
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [ amd64, arm64 ]
+    outputs:
+      amd64-result: ${{ steps.upload_to_oss.outputs.amd64-result }}
+      arm64-result: ${{ steps.upload_to_oss.outputs.arm64-result }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set k8s name
+        run: |
+          K8S_NAME="apecloud-kube-airgap"
+          if [[ "${{ matrix.arch }}" == "arm64" ]]; then
+              K8S_NAME="${K8S_NAME}-arm64"
+          fi
+          echo "K8S_NAME=${K8S_NAME}" >> $GITHUB_ENV
+
+      - name: save k8s images
+        env:
+          k8s_name: ${{ env.K8S_NAME }}
+          k8s_version: ${{ inputs.K8S_VERSION }}
+          sealos_version: ${{ inputs.SEALOS_VERSION }}
+          helm_version: ${{ inputs.HELM_VERSION }}
+          metrics_server_version: ${{ inputs.METRICS_SERVER_VERSION }}
+          calico_version: ${{ inputs.CALICO_VERSION }}
+          coredns_version: ${{ inputs.COREDNS_VERSION }}
+          openebs_version: ${{ inputs.OPENEBS_VERSION }}
+        run: |
+          bash .github/scripts/save_k8s_images.sh
+
+      - name: get artifact size
+        run: |
+          sealos images
+          du -sh ${{ env.K8S_NAME }}-${{ inputs.K8S_VERSION }}.tar.gz
+
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
+
+      - name: Upload artifact to oss
+        id: upload_to_oss
+        run: |
+          IMAGE_PKG_NAME="${{ env.K8S_NAME }}-${{ inputs.K8S_VERSION }}.tar.gz"
+          ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/artifact/${IMAGE_PKG_NAME}
+          upload_ret=$?
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME} to oss successfully"
+          else
+              upload_result="1"
+              echo "upload_result=${upload_result}" >> $GITHUB_OUTPUT
+              exit 1
+          fi
+          
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/artifact/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/artifact/${IMAGE_PKG_NAME_MD}
+              upload_ret=$?
+             
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          fi
+          
+          upload_result="0"
+          echo "upload_result=${upload_result}" >> $GITHUB_OUTPUT
+
+  save-result:
+    runs-on: ubuntu-latest
+    needs: [ save-k8s-images ]
+    if: ${{ always() }}
+    outputs:
+      image-amd64-pkg-name: ${{ steps.get_save_result.outputs.image_amd64_pkg_name }}
+      image-arm64-pkg-name: ${{ steps.get_save_result.outputs.image_arm64_pkg_name }}
+      save-amd64-result: ${{ steps.get_save_result.outputs.save_amd64_result }}
+      save-arm64-result: ${{ steps.get_save_result.outputs.save_arm64_result }}
+    steps:
+      - name: get save result
+        id: get_save_result
+        run: |
+          K8S_NAME="apecloud-kube-airgap"
+          # amd64
+          SAVE_RESULT="error"
+          IMAGE_PKG_NAME="${K8S_NAME}-${{ inputs.K8S_VERSION }}.tar.gz"
+          if [[ "${{ needs.save-k8s-images.result }}" == "success" || "${{ needs.save-k8s-images.amd64-result }}" == "0" ]]; then
+              SAVE_RESULT="success"
+              IMAGE_PKG_NAME="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/artifact/${IMAGE_PKG_NAME}"
+          fi
+          echo 'save_amd64_result='$SAVE_RESULT >> $GITHUB_OUTPUT
+          echo 'image_amd64_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
+          
+          # arm64
+          SAVE_RESULT="error"
+          IMAGE_PKG_NAME="${K8S_NAME}-arm64-${{ inputs.K8S_VERSION }}.tar.gz"
+          if [[ "${{ needs.save-k8s-images.result }}" == "success" || "${{ needs.save-k8s-images.arm64-result }}" == "0" ]]; then
+              SAVE_RESULT="success"
+              IMAGE_PKG_NAME="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/artifact/${IMAGE_PKG_NAME}"
+          fi
+          echo 'save_arm64_result='$SAVE_RESULT >> $GITHUB_OUTPUT
+          echo 'image_arm64_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
+
+  send-amd64-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "save k8s image ${{ needs.save-result.outputs.image-amd64-pkg-name }} ${{ needs.save-result.outputs.save-amd64-result }}"
+    secrets: inherit
+
+  send-arm64-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "save k8s image ${{ needs.save-result.outputs.image-arm64-pkg-name }} ${{ needs.save-result.outputs.save-arm64-result }}"
+    secrets: inherit

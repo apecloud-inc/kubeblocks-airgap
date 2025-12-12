@@ -17,7 +17,7 @@ echo "APP_NAME:"${APP_NAME}
 echo "CHART_FILE_PATH:"${CHART_FILE_PATH}
 echo "APP_VERSION:"${APP_VERSION_TMP}
 echo "CLOUD_VERSION:"${APP_VERSION_TMP}
-echo "KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION_TMP}
+echo "KUBEBLOCKS_VERSIONS:"${KUBEBLOCKS_VERSION_TMP}
 echo "GEMINI_VERSION:"${GEMINI_VERSION_TMP}
 echo "OTELD_VERSION:"${OTELD_VERSION_TMP}
 echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION_TMP}
@@ -75,6 +75,8 @@ change_charts_version() {
         fi
         HEAD_APP_VERSION="${APP_VERSION%%.*}"
         if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -85,11 +87,11 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-installer:.*/docker.io\/apecloud\/kb-cloud-installer:${APP_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/apecloud-charts:.*/docker.io\/apecloud\/apecloud-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/apecloud-addon-charts:${HEAD_APP_VERSION}.*/docker.io\/apecloud\/apecloud-addon-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         else
+            sed -i "s/^# kubeblocks-enterprise .*/# kubeblocks-enterprise ${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^# kubeblocks-enterprise-patch .*/# kubeblocks-enterprise-patch ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^# KubeBlocks-Cloud .*/# KubeBlocks-Cloud ${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/openconsole:.*[0-9]/docker.io\/apecloud\/openconsole:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/apiserver:.*/docker.io\/apecloud\/apiserver:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -100,37 +102,35 @@ change_charts_version() {
             sed -i "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/kb-cloud-installer:.*/docker.io\/apecloud\/kb-cloud-installer:${APP_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/apecloud-charts:.*/docker.io\/apecloud\/apecloud-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/apecloud-addon-charts:${HEAD_APP_VERSION}.*/docker.io\/apecloud\/apecloud-addon-charts:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/kb-cloud-hook:.*/docker.io\/apecloud\/kb-cloud-hook:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/kb-cloud-docs:.*/docker.io\/apecloud\/kb-cloud-docs:${APP_VERSION}/" $IMAGE_FILE_PATH
         fi
     fi
 
-    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$KUBEBLOCKS_VERSION" ]]; then
-        echo "change KubeBlocks images tag"
-        if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
-            KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION/v/}"
-        fi
-        if [[ "$UNAME" == "Darwin" ]]; then
-            sed -i '' "s/^# KubeBlocks .*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-tools:0.8.2/#docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks:.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-dataprotection:.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-datascript:.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-tools:.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-charts:.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^#docker.io\/apecloud\/kubeblocks-tools:0.8.2/docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $IMAGE_FILE_PATH
-        else
-            sed -i "s/^# KubeBlocks .*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-tools:0.8.2/#docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks:.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-dataprotection:.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-datascript:.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-tools:.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-charts:.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^#docker.io\/apecloud\/kubeblocks-tools:0.8.2/docker.io\/apecloud\/kubeblocks-tools:0.8.2/" $IMAGE_FILE_PATH
-        fi
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch" || "$APP_NAME" == "gemini") && -n "$KUBEBLOCKS_VERSIONS" ]]; then
+        for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
+            if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
+                KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION/v/}"
+            fi
+            IFS='.' read -r major_v minor_v rest_v <<< "${KUBEBLOCKS_VERSION}"
+            KUBEBLOCKS_VERSION_HEAD="$major_v.$minor_v."
+            echo "change KubeBlocks images tag"
+            if [[ "$UNAME" == "Darwin" ]]; then
+                sed -i '' "s/^# KubeBlocks v${KUBEBLOCKS_VERSION_HEAD}.*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i '' "s/^docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+            else
+                sed -i "s/^# KubeBlocks v${KUBEBLOCKS_VERSION_HEAD}.*/# KubeBlocks v${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i "s/^docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-dataprotection:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-datascript:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-tools:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+                sed -i "s/^docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION_HEAD}.*/docker.io\/apecloud\/kubeblocks-charts:${KUBEBLOCKS_VERSION}/" $IMAGE_FILE_PATH
+            fi
+        done
     fi
 
     if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$GEMINI_VERSION" ]]; then
@@ -200,15 +200,15 @@ change_charts_version() {
         fi
     fi
 
-    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$CUBETRAN_CORE_VERSION" ]]; then
-        echo "change cubetran-core images tag"
-        imageFiles=("gemini.txt" "kubeblocks-enterprise.txt")
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$APE_DTS_VERSION" ]]; then
+        echo "change ape-dts images tag"
+        imageFiles=("gemini.txt")
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             else
-                sed -i "s/^docker.io\/apecloud\/cubetran-core:.*/docker.io\/apecloud\/cubetran-core:${CUBETRAN_CORE_VERSION}/" $image_file_path_tmp
+                sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
             fi
         done
     fi
@@ -232,7 +232,7 @@ tar_charts_package() {
         echo "no found tar charts file"
         return
     fi
-    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps ${KB_CHART_NAME}/scripts
+    mkdir -p ${KB_CHART_NAME}/kubeblocks-image-list ${KB_CHART_NAME}/apps ${KB_CHART_NAME}/scripts ${KB_CHART_NAME}/crds
 
     image_file_path=.github/images/${APP_NAME}.txt
     change_charts_version "$image_file_path"
@@ -242,7 +242,7 @@ tar_charts_package() {
 
     echo "copy image-list.txt"
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" ]]; then
-        cp -r .github/images/*.txt ${KB_CHART_NAME}/kubeblocks-image-list/
+        cp -r .github/images/* ${KB_CHART_NAME}/kubeblocks-image-list/
 
         echo "copy apps yaml "
         cp -r .github/apps/* ${KB_CHART_NAME}/apps/
@@ -252,15 +252,22 @@ tar_charts_package() {
     else
         cp -r .github/images/${APP_NAME}.txt ${KB_CHART_NAME}/kubeblocks-image-list/
     fi
-    if [[ -n "${KUBEBLOCKS_VERSION}" && ("$APP_NAME" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks" ) ]]; then
-        echo "download Kubeblocks crds"
-        kb_version_tmp="${KUBEBLOCKS_VERSION}"
-        if [[ "${kb_version_tmp}" != "v"* ]]; then
-            kb_version_tmp="v${kb_version_tmp}"
-        fi
 
-        wget ${KB_REPO_URL}/${kb_version_tmp}/kubeblocks_crds.yaml -O kubeblocks_crds.yaml
-        mv kubeblocks_crds.yaml ${KB_CHART_NAME}
+    if [[ -n "${KUBEBLOCKS_VERSIONS}" && ("$APP_NAME" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks" ) ]]; then
+        for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
+            if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
+                KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION/v/}"
+            fi
+            echo "download Kubeblocks crds"
+            kb_version_tmp="${KUBEBLOCKS_VERSION}"
+            if [[ "${kb_version_tmp}" != "v"* ]]; then
+                kb_version_tmp="v${kb_version_tmp}"
+            fi
+
+            wget ${KB_REPO_URL}/${kb_version_tmp}/kubeblocks_crds.yaml -O kubeblocks_crds.yaml
+            mkdir -p ${KB_CHART_NAME}/crds/${KUBEBLOCKS_VERSION}
+            mv kubeblocks_crds.yaml ${KB_CHART_NAME}/crds/${KUBEBLOCKS_VERSION}/
+        done
     fi
 
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" ]]; then
@@ -278,13 +285,20 @@ tar_charts_package() {
         fi
     fi
 
-    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$KUBEBLOCKS_VERSION" ]]; then
-        echo "change KubeBlocks chart version"
-        if [[ "$UNAME" == "Darwin" ]]; then
-            sed -i '' "s/^kubeblocks:.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $CHART_FILE_PATH
-        else
-            sed -i "s/^kubeblocks:.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $CHART_FILE_PATH
-        fi
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$KUBEBLOCKS_VERSIONS" ]]; then
+        for KUBEBLOCKS_VERSION in $(echo "${KUBEBLOCKS_VERSIONS}" | sed 's/|/ /g'); do
+            if [[ "${KUBEBLOCKS_VERSION}" == "v"* ]]; then
+                KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION/v/}"
+            fi
+            IFS='.' read -r major_v minor_v rest_v <<< "${KUBEBLOCKS_VERSION}"
+            KUBEBLOCKS_VERSION_HEAD="$major_v.$minor_v."
+            echo "change KubeBlocks chart version"
+            if [[ "$UNAME" == "Darwin" ]]; then
+                sed -i '' "s/^kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $CHART_FILE_PATH
+            else
+                sed -i "s/^kubeblocks:${KUBEBLOCKS_VERSION_HEAD}.*/kubeblocks:${KUBEBLOCKS_VERSION}/" $CHART_FILE_PATH
+            fi
+        done
     fi
 
     if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$GEMINI_VERSION" ]]; then
@@ -320,10 +334,9 @@ tar_charts_package() {
             chart_version=${chart#*:}
 
             case "$chart_tmp" in
-                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"clickhouse"*|"damengdb"*|"elasticsearch"*|"gaussdb"*|"gbase"*|\
-                "kafka"*|"kingbase"*|"loki"*|"minio"*|"mssql"*|"mysql"*|"oceanbase"*|"postgresql"*|\
-                "qdrant"*|"redis"*|"starrocks"*|"victoria-metrics"*|"vastbase"*|"tidb"*|"rocketmq"*|\
-                "goldendb"*|"tdsql"*|"influxdb"*|"oracle"*|"greatsql"* )
+                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"damengdb"*|"gaussdb"*|"gbase"*|\
+                "kingbase"*|"mssql"*|"oceanbase"*|"starrocks"*|"vastbase"*|"goldendb"*|"tdsql"*|\
+                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*)
                     helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
@@ -366,51 +379,51 @@ check_manifests_version() {
         return
     fi
     APP_VERSION=$(yq e ".kubeblocks-cloud[0].version"  ${MANIFESTS_FILE})
-    KUBEBLOCKS_VERSION=$(yq e ".kubeblocks[0].version"  ${MANIFESTS_FILE})
+    KUBEBLOCKS_VERSIONS=$(yq e '[.kubeblocks[].version] | join("|")' ${MANIFESTS_FILE})
     GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
     APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
 
-    OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/oteld:")
+    OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
     if [[ -n "$OTELD_IMAGE" ]]; then
         OTELD_VERSION="${OTELD_IMAGE#*:}"
     fi
 
-    OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubeblocks-installer:")
+    OFFLINE_INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubeblocks-installer:" || true))
     if [[ -n "$OFFLINE_INSTALLER_IMAGE" ]]; then
         OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_IMAGE#*:}"
     fi
 
-    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/dms:")
+    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/dms:" || true))
     if [[ -n "$DMS_IMAGE" ]]; then
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
 
-    CUBETRAN_CORE_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/cubetran-core:")
-    if [[ -n "$CUBETRAN_CORE_IMAGE" ]]; then
-        CUBETRAN_CORE_VERSION="${CUBETRAN_CORE_IMAGE#*:}"
+    APE_DTS_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
+    if [[ -n "$APE_DTS_IMAGE" ]]; then
+        APE_DTS_VERSION="${APE_DTS_IMAGE#*:}"
     fi
 
-    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | grep "apecloud/kubebench:")
+    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
     if [[ -n "$KUBEBENCH_IMAGE" ]]; then
         KUBEBENCH_VERSION="${KUBEBENCH_IMAGE#*:}"
     fi
 
     echo "MANIFESTS APP_VERSION:"${APP_VERSION}
     echo "MANIFESTS CLOUD_VERSION:"${APP_VERSION}
-    echo "MANIFESTS KUBEBLOCKS_VERSION:"${KUBEBLOCKS_VERSION}
+    echo "MANIFESTS KUBEBLOCKS_VERSIONS:"${KUBEBLOCKS_VERSIONS}
     echo "MANIFESTS GEMINI_VERSION:"${GEMINI_VERSION}
     echo "MANIFESTS OTELD_VERSION:"${OTELD_VERSION}
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
-    echo "MANIFESTS CUBETRAN_CORE_VERSION:${CUBETRAN_CORE_VERSION}"
+    echo "MANIFESTS APE_DTS_VERSION:${APE_DTS_VERSION}"
     echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
 }
 
 main() {
     local UNAME=`uname -s`
     local APP_VERSION=${APP_VERSION_TMP}
-    local KUBEBLOCKS_VERSION="${KUBEBLOCKS_VERSION_TMP}"
+    local KUBEBLOCKS_VERSIONS="${KUBEBLOCKS_VERSION_TMP}"
     local GEMINI_VERSION="${GEMINI_VERSION_TMP}"
     local OTELD_VERSION="${OTELD_VERSION_TMP?}"
     local OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_VERSION_TMP}"
@@ -423,7 +436,7 @@ main() {
     local APP_PKG_NAME="${KB_CHART_NAME}-${APP_VERSION}.tar.gz"
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
-    local CUBETRAN_CORE_VERSION=""
+    local APE_DTS_VERSION=""
     local KUBEBENCH_VERSION=""
 
     check_manifests_version

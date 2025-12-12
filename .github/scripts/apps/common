@@ -94,13 +94,13 @@ existed() {
   local obj=$1 chart version
   chart=${obj%=*}
   version=${obj#*=}
-  helm -n "$NAMESPACE" list --short | grep "^$chart$" >/dev/null
+  helm -n "$NAMESPACE" list --short | (grep "^$chart$" || true) >/dev/null
 }
 released() {
   local obj=$1 chart version
   chart=${obj%=*}
   version=${obj#*=}
-  helm -n "$NAMESPACE" list | grep "$chart-$version" >/dev/null && existed "$obj"
+  helm -n "$NAMESPACE" list | (grep "$chart-$version" || true) >/dev/null && existed "$obj"
 }
 install() {
   local obj=$1 chart version

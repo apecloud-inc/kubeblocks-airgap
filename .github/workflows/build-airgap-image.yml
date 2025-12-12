@@ -9,7 +9,8 @@ on:
         default: 'kubeblocks'
         type: choice
         options:
-          - apecloud-mysql
+          - nebula
+          - tdengine
           - ape-local-csi-driver
           - calico
           - cilium

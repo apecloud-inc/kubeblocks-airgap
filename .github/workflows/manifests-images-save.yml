@@ -17,7 +17,7 @@ on:
           - false
           - true
       ENABLE_ADDONS:
-        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        description: 'Enable save addon images (e.g. clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
         type: string
         required: false
         default: ''
@@ -34,7 +34,7 @@ on:
         type: string
         required: true
       ENABLE_ADDONS:
-        description: 'Enable save addon images (e.g. apecloud-mysql|clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
+        description: 'Enable save addon images (e.g. clickhouse|elasticsearch|kafka|mongodb|mysql|oceanbase|postgresql|qdrant|rabbitmq|redis|starrocks|zookeeper|damengdb|kingbase)'
         type: string
         required: false
         default: ''
@@ -63,13 +63,14 @@ jobs:
     steps:
       - name: Free disk space
         run: |
-          sudo apt-get autoremove -y >/dev/null 2>&1
-          sudo apt-get autoclean -y >/dev/null 2>&1
-          sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
-          docker rmi $(docker image ls -aq) >/dev/null 2>&1
-          sudo swapoff -a
-          sudo rm -f /swapfile
+          echo "Free space first:"
           df -h
+          
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
           
           sudo mkdir -p /mnt/new-storage
           sudo touch /etc/docker/daemon.json
@@ -79,6 +80,8 @@ jobs:
           }
           EOF
           sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
 
       - name: get version
         id: get-version
@@ -98,6 +101,15 @@ jobs:
           path: apecloud
           token: ${{ env.GITHUB_TOKEN }}
           ref: ${{ steps.get-version.outputs.release-version }}
+
+      - uses: docker/setup-qemu-action@v3
+      - if: ${{ env.DOCKER_USER != '' && env.DOCKER_PASSWORD != '' && (inputs.ENABLE_ADDONS == 'damengdb' || inputs.ENABLE_ADDONS == 'goldendb' || inputs.ENABLE_ADDONS == 'oceanbase' || inputs.ENABLE_ADDONS == 'hadoop' || inputs.ENABLE_ADDONS == 'hive' || inputs.ENABLE_ADDONS == 'kubeblocks-enterprise' || inputs.ENABLE_ADDONS == 'ape-local-csi-driver' || inputs.ENABLE_ADDONS == '') }}
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DOCKER_REGISTRY_URL }}
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
       - name: get image name
         id: get-image-name
@@ -168,6 +180,35 @@ jobs:
           else
               exit 1
           fi
+          
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD}
+              upload_ret=$?
+          
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          fi
+          
 
   save-result:
     runs-on: ubuntu-latest

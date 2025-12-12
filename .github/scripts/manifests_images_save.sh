@@ -6,6 +6,7 @@ RELEASE_VERSION=${3:-""}
 KB_IMAGE_NAME=${4:-"kubeblocks-enterprise"}
 IS_ADDON=${5:-"false"}
 ENABLE_ADDONS=${6:-""}
+ARM64_IMAGE=${7:-"false"}
 
 
 pull_chart_images() {
@@ -14,9 +15,17 @@ pull_chart_images() {
     images_file_tmp=""
     for image in $(echo "$chart_images_tmp"); do
         repository="${SRC_REGISTRY}/${image}"
-        echo "pull image $repository"
+        if [[ "${ARM64_IMAGE}" == "true" ]]; then
+            echo "docker pull --platform linux/arm64 $repository"
+        else
+            echo "docker pull $repository"
+        fi
         for i in {1..10}; do
-            docker pull "$repository"
+            if [[ "${ARM64_IMAGE}" == "true" ]]; then
+                docker pull --platform linux/arm64 "$repository"
+            else
+                docker pull "$repository"
+            fi
             ret_msg=$?
             if [[ $ret_msg -eq 0 ]]; then
                 echo "$(tput -T xterm setaf 2)pull image $repository success$(tput -T xterm sgr0)"
@@ -103,7 +112,7 @@ save_charts_images() {
         echo "$(tput -T xterm setaf 1)Images file is empty!$(tput -T xterm sgr0)"
         return
     fi
-
+    df -h
     save_cmd="docker save ${images_file} | gzip > ${IMAGE_PKG_NAME} "
     echo "$save_cmd"
     save_flag=0

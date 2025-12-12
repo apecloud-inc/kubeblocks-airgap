@@ -9,27 +9,6 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - busybox
-          - apecloud-mcp
-          - apecloud-addon-charts
-          - kubeblocks-sealos-sailisi
-          - k3s
-          - kubernetes
-          - servicemirror
-          - kb-cloud-docs
-          - redisinsight
-          - dms
-          - redis-stack-server
-          - oteld
-          - gemini-oteld
-          - clickhouse-22.3
-          - minio-cpuv1
-          - kubebench-0.0.10
-          - cilium
-          - kubeblocks-installer
-          - kubeblocks-tools
-          - openconsole
-          - syncer
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
@@ -37,16 +16,18 @@ on:
           - cert-manager
           - gemini
           - ape-local-csi-driver
-          - apecloud-mysql
           - clickhouse
           - damengdb
+          - doris
           - influxdb
           - etcd
           - elasticsearch
           - gaussdb
           - gbase
           - goldendb
-          - greatsql
+          - greatdb
+          - hadoop
+          - hive
           - kafka
           - kata
           - kingbase
@@ -80,8 +61,6 @@ on:
           - starrocks-3.4.1
           - spiderpool
           - victoria-metrics
-          - xinference-cpu
-          - xinference-gpu
           - zookeeper
           - ingress-nginx
           - nvidia-device-plugin
@@ -90,13 +69,20 @@ on:
           - tdsql
           - tidb
           - vastbase
-          - mogdb
-          - polardbx
           - pulsar
           - calico
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
+      APP_DIR:
+        description: 'select addon dir'
+        required: false
+        default: ''
+        type: choice
+        options:
+          - ''
+          - '0.9'
+          - '1.0'
       APP_VERSION:
         description: 'app version'
         required: true
@@ -126,6 +112,7 @@ on:
         required: false
         default: ''
 
+
 run-name: save ${{ inputs.APP_NAME }}:${{ inputs.APP_VERSION }} ${{ inputs.ADD_IMAGES }}
 
 env:
@@ -145,32 +132,25 @@ jobs:
     steps:
       - name: Free disk space
         run: |
-          if [[ "${{ inputs.APP_NAME }}" == "mysql" || "${{ inputs.APP_NAME }}" == "starrocks" || "${{ inputs.APP_NAME }}" == "goldendb" || "${{ inputs.APP_NAME }}" == "dbdrag" || "${{ inputs.APP_NAME }}" == "elasticsearch" || "${{ inputs.APP_NAME }}" == "xinference-gpu" ]]; then
-              sudo apt-get autoremove -y >/dev/null 2>&1
-              sudo apt-get autoclean -y >/dev/null 2>&1
-              sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
-              docker rmi $(docker image ls -aq) >/dev/null 2>&1
-              sudo swapoff -a
-              sudo rm -f /swapfile
-              df -h
+          echo "Free space first:"
+          df -h
           
-              sudo mkdir -p /mnt/new-storage
-              sudo touch /etc/docker/daemon.json
-              sudo tee /etc/docker/daemon.json <<EOF
+          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
+          if [[ -n "${mnt_storage}" ]]; then
+            echo "Disk is full, please rerun the workflow."
+            exit 1
+          fi
+          
+          sudo mkdir -p /mnt/new-storage
+          sudo touch /etc/docker/daemon.json
+          sudo tee /etc/docker/daemon.json <<EOF
           {
             "data-root": "/mnt/new-storage"
           }
           EOF
-              sudo systemctl restart docker
-          elif [[ "${{ inputs.APP_NAME }}" == "kubeblocks-enterprise" || "${{ inputs.APP_NAME }}" == "starrocks"* || "${{ inputs.APP_NAME }}" == "mongodb" ]]; then
-              sudo apt-get autoremove -y >/dev/null 2>&1
-              sudo apt-get autoclean -y >/dev/null 2>&1
-              sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
-              docker rmi $(docker image ls -aq) >/dev/null 2>&1
-              sudo swapoff -a
-              sudo rm -f /swapfile
-              df -h
-          fi
+          sudo systemctl restart docker
+          echo "Free space second:"
+          df -h
 
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -184,6 +164,17 @@ jobs:
               RELEASE_VERSION="v${RELEASE_VERSION}"
           fi
           echo "release-version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: get images file
+        id: get-images-file
+        run: |
+          APP_DIR="${{ inputs.APP_DIR }}"
+          APP_NAME="${{ inputs.APP_NAME }}"
+          IMAGES_FILE=".github/images/${APP_NAME}.txt"
+          if [[ -n "${APP_DIR}" ]]; then
+              IMAGES_FILE=".github/images/${APP_DIR}/${APP_NAME}.txt"
+          fi
+          echo "images-file=${IMAGES_FILE}" >> $GITHUB_OUTPUT
 
       - name: Checkout apecloud Code
         uses: actions/checkout@v4
@@ -211,7 +202,8 @@ jobs:
           oteld_version: ${{ inputs.OTELD_VERSION }}
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
-          images_file: .github/images/${{ inputs.APP_NAME }}.txt
+          images_file: ${{ steps.get-images-file.outputs.images-file }}
+          platform: "linux/amd64"
         run: |
           bash .github/scripts/save_images.sh
 
@@ -222,8 +214,8 @@ jobs:
 
       - uses: manyuanrong/setup-ossutil@v2.0
         with:
-          access-key-id: "${{ secrets.OSS_KEY_ID }}"
-          access-key-secret: "${{ secrets.OSS_KEY_SECRET }}"
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
           endpoint: "${{ env.OSS_ENDPOINT }}"
 
       - name: Upload images to oss
@@ -238,6 +230,34 @@ jobs:
               echo "upload ${IMAGE_PKG_NAME} to oss successfully"
           else
               exit 1
+          fi
+          
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum ${IMAGE_PKG_NAME} > ${IMAGE_PKG_NAME_MD}
+              md5sum_check=$(md5sum -c ${IMAGE_PKG_NAME_MD})
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+          
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD}
+              upload_ret=$?
+             
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+          
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
           fi
 
   save-result:
@@ -271,3 +291,30 @@ jobs:
       TYPE: "2"
       CONTENT: "save image ${{ needs.save-result.outputs.image-pkg-name }} ${{ needs.save-result.outputs.save-result }}"
     secrets: inherit
+
+#  upload-md5-checksums:
+#    needs: [ save-app-images ]
+#    permissions:
+#      contents: write
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: auto release images
+#        run: |
+#          cmd="bash .github/scripts/trigger_workflow.sh "
+#          cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
+#          cmd=$cmd"--github-repo \"${{ github.repository }}\" "
+#          cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
+#          cmd=$cmd"--workflow-id \"save-md5-checksums.yml\" "
+#
+#          APP_NAME="${{ inputs.APP_NAME }}"
+#          RELEASE_VERSION="${{ inputs.APP_VERSION }}"
+#          if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+#              RELEASE_VERSION="v${RELEASE_VERSION}"
+#          fi
+#          if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "${RELEASE_VERSION}" ]]; then
+#              cmd=$cmd"--version \"${RELEASE_VERSION}\" "
+#          fi
+#
+#          echo "$cmd"
+#          eval "$cmd"
