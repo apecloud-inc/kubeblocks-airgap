@@ -1,0 +1,2 @@
+# clickhouse-backup-full v2.6.14
+docker.io/apecloud/clickhouse-backup-full:2.6.14
