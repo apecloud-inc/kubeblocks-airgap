@@ -69,7 +69,7 @@ docker.io/apecloud/apecloud-addon-charts:rocketmq-1.0.2
 docker.io/apecloud/apecloud-addon-charts:starrocks-0.9.1
 docker.io/apecloud/apecloud-addon-charts:starrocks-1.0.0
 docker.io/apecloud/apecloud-addon-charts:tidb-0.9.0
-docker.io/apecloud/apecloud-addon-charts:tidb-1.0.1-beta.0
+docker.io/apecloud/apecloud-addon-charts:tidb-1.0.2
 docker.io/apecloud/apecloud-addon-charts:vastbase-0.9.0
 docker.io/apecloud/apecloud-addon-charts:vastbase-1.0.0
 docker.io/apecloud/apecloud-addon-charts:victoria-metrics-0.9.1
