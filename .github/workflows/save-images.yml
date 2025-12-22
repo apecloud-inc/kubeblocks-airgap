@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - datasafed
           - clickhouse-backup-full
           - dms
           - kubeblocks-enterprise

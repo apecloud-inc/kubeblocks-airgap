@@ -1,0 +1,2 @@
+# datasafed v0.2.4
+docker.io/apecloud/datasafed:0.2.4
