@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - customsuites
           - nfs-proxy
           - dmdb-exporter
           - datasafed

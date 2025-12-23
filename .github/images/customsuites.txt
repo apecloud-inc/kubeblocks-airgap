@@ -1,0 +1,2 @@
+# customsuites latest
+docker.io/apecloud/customsuites:latest
