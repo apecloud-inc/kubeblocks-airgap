@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - nfs-proxy
           - dmdb-exporter
           - datasafed
           - clickhouse-backup-full

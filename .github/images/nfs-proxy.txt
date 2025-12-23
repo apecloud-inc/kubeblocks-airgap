@@ -1,0 +1,2 @@
+# nfs-proxy v0.1.0
+docker.io/apecloud/nfs-proxy:0.1.0
