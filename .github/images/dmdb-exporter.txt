@@ -1,0 +1,2 @@
+# dmdb-exporter v0.1.2
+docker.io/apecloud/dmdb-exporter:0.1.2

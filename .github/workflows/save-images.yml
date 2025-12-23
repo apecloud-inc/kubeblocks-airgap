@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - dmdb-exporter
           - datasafed
           - clickhouse-backup-full
           - dms
