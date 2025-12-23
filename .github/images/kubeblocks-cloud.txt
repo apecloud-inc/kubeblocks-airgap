@@ -25,5 +25,6 @@ docker.io/apecloud/servicemirror:0.4.3
 docker.io/apecloud/busybox:latest
 docker.io/apecloud/netshoot:0.13
 docker.io/apecloud/curl:latest
+docker.io/apecloud/nfs-proxy:0.1.0
 # casdoor-helm-charts v0.1.4
 docker.io/apecloud/casdoor:v1.721.0
