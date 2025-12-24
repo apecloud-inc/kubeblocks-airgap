@@ -1,3 +1,4 @@
-# kingbase v1.0.1
+# kingbase v1.0.3
 docker.io/apecloud/kingbase:v008r006c009b0014-unit
+docker.io/apecloud/kingbase:v009r001c010b0004
 docker.io/apecloud/kmonitor:v2.4.0-unit
