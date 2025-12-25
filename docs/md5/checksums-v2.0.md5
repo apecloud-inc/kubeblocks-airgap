@@ -113,8 +113,8 @@ bb064c2ede33b5b8c53cb493d84557fe  postgresql-v1.0.2.tar.gz
 7ab4b9fab994be21c5a4a23135c4b5df  qdrant-v1.0.2-arm64.tar.gz
 b4f794009a666e86bb0058e3a883db20  rabbitmq-v1.0.2.tar.gz
 4570358f2dc9fe11d42f8db000ae8adc  rabbitmq-v1.0.2-arm64.tar.gz
-a7a8a86f24f96c8ca0216236e4c5273d  redis-v1.0.2.tar.gz
-571f11b0c49329352722d0c3899a5b35  redis-v1.0.2-arm64.tar.gz
+9afdeca3d508284a718e4d3c77780a19  redis-v1.0.2.tar.gz
+888ad4aa6fcede7aa1db8a15f6a52781  redis-v1.0.2-arm64.tar.gz
 3c48d71f3955ee1a3a2e6ea2cc2b3304  rocketmq-v1.0.2.tar.gz
 149bca63edfd52617ba9ccb103ac1c78  rocketmq-v1.0.2-arm64.tar.gz
 ac78bdde2a859c260346aa9e8a7e245f  starrocks-v1.0.0.tar.gz
@@ -140,10 +140,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 d3dc7b16aedc8d2c8ed8ee170df6d88a  kubebench-v0.0.12.tar.gz
 d524548aca3c429ce880d6fac048ce09  kubebench-v0.0.12-arm64.tar.gz
-041005a1215434d647e474ff1e695316  kubeblocks-enterprise-v2.0.270.tar.gz
-fa36f97a46b543356f3de8adb3827151  kubeblocks-enterprise-v2.0.270-arm64.tar.gz
-7efcac6d48b0a98864bcaea3a276e487  kubeblocks-enterprise-patch-v2.0.270.tar.gz
-f6921edf380f33408e22eec43ed7e7f1  kubeblocks-enterprise-patch-v2.0.270-arm64.tar.gz
+a4d6fe6660dfdee995585674e3c92ecf  kubeblocks-enterprise-v2.0.270.tar.gz
+ceff41e16e2f4a98f00033c0c44d3814  kubeblocks-enterprise-v2.0.270-arm64.tar.gz
+527dde413815114746895fab0d683896  kubeblocks-enterprise-patch-v2.0.270.tar.gz
+128ec2f4c4804ad59a920930168e677a  kubeblocks-enterprise-patch-v2.0.270-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz
