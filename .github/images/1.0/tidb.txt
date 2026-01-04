@@ -1,4 +1,4 @@
-# tidb v1.0.1-beta.0
+# tidb v1.0.2
 docker.io/apecloud/pd:v6.5.12
 docker.io/apecloud/tidb:v6.5.12
 docker.io/apecloud/tikv:v6.5.12
