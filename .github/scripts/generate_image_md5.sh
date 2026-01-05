@@ -74,8 +74,8 @@ generate_checksums_md5() {
     for image_file in $(find ${IMAGES_PATH} -name "*.txt"|sort -V); do
         check_flag=0
         OSS_DIR="images"
-        if [[ "${image_file}" == *".github/images/0.9/"* || "${image_file}" == *".github/images/1.0/"*  ]]; then
-            OSS_DIR="images/cloud2.1"
+        if [[ "${image_file}" == *".github/images/0.9/"* || "${image_file}" == *".github/images/1.0/"* ]]; then
+            OSS_DIR="${OSS_DIR}/cloud2.1"
         fi
         image_file_name=$(basename ${image_file})
         case ${image_file_name} in
