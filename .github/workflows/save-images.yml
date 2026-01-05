@@ -23,7 +23,6 @@ on:
           - etcd
           - elasticsearch
           - gaussdb
-          - gbase
           - goldendb
           - greatdb
           - hadoop

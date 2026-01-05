@@ -1,5 +1,0 @@
-# starrocks v0.9.1
-docker.io/apecloud/cn-ubuntu:3.3.3
-docker.io/apecloud/fe-ubuntu:3.3.3
-docker.io/apecloud/starrocks-tools:3.2.2
-docker.io/apecloud/nginx:1.24.0

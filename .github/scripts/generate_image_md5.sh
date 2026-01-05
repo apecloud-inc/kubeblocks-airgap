@@ -86,7 +86,7 @@ generate_checksums_md5() {
             starrocks-3.3.3.txt|starrocks-3.4.1.txt|xinference-cpu.txt|xinference-gpu.txt)
                 check_flag=1
             ;;
-            mysql.txt|mongodb.txt|damengdb.txt|elasticsearch.txt)
+            mysql.txt|damengdb.txt|elasticsearch.txt)
                 check_flag=2
             ;;
         esac

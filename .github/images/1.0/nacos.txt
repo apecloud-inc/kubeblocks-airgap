@@ -1,0 +1,4 @@
+# nacos v1.0.2
+docker.io/apecloud/nacos-server:v3.1.1
+docker.io/apecloud/nacos-peer-finder-plugin:1.1
+docker.io/apecloud/percona-xtrabackup:8.0
