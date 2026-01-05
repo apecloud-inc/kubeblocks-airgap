@@ -26,6 +26,7 @@ env:
   CHART_ACCESS_USER: ${{ secrets.JIHULAB_ACCESS_USER }}
   CHART_ACCESS_TOKEN: ${{ secrets.JIHULAB_ACCESS_TOKEN }}
   MANIFESTS_FILE: "apecloud/manifests/deploy-manifests.yaml"
+  CHECK_ENGINE_FILE: "apecloud/fountain/hack/check-engine-images.py"
 
 jobs:
   images-check:
@@ -63,8 +64,9 @@ jobs:
           echo "check image files"
           bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/"
           
+          CHECK_ENGINE_FILE="${{ env.CHECK_ENGINE_FILE }}"
           echo "check addon 0.9 image files"
-          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/0.9"
+          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/0.9" "${CHECK_ENGINE_FILE}"
           
           echo "check addon 1.0 image files"
-          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/1.0"
+          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/1.0" "${CHECK_ENGINE_FILE}"

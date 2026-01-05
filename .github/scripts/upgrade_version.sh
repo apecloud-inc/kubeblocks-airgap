@@ -350,7 +350,7 @@ generate_release_note() {
     done
 
     # add addons images to release note
-    imageFiles=("clickhouse" "damengdb" "damengdb-arm" "elasticsearch" "elasticsearch-arm" "etcd" "gaussdb" "goldendb" "influxdb" "kafka" "kingbase" "loki" "milvus" "minio" "mongodb" "mssql" "mysql" "mysql-arm" "nebula" "oceanbase" "oceanbase-proxy" "oracle" "postgresql" "qdrant" "rabbitmq" "redis" "rocketmq" "starrocks" "tdengine" "tdsql" "tidb" "vastbase" "victoria-metrics" "zookeeper" "doris" "hadoop" "hive")
+    imageFiles=("clickhouse" "damengdb" "damengdb-arm" "elasticsearch" "elasticsearch-arm" "etcd" "gaussdb" "goldendb" "influxdb" "kafka" "kingbase" "loki" "milvus" "minio" "mongodb" "mssql" "mysql" "mysql-arm" "nebula" "oceanbase" "oceanbase-proxy" "oracle" "postgresql" "qdrant" "rabbitmq" "redis" "rocketmq" "starrocks" "tdengine" "tdsql" "tidb" "vastbase" "victoria-metrics" "zookeeper" "doris" "hadoop" "hive", "nacos")
     for imageFile in "${imageFiles[@]}"; do
         echo "add ${imageFile} to release note "
         image_file_path=.github/images/0.9/${imageFile}.txt
