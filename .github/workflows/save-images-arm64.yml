@@ -18,7 +18,7 @@ on:
           - gemini
           - elasticsearch-arm
           - mysql-arm
-          - mongodb-arm
+          - mongodb
           - damengdb-arm
           - clickhouse
           - gaussdb
