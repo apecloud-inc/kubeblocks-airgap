@@ -1,9 +1,9 @@
 kubeblocks:0.9.6-beta.7
 kubeblocks:1.0.2-beta.20
-kubeblocks-cloud:v2.0.286
-kb-cloud-installer:2.0.286
-gemini:0.10.5
-gemini-monitor:0.10.5
+kubeblocks-cloud:v2.1.0-alpha.189
+kb-cloud-installer:2.1.0-alpha.189
+gemini:0.11.0-beta.12
+gemini-monitor:0.11.0-beta.12
 casdoor-helm-charts:v1.721.0
 ingress-nginx:4.12.1
 metallb:0.14.4
@@ -15,8 +15,6 @@ kubechat:0.5.0-alpha.13
 cert-manager:v1.17.2
 metrics-server:3.12.0
 postgres-operator:1.12.2
-gbase:0.9.0
-gbase:1.0.1
 dify:0.5.1
 nvidia-device-plugin:0.17.0
 netshoot:0.1.0
@@ -30,6 +28,8 @@ elasticsearch:0.9.1
 elasticsearch:1.0.2
 gaussdb:0.9.2
 gaussdb:1.0.1
+greatdb:0.9.1
+greatdb:1.0.0
 hadoop:1.0.2
 hive:1.0.2
 kafka:0.9.2
@@ -39,15 +39,14 @@ kingbase:1.0.3
 loki:0.9.2
 loki:1.0.2
 minio:0.9.1
-minio:1.0.1-beta.0
+minio:1.0.2
 mongodb:0.9.6
 mongodb:1.0.2
 mssql:0.9.2
 mssql:1.0.2
 mysql:0.9.4
 mysql:1.0.2
-greatdb:0.9.1
-greatdb:1.0.0
+nacos:1.0.2
 oceanbase:0.9.5
 oceanbase:1.0.2
 oceanbase-proxy:0.9.2
@@ -78,7 +77,7 @@ goldendb:1.0.0
 tdsql:0.9.3
 tdsql:1.0.0
 influxdb:0.9.3
-influxdb:1.0.2
+influxdb:1.0.3-beta.0
 etcd:0.9.0
 etcd:1.0.2
 milvus:0.9.2
@@ -86,7 +85,7 @@ milvus:1.0.2-beta.0
 nebula:0.9.1
 nebula:1.0.1
 tdengine:0.9.1
-tdengine:1.0.1
+tdengine:1.0.2
 oracle:0.9.0
 oracle:1.0.2
 kubebench:0.0.1

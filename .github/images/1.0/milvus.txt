@@ -1,8 +1,6 @@
 # milvus v1.0.2-beta.0
 docker.io/apecloud/os-shell:11-debian-11-r90
-docker.io/apecloud/milvus-operator:v0.8.4
 docker.io/apecloud/milvus-operator:v0.9.17
-docker.io/apecloud/milvus:v2.3.2
 docker.io/apecloud/milvus:v2.5.13
 docker.io/apecloud/minio:RELEASE.2022-03-17T06-34-49Z
 docker.io/apecloud/milvus-backup:v0.5.9-yq
