@@ -1,4 +1,4 @@
-# tdengine v1.0.1
+# tdengine v1.0.2
 docker.io/apecloud/tdengine:3.3.6.13
 docker.io/apecloud/tsdb:3.3.7.5
 docker.io/apecloud/tsdb:3.3.8.8

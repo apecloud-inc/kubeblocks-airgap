@@ -85,7 +85,7 @@ milvus:1.0.2-beta.0
 nebula:0.9.1
 nebula:1.0.1
 tdengine:0.9.1
-tdengine:1.0.1
+tdengine:1.0.2
 oracle:0.9.0
 oracle:1.0.2
 kubebench:0.0.1
