@@ -42,6 +42,7 @@ on:
           - mysql
           - metallb
           - metrics-server
+          - nacos
           - nebula
           - oceanbase
           - oceanbase-proxy

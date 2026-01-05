@@ -35,6 +35,7 @@ on:
           - minio
           - metallb
           - mssql
+          - nacos
           - nebula
           - oceanbase
           - postgresql
