@@ -57,12 +57,59 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: ${{ env.HELM_VERSION }}
+          
+      - name: Update version
+        run: |
+          MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
+          RELEASE_VERSION="${{ inputs.RELEASE_VERSION }}"
+          
+          if [[ "${RELEASE_VERSION}" != "v"* ]]; then
+              RELEASE_VERSION=v"${RELEASE_VERSION}"
+          fi
+          KUBEBLOCKS_VERSIONS=$(yq e '[.kubeblocks[].version] | join("|")' ${MANIFESTS_FILE})
+          GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
+          OTELD_VERSION=""
+          INSTALLER_VERSION=""
+          DMS_VERSION=""
+          OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
+          if [[ -n "$OTELD_IMAGE" ]]; then
+              OTELD_VERSION="${OTELD_IMAGE#*:}"
+          fi
+          INSTALLER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubeblocks-installer:" || true))
+          if [[ -n "$INSTALLER_IMAGE" ]]; then
+              INSTALLER_VERSION="${INSTALLER_IMAGE#*:}"
+          fi
+          DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/dms:" || true))
+          if [[ -n "$DMS_IMAGE" ]]; then
+              DMS_VERSION="${DMS_IMAGE#*:}"
+          fi
+          
+          update_version_cmd="bash .github/scripts/upgrade_version.sh --type 1 --manifests-file ${MANIFESTS_FILE}"
+          update_version_cmd="${update_version_cmd} --cloud-version ${RELEASE_VERSION} "
+          if [[ -n "${KUBEBLOCKS_VERSIONS}" ]]; then
+              update_version_cmd="${update_version_cmd} --kubeblocks-version \"${KUBEBLOCKS_VERSIONS}\" "
+          fi
+          if [[ -n "${GEMINI_VERSION}" ]]; then
+              update_version_cmd="${update_version_cmd} --gemini-version ${GEMINI_VERSION} "
+          fi
+          if [[ -n "${OTELD_VERSION}" ]]; then
+              update_version_cmd="${update_version_cmd} --oteld-version ${OTELD_VERSION} "
+          fi
+          if [[ -n "${INSTALLER_VERSION}" ]]; then
+              update_version_cmd="${update_version_cmd} --installer-version ${INSTALLER_VERSION} "
+          fi
+          if [[ -n "${DMS_VERSION}" ]]; then
+              update_version_cmd="${update_version_cmd} --dms-version ${DMS_VERSION} "
+          fi
+          
+          echo "${update_version_cmd}"
+          eval "${update_version_cmd}"
 
       - name: images txt check
         run: |
           MANIFESTS_FILE="${{ env.MANIFESTS_FILE }}"
           echo "check image files"
-          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images/"
+          bash .github/scripts/airgap_charts_image_check.sh "${MANIFESTS_FILE}" ".github/images"
           
           CHECK_ENGINE_FILE="${{ env.CHECK_ENGINE_FILE }}"
           echo "check addon 0.9 image files"
