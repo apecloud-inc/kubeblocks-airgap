@@ -1,6 +1,6 @@
 #!/bin/bash
 MANIFESTS_FILE=${1:-""}
-IMAGES_TXT_DIR=${2:-".github/images/"}
+IMAGES_TXT_DIR=${2:-".github/images"}
 CHECK_ENGINE_FILE=${3:-"./apecloud/fountain/hack/check-engine-images.py"}
 ADD_CHART=${4:-"true"}
 SKIP_DELETE_FILE=${5:-""}
@@ -209,7 +209,7 @@ check_charts_images() {
             ;;
         esac
 
-        if [[ -z "${check_chart_name}" || "${check_chart_name}" != "${chart_name}" || $check_skip -eq 1 ]]; then
+        if [[ -z "${check_chart_name}" || "${check_chart_name}" != "${chart_name}" || $check_skip -eq 1 || "${check_chart_name}" == "kubeblocks-enterprise-patch" ]]; then
             continue
         fi
 
@@ -217,7 +217,7 @@ check_charts_images() {
         is_enterprise=$(yq e "."${chart_name}"[0].isEnterprise"  ${MANIFESTS_FILE})
         chart_version=$(head -n 1 "${image_txt_path}" | awk '{print $3}')
         if [[ -z "${chart_version}" ]]; then
-            if [[ "${IMAGES_TXT_DIR}" == ".github/images/" ]]; then
+            if [[ "${IMAGES_TXT_DIR}" == ".github/images" ]]; then
                 chart_version=$(yq e "."${chart_name}"[0].version"  ${MANIFESTS_FILE})
             else
                 chart_versions=$(yq e '[.'${chart_name}'[].version] | join("|")' ${MANIFESTS_FILE})
@@ -241,7 +241,7 @@ check_charts_images() {
             if [[ -z "${chart_version}" ]]; then
                 continue
             fi
-        else
+        elif [[ "${IMAGES_TXT_DIR}" != ".github/images" ]]; then
             chart_versions=$(yq e '[.'${chart_name}'[].version] | join("|")' ${MANIFESTS_FILE})
             chart_index=0
             for chart_version_tmp in $(echo "$chart_versions" | sed 's/|/ /g'); do
