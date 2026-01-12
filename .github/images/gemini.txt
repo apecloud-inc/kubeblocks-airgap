@@ -1,8 +1,8 @@
-# Gemini v0.11.0-beta.13
-docker.io/apecloud/gemini:0.11.0-beta.13
-docker.io/apecloud/gemini-tools:0.11.0-beta.13
-docker.io/apecloud/easymetrics:0.11.0-beta.13
-docker.io/apecloud/sla:0.11.0-beta.13
+# Gemini v0.11.0-beta.14
+docker.io/apecloud/gemini:0.11.0-beta.14
+docker.io/apecloud/gemini-tools:0.11.0-beta.14
+docker.io/apecloud/easymetrics:0.11.0-beta.14
+docker.io/apecloud/sla:0.11.0-beta.14
 docker.io/apecloud/busybox:1.36
 docker.io/apecloud/vmalert:v1.95.1
 docker.io/apecloud/alertmanager:v0.28.0
@@ -11,7 +11,7 @@ docker.io/apecloud/configmap-reload:v0.5.0
 docker.io/apecloud/kubeblocks-tools:0.8.2
 docker.io/apecloud/cubetran-platform:0.6.4
 docker.io/apecloud/cubetran-sidecar:0.1.2
-docker.io/apecloud/ape-dts:2.0.25
+docker.io/apecloud/ape-dts:2.0.26-alpha.1
 docker.io/apecloud/postgresql:14
 docker.io/apecloud/mysql:8.0.33
 docker.io/apecloud/mongo:6.0.6
