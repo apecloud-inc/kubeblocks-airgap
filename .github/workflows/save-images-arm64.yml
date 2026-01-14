@@ -38,6 +38,7 @@ on:
           - nacos
           - nebula
           - oceanbase
+          - oceanbase-arm
           - postgresql
           - qdrant
           - redis
