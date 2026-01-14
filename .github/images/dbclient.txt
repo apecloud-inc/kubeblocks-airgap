@@ -1,0 +1,2 @@
+# dbclient v0.6.0
+docker.io/apecloud/dbclient:0.6.0
