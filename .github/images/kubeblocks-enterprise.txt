@@ -1,17 +1,17 @@
-# kubeblocks-enterprise v2.1.0-alpha.195
-# KubeBlocks-Cloud v2.1.0-alpha.195
+# kubeblocks-enterprise v2.1.10
+# KubeBlocks-Cloud v2.1.10
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/openconsole:v2.1.0-alpha.195
-docker.io/apecloud/openconsole:v2.1.0-alpha.195-console
-docker.io/apecloud/openconsole:v2.1.0-alpha.195-admin
-docker.io/apecloud/apiserver:v2.1.0-alpha.195
-docker.io/apecloud/cubetran-front:v2.1.0-alpha.195
-docker.io/apecloud/cr4w:v2.1.0-alpha.195
-docker.io/apecloud/kb-cloud-hook:v2.1.0-alpha.195
-docker.io/apecloud/kb-cloud-docs:v2.1.0-alpha.195
-docker.io/apecloud/kubeblocks-installer:v2.1.0-alpha.195-offline
-docker.io/apecloud/kb-cloud-installer:v2.1.0-alpha.195
-docker.io/apecloud/dms:0.0.3-alpha.22
+docker.io/apecloud/openconsole:v2.1.10
+docker.io/apecloud/openconsole:v2.1.10-console
+docker.io/apecloud/openconsole:v2.1.10-admin
+docker.io/apecloud/apiserver:v2.1.10
+docker.io/apecloud/cubetran-front:v2.1.10
+docker.io/apecloud/cr4w:v2.1.10
+docker.io/apecloud/kb-cloud-hook:v2.1.10
+docker.io/apecloud/kb-cloud-docs:v2.1.10
+docker.io/apecloud/kubeblocks-installer:v2.1.10-offline
+docker.io/apecloud/kb-cloud-installer:v2.1.10
+docker.io/apecloud/dms:0.0.3-alpha.24
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.0
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.70.0
@@ -116,18 +116,18 @@ docker.io/apecloud/kubeblocks-dataprotection:1.0.2-beta.20
 docker.io/apecloud/kubeblocks-tools:1.0.2-beta.20
 docker.io/apecloud/kubeblocks-charts:1.0.2-beta.20
 docker.io/apecloud/datasafed:0.2.3
-# Gemini v0.11.0-beta.12
-docker.io/apecloud/gemini:0.11.0-beta.12
-docker.io/apecloud/gemini-tools:0.11.0-beta.12
-docker.io/apecloud/easymetrics:0.11.0-beta.12
-docker.io/apecloud/sla:0.11.0-beta.12
+# Gemini v0.11.0-beta.15
+docker.io/apecloud/gemini:0.11.0-beta.15
+docker.io/apecloud/gemini-tools:0.11.0-beta.15
+docker.io/apecloud/easymetrics:0.11.0-beta.15
+docker.io/apecloud/sla:0.11.0-beta.15
 docker.io/apecloud/busybox:1.36
 docker.io/apecloud/vmalert:v1.95.1
 docker.io/apecloud/alertmanager:v0.28.0
 docker.io/apecloud/servicemirror:0.4.4
 docker.io/apecloud/configmap-reload:v0.5.0
 docker.io/apecloud/kubeblocks-tools:0.8.2
-docker.io/apecloud/cubetran-platform:0.6.4
+docker.io/apecloud/cubetran-platform:0.6.5
 docker.io/apecloud/cubetran-sidecar:0.1.2
 docker.io/apecloud/ape-dts:2.0.25
 docker.io/apecloud/postgresql:14
