@@ -27,6 +27,8 @@ env:
   CHART_ACCESS_TOKEN: ${{ secrets.JIHULAB_ACCESS_TOKEN }}
   MANIFESTS_FILE: "apecloud/manifests/deploy-manifests.yaml"
   CHECK_ENGINE_FILE: "apecloud/fountain/hack/check-engine-images.py"
+  HELM_ENTERPRISE_USERNAME: ${{ secrets.JIHULAB_ACCESS_USER }}
+  HELM_ENTERPRISE_PASSWORD: ${{ secrets.JIHULAB_ACCESS_TOKEN }}
 
 jobs:
   images-check:

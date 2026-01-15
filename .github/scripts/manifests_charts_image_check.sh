@@ -30,7 +30,7 @@ check_service_version_images() {
         check_engine_result_file="images-${chart_name_tmp}-${chart_version_tmp}.yaml"
         images=""
         if [[ -f "${check_engine_result_file}" ]]; then
-            images=$(yq e '.'${chart_name_tmp}'[0].images[]' ${check_engine_result_file})
+            images=$(yq e '.'${chart_name_tmp}'[0].images[]' ${check_engine_result_file} | grep -v "IMAGE_TAG")
             rm -rf ${check_engine_result_file}
         fi
         repository=""

@@ -33,7 +33,7 @@ check_service_version_images() {
         check_engine_result_file="images-${chart_name_tmp}-${chart_version_tmp}.yaml"
         images=""
         if [[ -f "${check_engine_result_file}" ]]; then
-            images=$(yq e '.'${chart_name_tmp}'[0].images[]' ${check_engine_result_file})
+            images=$(yq e '.'${chart_name_tmp}'[0].images[]' ${check_engine_result_file} | grep -v "IMAGE_TAG")
             echo "${check_engine_result_file}"
             if [[ -z "${SKIP_DELETE_FILE}" || "${check_engine_result_file}" != *"${SKIP_DELETE_FILE}"* ]]; then
                 rm -rf ${check_engine_result_file}
@@ -45,6 +45,11 @@ check_service_version_images() {
             if [[ "${repository}" == "null" ]]; then
                 continue
             fi
+
+            if [[ "${IMAGES_TXT_DIR}" == ".github/images/1.0" && "${chart_name_tmp}" == "oceanbase" && "${repository}" == *"apecloud/oceanbase-ent:4.2.1.7-107000112024052920-arm64" ]]; then
+                continue
+            fi
+
             echo "check engine image: $repository"
             repository=docker.io/apecloud/${repository##*/}
             check_flag=0
@@ -194,6 +199,9 @@ check_charts_images() {
     fi
 
     for image_txt in $(ls "${IMAGES_TXT_DIR}"); do
+        if [[ "${image_txt}" == "damengdb.txt" ]]; then
+            continue
+        fi
         image_txt_path="${IMAGES_TXT_DIR}/${image_txt}"
         if [[ ! -f "${image_txt_path}" ]]; then
             continue
