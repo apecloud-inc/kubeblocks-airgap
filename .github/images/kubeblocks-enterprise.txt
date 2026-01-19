@@ -20,7 +20,7 @@ docker.io/apecloud/redis:7.0.5
 docker.io/apecloud/grafana:12.3.0
 docker.io/apecloud/loki:3.5.7
 docker.io/apecloud/alloy:v1.12.0
-docker.io/apecloud/victoria-metrics:v1.131.0
+docker.io/apecloud/victoria-metrics:v1.133.0
 docker.io/apecloud/bats:v1.4.1
 docker.io/apecloud/workflow-controller:v3.6.15
 docker.io/apecloud/argocli:v3.6.15
