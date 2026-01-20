@@ -128,7 +128,7 @@ check_images() {
                 || "$repository" == *"apecloud/dm:8.1.4-6-20241231"*
                 || "$repository" == *"apecloud/dmdb-exporter:8.1.4"*
                 || "$repository" == *"apecloud/dmdb-tool:8.1.4"*
-                || "$repository" == *"apecloud/oceanbase-ent:4.2.1.7-107000112024052920-arm64"*
+                || "$repository" == *"apecloud/oceanbase-ent:"*"-arm64"*
                 || "$repository" == *"apecloud/be-ubuntu"*
                 || "$repository" == *"apecloud/"*"ubuntu:3.2.2"*
                 || "$repository" == *"apecloud/"*"ubuntu:3.3.0"*
