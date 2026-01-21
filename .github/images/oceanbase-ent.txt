@@ -1,0 +1,2 @@
+# ocenabase-ent 4.2.5.7-107000092025103121-amd64
+docker.io/apecloud/oceanbase-ent:4.2.5.7-107000092025103121-amd64
