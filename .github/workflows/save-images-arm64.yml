@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - apecloud-mcp
           - customsuites
           - nfs-proxy
           - dmdb-exporter

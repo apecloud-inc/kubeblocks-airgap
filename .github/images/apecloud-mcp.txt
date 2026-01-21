@@ -1,2 +1,2 @@
-# apecloud-mcp 1.1.0-alpha.4
-docker.io/apecloud/apecloud-mcp:1.1.0-alpha.4
+# apecloud-mcp 2.0.0-alpha.0
+docker.io/apecloud/apecloud-mcp:2.0.0-alpha.0
