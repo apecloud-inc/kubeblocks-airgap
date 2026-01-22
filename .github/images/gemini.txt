@@ -15,4 +15,4 @@ docker.io/apecloud/ape-dts:2.0.26-alpha.1
 docker.io/apecloud/postgresql:14
 docker.io/apecloud/mysql:8.0.33
 docker.io/apecloud/mongo:6.0.6
-docker.io/apecloud/oteld:0.11.0-beta.5
+docker.io/apecloud/oteld:0.11.0-beta.8
