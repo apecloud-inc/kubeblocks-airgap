@@ -46,7 +46,9 @@ check_service_version_images() {
                 continue
             fi
 
-            if [[ "${IMAGES_TXT_DIR}" == ".github/images/1.0" && "${chart_name_tmp}" == "oceanbase" && "${repository}" == *"apecloud/oceanbase-ent:4.2.1.7-107000112024052920-arm64" ]]; then
+            if [[ "${IMAGES_TXT_DIR}" == ".github/images/1.0"
+                && "${chart_name_tmp}" == "oceanbase"
+                && "${repository}" == *"apecloud/oceanbase-ent:"*"-arm64" ]]; then
                 continue
             fi
 
@@ -227,6 +229,10 @@ check_charts_images() {
         esac
 
         if [[ -z "${check_chart_name}" || "${check_chart_name}" != "${chart_name}" || $check_skip -eq 1 || "${check_chart_name}" == "kubeblocks-enterprise-patch" ]]; then
+            continue
+        fi
+
+        if [[ -n "${SKIP_DELETE_FILE}" && "${chart_name}" != "${SKIP_DELETE_FILE}" ]]; then
             continue
         fi
 
