@@ -1,16 +1,16 @@
-# kubeblocks-enterprise v2.1.60
-# KubeBlocks-Cloud v2.1.60
+# kubeblocks-enterprise v2.1.61
+# KubeBlocks-Cloud v2.1.61
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/openconsole:v2.1.60
-docker.io/apecloud/openconsole:v2.1.60-console
-docker.io/apecloud/openconsole:v2.1.60-admin
-docker.io/apecloud/apiserver:v2.1.60
-docker.io/apecloud/cubetran-front:v2.1.60
-docker.io/apecloud/cr4w:v2.1.60
-docker.io/apecloud/kb-cloud-hook:v2.1.60
-docker.io/apecloud/kb-cloud-docs:v2.1.60
-docker.io/apecloud/kubeblocks-installer:v2.1.60-offline
-docker.io/apecloud/kb-cloud-installer:v2.1.60
+docker.io/apecloud/openconsole:v2.1.61
+docker.io/apecloud/openconsole:v2.1.61-console
+docker.io/apecloud/openconsole:v2.1.61-admin
+docker.io/apecloud/apiserver:v2.1.61
+docker.io/apecloud/cubetran-front:v2.1.61
+docker.io/apecloud/cr4w:v2.1.61
+docker.io/apecloud/kb-cloud-hook:v2.1.61
+docker.io/apecloud/kb-cloud-docs:v2.1.61
+docker.io/apecloud/kubeblocks-installer:v2.1.61-offline
+docker.io/apecloud/kb-cloud-installer:v2.1.61
 docker.io/apecloud/dms:0.0.3-alpha.24
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.0
 docker.io/apecloud/ob-grpc-server:0.1.5
