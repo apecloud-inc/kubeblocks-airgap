@@ -1,9 +1,6 @@
-# KubeBlocks v0.9.5-beta.7
-docker.io/apecloud/kubeblocks:0.9.5-beta.7
-docker.io/apecloud/kubeblocks-dataprotection:0.9.5-beta.7
-docker.io/apecloud/kubeblocks-datascript:0.9.5-beta.7
-docker.io/apecloud/kubeblocks-tools:0.9.5-beta.7
-docker.io/apecloud/kubeblocks-charts:0.9.5-beta.7
-docker.io/apecloud/datasafed:0.2.0
-docker.io/apecloud/snapshot-controller:v6.2.1
-docker.io/apecloud/busybox:latest
+# KubeBlocks v1.0.2-beta.29
+docker.io/apecloud/kubeblocks:1.0.2-beta.29
+docker.io/apecloud/kubeblocks-dataprotection:1.0.2-beta.29
+docker.io/apecloud/kubeblocks-tools:1.0.2-beta.29
+docker.io/apecloud/kubeblocks-charts:1.0.2-beta.29
+docker.io/apecloud/datasafed:0.2.3
