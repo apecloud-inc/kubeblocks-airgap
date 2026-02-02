@@ -301,11 +301,11 @@ change_cloud_ape_dts_version() {
         echo "change ${imageFile} images tag"
         image_file_path=.github/images/${imageFile}
         if [[ "${imageFile}" == "kubeblocks-enterprise.txt" ]]; then
-            APE_DTS_VERSION_HEAD=${CLOUD_APE_DTS_VERSION%-*}
+            cloud_line=$(grep -n "apecloud/ape-dts" $image_file_path | head -1 | cut -d: -f1)
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION_HEAD}.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path
+                sed -i '' "${cloud_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path
             else
-                sed -i "s/^docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION_HEAD}.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path
+                sed -i "${cloud_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path
             fi
         else
             if [[ "$UNAME" == "Darwin" ]]; then
@@ -324,11 +324,11 @@ change_gemini_ape_dts_version() {
         echo "change ${imageFile} images tag"
         image_file_path=.github/images/${imageFile}
         if [[ "${imageFile}" == "kubeblocks-enterprise.txt" ]]; then
-            APE_DTS_VERSION_HEAD=${GEMINI_APE_DTS_VERSION%-*}
+            gemini_line=$(grep -n "apecloud/ape-dts" $image_file_path | sed -n '2p' | cut -d: -f1)
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION_HEAD}.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path
+                sed -i '' "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path
             else
-                sed -i "s/^docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION_HEAD}.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path
+                sed -i "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path
             fi
         else
             if [[ "$UNAME" == "Darwin" ]]; then
