@@ -30,7 +30,7 @@ check_service_version_images() {
         check_engine_result_file="images-${chart_name_tmp}-${chart_version_tmp}.yaml"
         images=""
         if [[ -f "${check_engine_result_file}" ]]; then
-            images=$(yq e '.'${chart_name_tmp}'[0].images[]' ${check_engine_result_file})
+            images=$(yq e '.'${chart_name_tmp}'[0].images[]' ${check_engine_result_file} | grep -v "IMAGE_TAG")
             rm -rf ${check_engine_result_file}
         fi
         repository=""
@@ -123,7 +123,18 @@ check_images() {
                 continue
             fi
 
-            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-6-20241231"* || "$repository" == *"apecloud/dmdb-exporter:8.1.4"* || "$repository" == *"apecloud/dmdb-tool:8.1.4"* || "$repository" == *"apecloud/relay"* || "$repository" == *"apecloud/kubeviewer"* || "$repository" == *"apecloud/be-ubuntu"* || "$repository" == *"apecloud/"*"ubuntu:3.2.2"* || "$repository" == *"apecloud/"*"ubuntu:3.3.0"*  || "$repository" == *"apecloud/"*"ubuntu:3.3.2"*) ]]; then
+            if [[ -n "$repository" && ("$repository" == *"apecloud/dm:8.1.4-48_pack4"*
+                || "$repository" == *"apecloud/dm:8.1.3-162-20240827-sec"*
+                || "$repository" == *"apecloud/dm:8.1.4-6-20241231"*
+                || "$repository" == *"apecloud/dmdb-exporter:8.1.4"*
+                || "$repository" == *"apecloud/dmdb-tool:8.1.4"*
+                || "$repository" == *"apecloud/oceanbase-ent:"*"-arm64"*
+                || "$repository" == *"apecloud/relay"*
+                || "$repository" == *"apecloud/kubeviewer"*
+                || "$repository" == *"apecloud/be-ubuntu"*
+                || "$repository" == *"apecloud/"*"ubuntu:3.2.2"*
+                || "$repository" == *"apecloud/"*"ubuntu:3.3.0"*
+                || "$repository" == *"apecloud/"*"ubuntu:3.3.2"*) ]]; then
                 repository=""
                 continue
             fi
