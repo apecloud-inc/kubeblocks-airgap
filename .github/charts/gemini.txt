@@ -1,2 +1,2 @@
-gemini:0.11.0-beta.15
-gemini-monitor:0.11.0-beta.15
+gemini:0.11.0-beta.18
+gemini-monitor:0.11.0-beta.18

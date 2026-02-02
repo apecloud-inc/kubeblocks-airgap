@@ -74,7 +74,6 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
-          - dbclient
       APP_DIR:
         description: 'select addon dir'
         required: false
