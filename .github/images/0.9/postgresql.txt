@@ -10,5 +10,6 @@ docker.io/apecloud/spilo:14.18
 docker.io/apecloud/spilo:15.13
 docker.io/apecloud/spilo:16.9
 docker.io/apecloud/spilo:17.5
+docker.io/apecloud/spilo:18.1
 docker.io/apecloud/spilo:15.7.0
 docker.io/apecloud/spilo:16.4.0
