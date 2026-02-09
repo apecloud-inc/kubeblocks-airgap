@@ -9,7 +9,7 @@ docker.io/apecloud/servicemirror:0.4.4
 docker.io/apecloud/alertmanager:v0.28.0
 docker.io/apecloud/configmap-reload:v0.5.0
 docker.io/apecloud/vmalert:v1.95.1
-docker.io/apecloud/cubetran-platform:0.6.3
+docker.io/apecloud/cubetran-platform:0.6.4
 docker.io/apecloud/cubetran-sidecar:0.1.2
 docker.io/apecloud/kubeblocks-tools:0.8.2
 docker.io/apecloud/postgresql:14
