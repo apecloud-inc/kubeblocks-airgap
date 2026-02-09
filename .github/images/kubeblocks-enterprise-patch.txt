@@ -26,5 +26,6 @@ docker.io/apecloud/kubeblocks-charts:1.0.2-beta.31
 docker.io/apecloud/gemini:0.11.0-beta.13
 docker.io/apecloud/gemini-tools:0.11.0-beta.13
 docker.io/apecloud/easymetrics:0.11.0-beta.13
+docker.io/apecloud/sla:0.11.0-beta.13
 docker.io/apecloud/oteld:0.10.6
 docker.io/apecloud/cr-exporter:0.1.0-alpha.13
