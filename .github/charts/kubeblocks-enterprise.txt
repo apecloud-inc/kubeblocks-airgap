@@ -19,7 +19,7 @@ dify:0.5.1
 nvidia-device-plugin:0.17.0
 netshoot:0.1.0
 csi-driver-nfs:v4.10.0
-clickhouse:0.9.3
+clickhouse:0.9.4
 clickhouse:1.0.2
 damengdb:0.9.3
 damengdb:1.0.3
