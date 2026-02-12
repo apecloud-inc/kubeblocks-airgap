@@ -25,7 +25,7 @@ damengdb:0.9.3
 damengdb:1.0.3
 doris:1.0.2
 elasticsearch:0.9.1
-elasticsearch:1.0.2
+elasticsearch:1.0.4
 gaussdb:0.9.2
 gaussdb:1.0.2
 greatdb:0.9.1
@@ -35,7 +35,7 @@ hive:1.0.2
 kafka:0.9.2
 kafka:1.0.2
 kingbase:0.9.1
-kingbase:1.0.3
+kingbase:1.0.6
 loki:0.9.2
 loki:1.0.2
 minio:0.9.1
