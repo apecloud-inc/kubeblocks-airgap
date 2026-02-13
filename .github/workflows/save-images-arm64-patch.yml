@@ -51,12 +51,18 @@ env:
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
   OSS_DIR: "images/cloud2.1/arm64"
+  DOCKER_VERSION: "v28.0.4"
 
 jobs:
   save-app-images:
     name: save app images
     runs-on: ubuntu-22.04
     steps:
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          version: ${{ env.DOCKER_VERSION }}
+
       - name: Free disk space
         run: |
           echo "Free space first:"
