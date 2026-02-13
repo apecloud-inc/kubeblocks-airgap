@@ -1,4 +1,4 @@
-# nebula v1.0.1
+# nebula v1.0.2
 docker.io/apecloud/nebula-console:v3.8.0
 docker.io/apecloud/nebula-graphd:v3.8.0
 docker.io/apecloud/nebula-metad:v3.8.0
