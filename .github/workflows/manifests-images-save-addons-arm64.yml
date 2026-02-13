@@ -39,6 +39,7 @@ env:
   DOCKER_REGISTRY_URL: docker.io
   DOCKER_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  DOCKER_VERSION: "v28.0.4"
 
 jobs:
   save-images:
@@ -47,6 +48,11 @@ jobs:
       release-versions: ${{ steps.manifests-images-save.outputs.release-versions }}
       image-name: ${{ steps.get-version.outputs.image-name }}
     steps:
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          version: ${{ env.DOCKER_VERSION }}
+
       - name: Free disk space
         run: |
           echo "Free space first:"
