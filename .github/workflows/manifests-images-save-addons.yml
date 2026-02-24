@@ -39,6 +39,7 @@ env:
   DOCKER_REGISTRY_URL: docker.io
   DOCKER_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  DOCKER_VERSION: "v28.0.4"
 
 jobs:
   save-images:
@@ -47,27 +48,19 @@ jobs:
       release-versions: ${{ steps.manifests-images-save.outputs.release-versions }}
       image-name: ${{ steps.get-version.outputs.image-name }}
     steps:
-      - name: Free disk space
+      - name: chown Runner
         run: |
-          echo "Free space first:"
           df -h
-          
-          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
-          if [[ -n "${mnt_storage}" ]]; then
-            echo "Disk is full, please rerun the workflow."
-            exit 1
-          fi
-          
-          sudo mkdir -p /mnt/new-storage
-          sudo touch /etc/docker/daemon.json
-          sudo tee /etc/docker/daemon.json <<EOF
-          {
-            "data-root": "/mnt/new-storage"
-          }
-          EOF
-          sudo systemctl restart docker
-          echo "Free space second:"
-          df -h
+          echo "sudo mkdir -p /mnt/setup-docker-action"
+          sudo mkdir -p /mnt/setup-docker-action
+          echo "sudo chown -R $USER:$USER /mnt/setup-docker-action"
+          sudo chown -R $USER:$USER /mnt/setup-docker-action
+
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          runtime-basedir: /mnt/setup-docker-action
+          version: ${{ env.DOCKER_VERSION }}
 
       - name: get version
         id: get-version
