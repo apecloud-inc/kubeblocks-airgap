@@ -208,7 +208,7 @@ change_charts_version() {
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "${imageFile}" == "kubeblocks-enterprise.txt" ]]; then
-                cloud_line=$(grep -n "apecloud/ape-dts" $image_file_path | head -1 | cut -d: -f1)
+                cloud_line=$(grep -n "apecloud/ape-dts" $image_file_path_tmp | head -1 | cut -d: -f1)
                 if [[ "$UNAME" == "Darwin" ]]; then
                     sed -i '' "${cloud_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path_tmp
                 else
@@ -230,7 +230,7 @@ change_charts_version() {
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "${imageFile}" == "kubeblocks-enterprise.txt" ]]; then
-                gemini_line=$(grep -n "apecloud/ape-dts" $image_file_path | sed -n '2p' | cut -d: -f1)
+                gemini_line=$(grep -n "apecloud/ape-dts" $image_file_path_tmp | sed -n '2p' | cut -d: -f1)
                 if [[ "$UNAME" == "Darwin" ]]; then
                     sed -i '' "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
                 else
