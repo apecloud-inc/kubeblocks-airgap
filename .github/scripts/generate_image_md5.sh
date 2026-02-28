@@ -73,6 +73,10 @@ generate_checksums_md5() {
 
     for image_file in $(find ${IMAGES_PATH} -name "*.txt"|sort -V); do
         check_flag=0
+        OSS_DIR="images"
+        if [[ "${image_file}" == *".github/images/0.9/"* || "${image_file}" == *".github/images/1.0/"* ]]; then
+            OSS_DIR="${OSS_DIR}/cloud2.1"
+        fi
         image_file_name=$(basename ${image_file})
         case ${image_file_name} in
             calico.txt|chaos-mesh.txt|dify.txt|gemini.txt|k3s.txt|\
@@ -82,7 +86,7 @@ generate_checksums_md5() {
             starrocks-3.3.3.txt|starrocks-3.4.1.txt|xinference-cpu.txt|xinference-gpu.txt)
                 check_flag=1
             ;;
-            mysql.txt|mongodb.txt|damengdb.txt|elasticsearch.txt)
+            mysql.txt|damengdb.txt|elasticsearch.txt)
                 check_flag=2
             ;;
         esac
@@ -113,13 +117,13 @@ generate_checksums_md5() {
         if [[ -z "${image_md5}" ]]; then
             OSS_URL=""
         else
-            OSS_URL="oss://kubeblocks-oss/images/${image_md5}"
+            OSS_URL="oss://kubeblocks-oss/${OSS_DIR}/${image_md5}"
         fi
 
         if [[ -z "${image_arm_md5}" ]]; then
             OSS_URL_ARM64=""
         else
-            OSS_URL_ARM64="oss://kubeblocks-oss/images/arm64/${image_arm_md5}"
+            OSS_URL_ARM64="oss://kubeblocks-oss/${OSS_DIR}/arm64/${image_arm_md5}"
         fi
 
         for index in {1..2}; do

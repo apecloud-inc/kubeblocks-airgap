@@ -143,11 +143,13 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/gemini:.*/docker.io\/apecloud\/gemini:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/gemini-tools:.*/docker.io\/apecloud\/gemini-tools:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/easymetrics:.*/docker.io\/apecloud\/easymetrics:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^docker.io\/apecloud\/sla:.*/docker.io\/apecloud\/sla:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
         else
             sed -i "s/^# Gemini .*/# Gemini v${GEMINI_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/gemini:.*/docker.io\/apecloud\/gemini:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/gemini-tools:.*/docker.io\/apecloud\/gemini-tools:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/easymetrics:.*/docker.io\/apecloud\/easymetrics:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^docker.io\/apecloud\/sla:.*/docker.io\/apecloud\/sla:${GEMINI_VERSION}/" $IMAGE_FILE_PATH
         fi
     fi
 
@@ -200,15 +202,59 @@ change_charts_version() {
         fi
     fi
 
-    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$APE_DTS_VERSION" ]]; then
-        echo "change ape-dts images tag"
-        imageFiles=("gemini.txt")
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$CLOUD_APE_DTS_VERSION" ]]; then
+        echo "change cloud ape-dts images tag"
+        imageFiles=("kubeblocks-cloud.txt" "kubeblocks-enterprise.txt")
+        for imageFile in "${imageFiles[@]}"; do
+            image_file_path_tmp=.github/images/${imageFile}
+            if [[ "${imageFile}" == "kubeblocks-enterprise.txt" ]]; then
+                cloud_line=$(grep -n "apecloud/ape-dts" $image_file_path_tmp | head -1 | cut -d: -f1)
+                if [[ "$UNAME" == "Darwin" ]]; then
+                    sed -i '' "${cloud_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path_tmp
+                else
+                    sed -i "${cloud_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path_tmp
+                fi
+            else
+                if [[ "$UNAME" == "Darwin" ]]; then
+                    sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path_tmp
+                else
+                    sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${CLOUD_APE_DTS_VERSION}/" $image_file_path_tmp
+                fi
+            fi
+        done
+    fi
+
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$GEMINI_APE_DTS_VERSION" ]]; then
+        echo "change gemini ape-dts images tag"
+        imageFiles=("gemini.txt" "kubeblocks-enterprise.txt")
+        for imageFile in "${imageFiles[@]}"; do
+            image_file_path_tmp=.github/images/${imageFile}
+            if [[ "${imageFile}" == "kubeblocks-enterprise.txt" ]]; then
+                gemini_line=$(grep -n "apecloud/ape-dts" $image_file_path_tmp | sed -n '2p' | cut -d: -f1)
+                if [[ "$UNAME" == "Darwin" ]]; then
+                    sed -i '' "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
+                else
+                    sed -i "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
+                fi
+            else
+                if [[ "$UNAME" == "Darwin" ]]; then
+                    sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
+                else
+                    sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
+                fi
+            fi
+        done
+    fi
+
+    if [[ "${APP_NAME}" == "kubeblocks-enterprise" && -n "$CUBETRAN_PLATFORM_VERSION" ]]; then
+        echo "change cubetran-platform images tag"
+        imageFiles=("gemini.txt" "kubeblocks-enterprise.txt")
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "$UNAME" == "Darwin" ]]; then
-                sed -i '' "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
+                sed -i '' "s/^docker.io\/apecloud\/cubetran-platform:.*/docker.io\/apecloud\/cubetran-platform:${CUBETRAN_PLATFORM_VERSION}/" $image_file_path_tmp
             else
-                sed -i "s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${APE_DTS_VERSION}/" $image_file_path_tmp
+                sed -i "s/^docker.io\/apecloud\/cubetran-platform:.*/docker.io\/apecloud\/cubetran-platform:${CUBETRAN_PLATFORM_VERSION}/" $image_file_path_tmp
             fi
         done
     fi
@@ -334,12 +380,19 @@ tar_charts_package() {
             chart_version=${chart#*:}
 
             case "$chart_tmp" in
-                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"damengdb"*|"gaussdb"*|"gbase"*|\
+                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"damengdb"*|"gaussdb"*|\
                 "kingbase"*|"mssql"*|"oceanbase"*|"starrocks"*|"vastbase"*|"goldendb"*|"tdsql"*|\
-                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*)
+                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*|"nacos"*)
                     helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
+                ;;
+                "tdengine"*)
+                    if [[ "${chart_version}" != "0.9.1" ]]; then
+                        helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
+                        helm repo update ${ENT_REPO_NAME}
+                        ent_flag=1
+                    fi
                 ;;
             esac
 
@@ -398,9 +451,19 @@ check_manifests_version() {
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
 
-    APE_DTS_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
-    if [[ -n "$APE_DTS_IMAGE" ]]; then
-        APE_DTS_VERSION="${APE_DTS_IMAGE#*:}"
+    CLOUD_APE_DTS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
+    if [[ -n "$CLOUD_APE_DTS_IMAGE" ]]; then
+        CLOUD_APE_DTS_VERSION="${CLOUD_APE_DTS_IMAGE#*:}"
+    fi
+
+    GEMINI_APE_DTS_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
+    if [[ -n "$GEMINI_APE_DTS_IMAGE" ]]; then
+        GEMINI_APE_DTS_VERSION="${GEMINI_APE_DTS_IMAGE#*:}"
+    fi
+
+    CUBETRAN_PLATFORM_IMAGE=$(yq e ".gemini[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/cubetran-platform:" || true))
+    if [[ -n "$CUBETRAN_PLATFORM_IMAGE" ]]; then
+        CUBETRAN_PLATFORM_VERSION="${CUBETRAN_PLATFORM_IMAGE#*:}"
     fi
 
     KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
@@ -416,7 +479,9 @@ check_manifests_version() {
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
-    echo "MANIFESTS APE_DTS_VERSION:${APE_DTS_VERSION}"
+    echo "MANIFESTS CLOUD_APE_DTS_VERSION:${CLOUD_APE_DTS_VERSION}"
+    echo "MANIFESTS GEMINI_APE_DTS_VERSION:${GEMINI_APE_DTS_VERSION}"
+    echo "MANIFESTS CUBETRAN_PLATFORM_VERSION:${CUBETRAN_PLATFORM_VERSION}"
     echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
 }
 
@@ -436,7 +501,9 @@ main() {
     local APP_PKG_NAME="${KB_CHART_NAME}-${APP_VERSION}.tar.gz"
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
-    local APE_DTS_VERSION=""
+    local CLOUD_APE_DTS_VERSION=""
+    local GEMINI_APE_DTS_VERSION=""
+    local CUBETRAN_PLATFORM_VERSION=""
     local KUBEBENCH_VERSION=""
 
     check_manifests_version

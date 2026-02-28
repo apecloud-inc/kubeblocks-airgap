@@ -9,11 +9,6 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - apecloud-mcp
-          - customsuites
-          - nfs-proxy
-          - dmdb-exporter
-          - datasafed
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
@@ -23,7 +18,7 @@ on:
           - gemini
           - elasticsearch-arm
           - mysql-arm
-          - mongodb-arm
+          - mongodb
           - damengdb-arm
           - clickhouse
           - gaussdb
@@ -40,8 +35,10 @@ on:
           - minio
           - metallb
           - mssql
+          - nacos
           - nebula
           - oceanbase
+          - oceanbase-arm
           - postgresql
           - qdrant
           - redis
@@ -115,6 +112,7 @@ env:
   OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
+  OSS_DIR: "images/cloud2.1/arm64"
   DOCKER_VERSION: "v28.0.4"
 
 jobs:
@@ -205,6 +203,11 @@ jobs:
       - name: Upload arm64 images to oss
         id: upload_to_oss
         run: |
+          OSS_DIR="${{ env.OSS_DIR }}"
+          APP_DIR="${{ inputs.APP_DIR }}"
+          if [[ -z "${APP_DIR}" ]]; then
+              OSS_DIR="images/arm64"
+          fi
           echo "Free space:"
           df -h
           IMAGE_PKG_NAME="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz"
@@ -213,8 +216,8 @@ jobs:
           
           upload_ret=0
           for i in {1..10}; do
-              echo "ossutil cp ${IMAGE_PKG_NAME_ARM64} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_ARM64} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_ARM64}
+              echo "ossutil cp ${IMAGE_PKG_NAME_ARM64} to oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_ARM64} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_ARM64} oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_ARM64}
               upload_ret=$?
                 
               if [[ -d "ossutil_output" ]]; then
@@ -255,8 +258,8 @@ jobs:
                   continue
               fi
           
-              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/arm64/${IMAGE_PKG_NAME_MD}
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_MD}
               upload_ret=$?
           
               if [[ -d "ossutil_output" ]]; then
@@ -292,11 +295,16 @@ jobs:
       - name: get save result
         id: get_save_result
         run: |
+          OSS_DIR="${{ env.OSS_DIR }}"
+          APP_DIR="${{ inputs.APP_DIR }}"
+          if [[ -z "${APP_DIR}" ]]; then
+              OSS_DIR="images/arm64"
+          fi
           SAVE_RESULT="error"
           IMAGE_PKG_NAME_ARM64="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}-arm64.tar.gz"
           if [[ "${{ needs.save-app-images.result }}" == "success" ]]; then
               SAVE_RESULT="success"
-              IMAGE_PKG_NAME_ARM64="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/images/arm64/${IMAGE_PKG_NAME_ARM64}"
+              IMAGE_PKG_NAME_ARM64="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/${OSS_DIR}/${IMAGE_PKG_NAME_ARM64}"
           fi
           echo 'save_result='$SAVE_RESULT >> $GITHUB_OUTPUT
           echo 'image_pkg_name='${IMAGE_PKG_NAME_ARM64} >> $GITHUB_OUTPUT

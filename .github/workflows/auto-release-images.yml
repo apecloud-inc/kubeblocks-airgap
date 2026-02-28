@@ -3,7 +3,7 @@ name: Auto Release Images
 on:
   push:
     branches:
-      - release-2.0
+      - release-2.1
     paths:
       - '.github/images/0.9/*.txt'
       - '.github/images/1.0/*.txt'
@@ -70,7 +70,12 @@ jobs:
                       
                       if [[ "${release_name}" == *"-arm" ]]; then
                           cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
-                      elif [[ "${release_name}" == "damengdb"* || "${release_name}" == "mysql"* || "${release_name}" == "elasticsearch"* || "${release_name}" == "mssql"* || "${release_name}" == "goldendb"* || "${release_name}" == "mongodb"* ]]; then
+                      elif [[ "${release_name}" == "damengdb"* 
+                          || "${release_name}" == "mysql"* 
+                          || "${release_name}" == "elasticsearch"* 
+                          || "${release_name}" == "mssql"* 
+                          || "${release_name}" == "goldendb"* 
+                          || ("${release_name}" == "oceanbase"* && "${release_name}" != "oceanbase-proxy"* && "$filePath" == ".github/images/1.0/"*".txt") ]]; then
                           cmd=$cmd"--workflow-id \"save-images.yml\" "
                       else
                           cmd=$cmd"--workflow-id \"save-images.yml|save-images-arm64.yml\" "

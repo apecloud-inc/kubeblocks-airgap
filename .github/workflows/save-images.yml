@@ -9,13 +9,6 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - oceanbase-ent
-          - customsuites
-          - nfs-proxy
-          - dmdb-exporter
-          - datasafed
-          - clickhouse-backup-full
-          - dms
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
           - kubeblocks
@@ -30,7 +23,6 @@ on:
           - etcd
           - elasticsearch
           - gaussdb
-          - gbase
           - goldendb
           - greatdb
           - hadoop
@@ -50,6 +42,7 @@ on:
           - mysql
           - metallb
           - metrics-server
+          - nacos
           - nebula
           - oceanbase
           - oceanbase-proxy
@@ -131,33 +124,27 @@ env:
   OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
+  OSS_DIR: "images/cloud2.1"
+  DOCKER_VERSION: "v28.0.4"
 
 jobs:
   save-app-images:
     name: save app images
     runs-on: ubuntu-22.04
     steps:
-      - name: Free disk space
+      - name: chown Runner
         run: |
-          echo "Free space first:"
           df -h
-          
-          mnt_storage=$(df -h | (grep "/mnt" | grep "100%" ||true))
-          if [[ -n "${mnt_storage}" ]]; then
-            echo "Disk is full, please rerun the workflow."
-            exit 1
-          fi
-          
-          sudo mkdir -p /mnt/new-storage
-          sudo touch /etc/docker/daemon.json
-          sudo tee /etc/docker/daemon.json <<EOF
-          {
-            "data-root": "/mnt/new-storage"
-          }
-          EOF
-          sudo systemctl restart docker
-          echo "Free space second:"
-          df -h
+          echo "sudo mkdir -p /mnt/setup-docker-action"
+          sudo mkdir -p /mnt/setup-docker-action
+          echo "sudo chown -R $USER:$USER /mnt/setup-docker-action"
+          sudo chown -R $USER:$USER /mnt/setup-docker-action
+
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          runtime-basedir: /mnt/setup-docker-action
+          version: ${{ env.DOCKER_VERSION }}
 
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
@@ -228,10 +215,15 @@ jobs:
       - name: Upload images to oss
         id: upload_to_oss
         run: |
+          OSS_DIR="${{ env.OSS_DIR }}"
+          APP_DIR="${{ inputs.APP_DIR }}"
+          if [[ -z "${APP_DIR}" ]]; then
+              OSS_DIR="images"
+          fi
           echo "Free space:"
           df -h
           IMAGE_PKG_NAME="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz"
-          ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME}
+          ossutil cp -rf ./${IMAGE_PKG_NAME} oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME}
           upload_ret=$?
           if [[ $upload_ret -eq 0 ]]; then
               echo "upload ${IMAGE_PKG_NAME} to oss successfully"
@@ -253,8 +245,8 @@ jobs:
                   continue
               fi
           
-              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD} ..."
-              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/images/${IMAGE_PKG_NAME_MD}
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf ./${IMAGE_PKG_NAME_MD} oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_MD}
               upload_ret=$?
              
               if [[ $upload_ret -eq 0 ]]; then
@@ -278,11 +270,16 @@ jobs:
       - name: get save result
         id: get_save_result
         run: |
+          OSS_DIR="${{ env.OSS_DIR }}"
+          APP_DIR="${{ inputs.APP_DIR }}"
+          if [[ -z "${APP_DIR}" ]]; then
+              OSS_DIR="images"
+          fi
           SAVE_RESULT="error"
           IMAGE_PKG_NAME="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz"
           if [[ "${{ needs.save-app-images.result }}" == "success" ]]; then
               SAVE_RESULT="success"
-              IMAGE_PKG_NAME="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/images/${IMAGE_PKG_NAME}"
+              IMAGE_PKG_NAME="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}/${OSS_DIR}/${IMAGE_PKG_NAME}"
           fi
           echo 'save_result='$SAVE_RESULT >> $GITHUB_OUTPUT
           echo 'image_pkg_name='${IMAGE_PKG_NAME} >> $GITHUB_OUTPUT
