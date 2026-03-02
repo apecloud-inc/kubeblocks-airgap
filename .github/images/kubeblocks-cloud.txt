@@ -94,7 +94,7 @@ docker.io/apecloud/apecloud-addon-charts:nebula-1.0.2
 docker.io/apecloud/apecloud-addon-charts:tdengine-0.9.1
 docker.io/apecloud/apecloud-addon-charts:tdengine-1.0.2
 docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
-docker.io/apecloud/apecloud-addon-charts:oracle-1.0.2
+docker.io/apecloud/apecloud-addon-charts:oracle-1.0.3
 docker.io/apecloud/apecloud-addon-charts:doris-1.0.2
 docker.io/apecloud/apecloud-addon-charts:hadoop-1.0.2
 docker.io/apecloud/apecloud-addon-charts:hive-1.0.2
