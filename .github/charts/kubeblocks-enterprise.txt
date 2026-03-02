@@ -54,6 +54,7 @@ oceanbase-proxy:1.0.1
 postgresql:0.9.7
 postgresql:1.0.2
 pulsar:0.9.1
+pulsar:1.0.2
 qdrant:0.9.1
 qdrant:1.0.2
 rabbitmq:0.9.0
