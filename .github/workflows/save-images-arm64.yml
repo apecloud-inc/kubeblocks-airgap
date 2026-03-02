@@ -59,6 +59,7 @@ on:
           - tdengine
           - tidb
           - vastbase
+          - pulsar
           - victoria-metrics
           - csi-driver-nfs
           - dbdrag
