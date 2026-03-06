@@ -1,16 +1,16 @@
-# KubeBlocks-Cloud v2.1.98
+# KubeBlocks-Cloud v2.1.126
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/openconsole:v2.1.98
-docker.io/apecloud/openconsole:v2.1.98-console
-docker.io/apecloud/openconsole:v2.1.98-admin
-docker.io/apecloud/apiserver:v2.1.98
-docker.io/apecloud/cubetran-front:v2.1.98
-docker.io/apecloud/cr4w:v2.1.98
-docker.io/apecloud/kb-cloud-hook:v2.1.98
-docker.io/apecloud/kb-cloud-docs:v2.1.98
-docker.io/apecloud/kubeblocks-installer:v2.1.98-offline
-docker.io/apecloud/kb-cloud-installer:v2.1.98
-docker.io/apecloud/dms:0.0.3-alpha.27
+docker.io/apecloud/openconsole:v2.1.126
+docker.io/apecloud/openconsole:v2.1.126-console
+docker.io/apecloud/openconsole:v2.1.126-admin
+docker.io/apecloud/apiserver:v2.1.126
+docker.io/apecloud/cubetran-front:v2.1.126
+docker.io/apecloud/cr4w:v2.1.126
+docker.io/apecloud/kb-cloud-hook:v2.1.126
+docker.io/apecloud/kb-cloud-docs:v2.1.126
+docker.io/apecloud/kubeblocks-installer:v2.1.126-offline
+docker.io/apecloud/kb-cloud-installer:v2.1.126
+docker.io/apecloud/dms:0.0.3-alpha.29
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.0
 docker.io/apecloud/ob-grpc-server:0.1.5
 docker.io/apecloud/redisinsight:2.70.0
@@ -94,7 +94,7 @@ docker.io/apecloud/apecloud-addon-charts:nebula-1.0.2
 docker.io/apecloud/apecloud-addon-charts:tdengine-0.9.1
 docker.io/apecloud/apecloud-addon-charts:tdengine-1.0.2
 docker.io/apecloud/apecloud-addon-charts:oracle-0.9.0
-docker.io/apecloud/apecloud-addon-charts:oracle-1.0.2
+docker.io/apecloud/apecloud-addon-charts:oracle-1.0.3
 docker.io/apecloud/apecloud-addon-charts:doris-1.0.2
 docker.io/apecloud/apecloud-addon-charts:hadoop-1.0.2
 docker.io/apecloud/apecloud-addon-charts:hive-1.0.2

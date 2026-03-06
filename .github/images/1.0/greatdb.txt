@@ -1,4 +1,4 @@
-# greatdb v1.0.0
+# greatdb v1.0.1
 docker.io/apecloud/greatdb:1.0.0.6118032
 docker.io/apecloud/percona-xtrabackup:8.0
 docker.io/apecloud/syncer:0.6.5
