@@ -1,4 +1,4 @@
-# postgresql v1.0.2
+# postgresql v1.0.3
 docker.io/apecloud/dbctl:0.2.0
 docker.io/apecloud/wal-g-pg:3.0.0
 docker.io/apecloud/pgbouncer:1.19.0

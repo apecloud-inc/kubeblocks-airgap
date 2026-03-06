@@ -1,4 +1,4 @@
-# tidb v1.0.2
+# tidb v1.0.3
 docker.io/apecloud/busybox:1.35
 docker.io/apecloud/br:v7.5.2
 docker.io/apecloud/pd:v7.5.2
