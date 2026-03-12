@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - cubetran-platform
           - dms
           - kubeblocks-enterprise
           - kubeblocks-enterprise-patch
