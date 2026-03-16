@@ -1,3 +1,3 @@
-# cubetran-platform v0.6.6-alpha.6
-docker.io/apecloud/cubetran-platform:0.6.6-alpha.6
-docker.io/apecloud/ape-dts:2.0.26-alpha.5
+# cubetran-platform v0.6.6-alpha.7
+docker.io/apecloud/ape-dts:2.0.26-alpha.6
+docker.io/apecloud/cubetran-platform:0.6.6-alpha.7
