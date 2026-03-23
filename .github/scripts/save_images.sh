@@ -240,7 +240,7 @@ save_images_package() {
                 if [[ "$UNAME" == "Darwin" ]]; then
                     sed -i '' "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
                 else
-                    sed -i "s/^${gemini_line}docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
+                    sed -i "${gemini_line}s/^docker.io\/apecloud\/ape-dts:.*/docker.io\/apecloud\/ape-dts:${GEMINI_APE_DTS_VERSION}/" $image_file_path_tmp
                 fi
             else
                 if [[ "$UNAME" == "Darwin" ]]; then
