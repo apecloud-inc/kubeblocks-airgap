@@ -1,2 +1,4 @@
-# apecloud-addon-charts kingbase-0.9.1
-docker.io/apecloud/apecloud-addon-charts:kingbase-0.9.1
+# apecloud-addon-charts v1.0.4
+docker.io/apecloud/apecloud-addon-charts:damengdb-1.0.4
+docker.io/apecloud/apecloud-addon-charts:gaussdb-1.0.3
+

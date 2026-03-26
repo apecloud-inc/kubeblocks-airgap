@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - apecloud-addon-charts
           - ape-dts
           - cubetran-platform
           - dms
