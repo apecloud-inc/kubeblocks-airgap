@@ -1,4 +1,4 @@
-# mongodb v1.0.3
+# mongodb v1.0.4
 docker.io/apecloud/kubectl:1.29
 docker.io/apecloud/mongodb_exporter:0.44.0
 docker.io/apecloud/percona-backup-mongodb:2.5.0-multi
@@ -10,6 +10,6 @@ docker.io/apecloud/percona-server-mongodb:5.0.29-multi
 docker.io/apecloud/percona-server-mongodb:6.0.27
 docker.io/apecloud/percona-server-mongodb:7.0.28
 docker.io/apecloud/percona-server-mongodb:8.0.17
-docker.io/apecloud/syncer:0.6.7
+docker.io/apecloud/syncer:0.6.9
 docker.io/apecloud/wal-g-mongo:3.0.0
 
