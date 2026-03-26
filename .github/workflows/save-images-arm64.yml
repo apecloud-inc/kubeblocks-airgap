@@ -61,6 +61,7 @@ on:
           - vastbase
           - pulsar
           - victoria-metrics
+          - victoria-logs
           - csi-driver-nfs
           - dbdrag
           - pv-migrate

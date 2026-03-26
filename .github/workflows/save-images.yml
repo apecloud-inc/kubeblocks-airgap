@@ -69,6 +69,7 @@ on:
           - tdsql
           - tidb
           - vastbase
+          - victoria-logs
           - pulsar
           - calico
           - csi-driver-nfs
