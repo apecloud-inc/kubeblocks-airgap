@@ -1,2 +1,2 @@
-# ape-dts v2.0.26-alpha.11
-docker.io/apecloud/ape-dts:2.0.26-alpha.11
+# ape-dts v2.0.26-alpha.12
+docker.io/apecloud/ape-dts:2.0.26-alpha.12
