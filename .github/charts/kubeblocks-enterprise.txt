@@ -20,6 +20,7 @@ netshoot:0.1.0
 csi-driver-nfs:v4.10.0
 clickhouse:0.9.4
 clickhouse:1.0.3
+camellia-redis-proxy:1.0.3
 damengdb:0.9.3
 damengdb:1.0.4
 doris:1.0.3
