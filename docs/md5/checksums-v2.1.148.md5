@@ -127,7 +127,7 @@ d481ed33735a12a77bc20581de7df731  starrocks-v1.0.0-arm64.tar.gz
 7cec4d3c12c528672cc67ede07c5355c  tdengine-v1.0.2.tar.gz
 91c7df3bf13856c80beb5149769a281d  tdengine-v1.0.2-arm64.tar.gz
 baad8ae0b9057c1896f025c689ad3248  tdsql-v1.0.2.tar.gz
-0c6e37bb534003a39e611ae2da2a978d  tidb-v1.0.3.tar.gz
+ea1a6924c8bd843b304b625654d9c9cf  tidb-v1.0.3.tar.gz
 69d5b136b312db8b3032c48836337432  tidb-v1.0.3-arm64.tar.gz
 2b8d4ab804c3f4a081b79246ca59ca0f  vastbase-v1.0.2.tar.gz
 d611b7fba8c54705e53f16dddeb2a064  vastbase-v1.0.2-arm64.tar.gz
@@ -148,10 +148,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 90c086e562a5d98f3f70560cf9f6690d  kubebench-v0.0.12.tar.gz
 a8586ddd813ab2c762c0df41ca7c1c25  kubebench-v0.0.12-arm64.tar.gz
-09b1fe8f0c32fafe17753978f327bebf  kubeblocks-enterprise-v2.1.148.tar.gz
-5afc1b82d1bab278de5d16359291e8a1  kubeblocks-enterprise-v2.1.148-arm64.tar.gz
-0a7d5cf1b6ad37381369a6ff5588e62b  kubeblocks-enterprise-patch-v2.1.148.tar.gz
-b8cef972842461f766ebac937e8b3bcb  kubeblocks-enterprise-patch-v2.1.148-arm64.tar.gz
+f1b4b55316695145d7657dfa24bd7587  kubeblocks-enterprise-v2.1.148.tar.gz
+29858340e1514a930fd48dcd48125bfb  kubeblocks-enterprise-v2.1.148-arm64.tar.gz
+159b2757dd09df1a5a170c4fba288cac  kubeblocks-enterprise-patch-v2.1.148.tar.gz
+7f1f8ca116b7db8b5dd33e5b81f91fa9  kubeblocks-enterprise-patch-v2.1.148-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz

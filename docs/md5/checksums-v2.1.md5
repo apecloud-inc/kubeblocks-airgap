@@ -88,8 +88,8 @@ aaaa70decfafcab42c739a7047838c9d  hadoop-v1.0.3-arm64.tar.gz
 ba1dbf29b2053d921d7b0f8807c94e49  hive-v1.0.2-arm64.tar.gz
 2160f682c7342013ccfa5152d27e8b4b  influxdb-v1.0.4.tar.gz
 67d85d5f4d402bd10b7b276743be8dbe  influxdb-v1.0.4-arm64.tar.gz
-e96b9be684f71c2affe83682ba33fd4b  kafka-v1.0.3.tar.gz
-437f2a9c1afca03a6e3573044d0fc142  kafka-v1.0.3-arm64.tar.gz
+176006b0025ce8aeadde0cb79ec6de02  kafka-v1.0.2.tar.gz
+7e1b3cd11abc63016f73a801e1890f17  kafka-v1.0.2-arm64.tar.gz
 76327840923772f5a9305cb777f66782  kingbase-v1.0.6.tar.gz
 069dffd5d602eae320f3840fef692b14  kingbase-v1.0.6-arm64.tar.gz
 40db40a651af54691c0d5baccafdb783  loki-v1.0.2.tar.gz
@@ -127,7 +127,7 @@ d481ed33735a12a77bc20581de7df731  starrocks-v1.0.0-arm64.tar.gz
 7cec4d3c12c528672cc67ede07c5355c  tdengine-v1.0.2.tar.gz
 91c7df3bf13856c80beb5149769a281d  tdengine-v1.0.2-arm64.tar.gz
 baad8ae0b9057c1896f025c689ad3248  tdsql-v1.0.2.tar.gz
-0c6e37bb534003a39e611ae2da2a978d  tidb-v1.0.3.tar.gz
+ea1a6924c8bd843b304b625654d9c9cf  tidb-v1.0.3.tar.gz
 69d5b136b312db8b3032c48836337432  tidb-v1.0.3-arm64.tar.gz
 2b8d4ab804c3f4a081b79246ca59ca0f  vastbase-v1.0.2.tar.gz
 d611b7fba8c54705e53f16dddeb2a064  vastbase-v1.0.2-arm64.tar.gz
@@ -148,9 +148,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 90c086e562a5d98f3f70560cf9f6690d  kubebench-v0.0.12.tar.gz
 a8586ddd813ab2c762c0df41ca7c1c25  kubebench-v0.0.12-arm64.tar.gz
-641de1af9ab261466ae63ef80716335e  kubeblocks-enterprise-v2.1.149-arm64.tar.gz
-e4c3c4a7eae21e22372bb31273aa0648  kubeblocks-enterprise-patch-v2.1.149.tar.gz
-79227854cc99df1e134c8adb8e6f0a5d  kubeblocks-enterprise-patch-v2.1.149-arm64.tar.gz
+f1b4b55316695145d7657dfa24bd7587  kubeblocks-enterprise-v2.1.148.tar.gz
+29858340e1514a930fd48dcd48125bfb  kubeblocks-enterprise-v2.1.148-arm64.tar.gz
+159b2757dd09df1a5a170c4fba288cac  kubeblocks-enterprise-patch-v2.1.148.tar.gz
+7f1f8ca116b7db8b5dd33e5b81f91fa9  kubeblocks-enterprise-patch-v2.1.148-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz
