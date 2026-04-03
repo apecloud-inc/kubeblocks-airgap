@@ -53,6 +53,7 @@ on:
           - rabbitmq
           - rocketmq
           - redis
+          - camellia-redis-proxy
           - starrocks
           - starrocks-3.2.2
           - starrocks-3.3.0
