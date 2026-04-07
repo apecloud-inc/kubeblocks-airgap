@@ -16,6 +16,7 @@ on:
           - cert-manager
           - gemini
           - ape-local-csi-driver
+          - camellia-redis-proxy
           - clickhouse
           - damengdb
           - doris
