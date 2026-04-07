@@ -11,6 +11,7 @@ ape-local-csi-driver:0.4.3
 servicemirror:0.4.3
 servicemirror:0.3.1
 spiderpool:0.9.3
+camellia-redis-proxy:1.0.3
 cert-manager:v1.17.2
 metrics-server:3.12.0
 postgres-operator:1.12.2
