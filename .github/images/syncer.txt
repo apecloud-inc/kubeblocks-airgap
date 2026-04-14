@@ -1,2 +1,2 @@
-# syncer v0.6.8
-docker.io/apecloud/syncer:0.6.8
+# syncer v0.7.0
+docker.io/apecloud/syncer:0.7.0
