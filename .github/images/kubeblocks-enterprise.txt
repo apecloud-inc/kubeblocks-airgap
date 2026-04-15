@@ -137,3 +137,10 @@ docker.io/apecloud/postgresql:14
 docker.io/apecloud/mysql:8.0.33
 docker.io/apecloud/mongo:6.0.6
 docker.io/apecloud/oteld:0.11.0
+# Minio v1.0.3
+docker.io/apecloud/kubeblocks-tools:1.0.0
+docker.io/apecloud/minio:RELEASE.2025-10-15T17-29-55Z
+# Loki v1.0.2
+docker.io/apecloud/loki:2.9.4
+docker.io/apecloud/curl-jq:0.1.0
+docker.io/apecloud/nginx-unprivileged:1.24-alpine
