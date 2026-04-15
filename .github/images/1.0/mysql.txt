@@ -1,4 +1,4 @@
-# mysql v1.0.3
+# mysql v1.0.4
 docker.io/apecloud/mysql:5.7.44
 docker.io/apecloud/mysql:8.0.44
 docker.io/apecloud/mysql:8.0.41
@@ -19,3 +19,4 @@ docker.io/apecloud/percona-xtrabackup:8.4
 docker.io/apecloud/xtrabackup:2.4
 docker.io/apecloud/xtrabackup:8.0
 docker.io/apecloud/xtrabackup:8.4
+docker.io/apecloud/mydumper:v0.21.3-2

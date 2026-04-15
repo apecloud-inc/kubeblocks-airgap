@@ -1,0 +1,2 @@
+# victoria-logs v1.0.0
+docker.io/apecloud/victoria-logs:v1.43.1

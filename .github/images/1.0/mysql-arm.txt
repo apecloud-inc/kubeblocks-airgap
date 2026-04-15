@@ -1,4 +1,4 @@
-# mysql v1.0.3
+# mysql v1.0.4
 docker.io/apecloud/mysql:8.0.44
 docker.io/apecloud/mysql:8.0.41
 docker.io/apecloud/mysql:8.4.7

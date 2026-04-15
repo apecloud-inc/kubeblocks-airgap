@@ -1,0 +1,2 @@
+# camellia-redis-proxy v1.0.3
+docker.io/apecloud/camellia-redis-proxy:1.4.0

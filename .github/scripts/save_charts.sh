@@ -382,13 +382,21 @@ tar_charts_package() {
             case "$chart_tmp" in
                 "kubeblocks-cloud"*|"ape-local-csi-driver"*|"damengdb"*|"gaussdb"*|\
                 "kingbase"*|"mssql"*|"oceanbase"*|"starrocks"*|"vastbase"*|"goldendb"*|"tdsql"*|\
-                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*|"nacos"*)
+                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*|"nacos"*|\
+                "camellia-redis-proxy"*|"victoria-logs"*)
                     helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
                 ;;
                 "tdengine"*)
                     if [[ "${chart_version}" != "0.9.1" ]]; then
+                        helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
+                        helm repo update ${ENT_REPO_NAME}
+                        ent_flag=1
+                    fi
+                ;;
+                "mongodb"*|"mysql"*)
+                    if [[ "${chart_version}" != "0.9."* ]]; then
                         helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                         helm repo update ${ENT_REPO_NAME}
                         ent_flag=1

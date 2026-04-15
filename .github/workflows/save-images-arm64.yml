@@ -13,6 +13,7 @@ on:
           - kubeblocks-enterprise-patch
           - kubeblocks
           - kubeblocks-cloud
+          - camellia-redis-proxy
           - cert-manager
           - doris
           - gemini
@@ -61,6 +62,7 @@ on:
           - vastbase
           - pulsar
           - victoria-metrics
+          - victoria-logs
           - csi-driver-nfs
           - dbdrag
           - pv-migrate

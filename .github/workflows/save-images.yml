@@ -16,6 +16,7 @@ on:
           - cert-manager
           - gemini
           - ape-local-csi-driver
+          - camellia-redis-proxy
           - clickhouse
           - damengdb
           - doris
@@ -53,6 +54,7 @@ on:
           - rabbitmq
           - rocketmq
           - redis
+          - camellia-redis-proxy
           - starrocks
           - starrocks-3.2.2
           - starrocks-3.3.0
@@ -69,6 +71,7 @@ on:
           - tdsql
           - tidb
           - vastbase
+          - victoria-logs
           - pulsar
           - calico
           - csi-driver-nfs
