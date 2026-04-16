@@ -1,9 +1,9 @@
-# Gemini v0.11.0-beta.16
-docker.io/apecloud/gemini:0.11.0-beta.16
-docker.io/apecloud/gemini-tools:0.11.0-beta.16
-docker.io/apecloud/easymetrics:0.11.0-beta.16
-docker.io/apecloud/sla:0.11.0-beta.16
+# Gemini v0.12.0-beta.5
+docker.io/apecloud/gemini:0.12.0-beta.5
+docker.io/apecloud/gemini-tools:0.12.0-beta.5
+docker.io/apecloud/easymetrics:0.12.0-beta.5
+docker.io/apecloud/sla:0.12.0-beta.5
 docker.io/apecloud/servicemirror:0.4.4
-docker.io/apecloud/cubetran-platform:0.6.5
-docker.io/apecloud/ape-dts:2.0.26-alpha.1
-docker.io/apecloud/oteld:0.11.0-beta.7
+docker.io/apecloud/cubetran-platform:0.6.6-alpha.10
+docker.io/apecloud/ape-dts:2.0.26-alpha.11
+docker.io/apecloud/oteld:0.11.0
