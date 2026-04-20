@@ -267,15 +267,22 @@ check_charts_images() {
         elif [[ "${IMAGES_TXT_DIR}" != ".github/images" ]]; then
             chart_versions=$(yq e '[.'${chart_name}'[].version] | join("|")' ${MANIFESTS_FILE})
             chart_index=0
+            chart_version_include=0
             for chart_version_tmp in $(echo "$chart_versions" | sed 's/|/ /g'); do
                 if [[ "${chart_version}" == "v"* ]]; then
                     chart_version="${chart_version/v/}"
                 fi
                 if [[ "${chart_version_tmp}" == "${chart_version}" ]]; then
+                    chart_version_include=1
                     break
                 fi
                 chart_index=$(( $chart_index + 1 ))
             done
+            if [[ $chart_version_include -eq 0 ]]; then
+                check_result_tmp="$(tput -T xterm setaf 1)Not found ${IMAGES_TXT_DIR} ${chart_version} in manifests ${chart_versions} $(tput -T xterm sgr0)"
+                echo "${check_result_tmp}"
+                echo "${check_result_tmp}" >> check_airgap_result
+            fi
             if yq e '.'${chart_name}'['${chart_index}'] | has("serviceVersions")' "${MANIFESTS_FILE}" >/dev/null 2>&1; then
                 service_versions=$(yq e '[.'${chart_name}'['${chart_index}'].serviceVersions[]] | join(",")' ${MANIFESTS_FILE})
             fi
