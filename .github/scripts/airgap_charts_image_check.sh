@@ -89,7 +89,7 @@ check_images() {
     set_values_tmp=${5:-""}
     for j in {1..10}; do
         template_repo="${KB_REPO_NAME}"
-        if [[ "$is_enterprise_tmp" == "true" ]]; then
+        if [[ "$is_enterprise_tmp" == "true" || "${chart_name_tmp}" == "victoria-logs" ]]; then
             template_repo="${KB_ENT_REPO_NAME}"
         fi
         echo "helm template ${chart_name_tmp} ${template_repo}/${chart_name_tmp} --version ${chart_version_tmp} ${set_values_tmp}"
@@ -278,7 +278,7 @@ check_charts_images() {
                 fi
                 chart_index=$(( $chart_index + 1 ))
             done
-            if [[ $chart_version_include -eq 0 ]]; then
+            if [[ $chart_version_include -eq 0 && -n "${chart_versions}" ]]; then
                 check_result_tmp="$(tput -T xterm setaf 1)Not found ${IMAGES_TXT_DIR} ${chart_version} in manifests ${chart_versions} $(tput -T xterm sgr0)"
                 echo "${check_result_tmp}"
                 echo "${check_result_tmp}" >> check_airgap_result
