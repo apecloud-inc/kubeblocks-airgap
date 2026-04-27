@@ -50,8 +50,8 @@ bce14426b6199a1844b67a10ad030f57  pulsar-v0.9.1-arm64.tar.gz
 e2dd507d788bbf494d72f85b935b528a  qdrant-v0.9.1-arm64.tar.gz
 c8b985c75e9ac4d6e285aa19d1529b5d  rabbitmq-v0.9.0.tar.gz
 f9af98b1a969a1f0da9ca1c61f401cb3  rabbitmq-v0.9.0-arm64.tar.gz
-27e2efc62da3478e99af6c7560e58706  redis-v0.9.7.tar.gz
-202dae51ece4fa370dce138e36790f1a  redis-v0.9.7-arm64.tar.gz
+9e30eaffd85088c5eb190b1f52184879  redis-v0.9.7.tar.gz
+fbe36604ae42076a5c0ba9e9ef0b7600  redis-v0.9.7-arm64.tar.gz
 f470deea0e83ccd23bf3dce8c8e4b045  rocketmq-v0.9.2.tar.gz
 f1aca92bd762feee62ee4055a0e650e0  rocketmq-v0.9.2-arm64.tar.gz
 ede4f05b05d841018b30636d246b445a  starrocks-v0.9.1.tar.gz
@@ -120,8 +120,8 @@ f4e4b4af9af1ebf1824dc45d02047bdf  oceanbase-v1.0.3.tar.gz
 f304d6ea4cf9808c529e20f455ace8c1  qdrant-v1.0.2-arm64.tar.gz
 3d129281373f236ca77424affbb149d5  rabbitmq-v1.0.2.tar.gz
 f279274fa7f6fb207f35c5e2cc4bc6fa  rabbitmq-v1.0.2-arm64.tar.gz
-ee2a61139cb9f15c8f622df62e84a5db  redis-v1.0.3.tar.gz
-1eb718bae5ce83c41a46c7f53c3a7ea7  redis-v1.0.3-arm64.tar.gz
+c67adaa46f048fc0288f13bdc41935a0  redis-v1.0.3.tar.gz
+10bce70bd966188dc9e6c0bcdfcc1997  redis-v1.0.3-arm64.tar.gz
 99e34856ec40a5f96667b35b918ddbc9  rocketmq-v1.0.3.tar.gz
 0b03f821b5389098db65a1bc6c5676fd  rocketmq-v1.0.3-arm64.tar.gz
 db0e65e610ea0cd7c4868e6843e92c4f  starrocks-v1.0.0.tar.gz
@@ -150,10 +150,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 90c086e562a5d98f3f70560cf9f6690d  kubebench-v0.0.12.tar.gz
 a8586ddd813ab2c762c0df41ca7c1c25  kubebench-v0.0.12-arm64.tar.gz
-4f17443b42507a2448660204c9abb85e  kubeblocks-enterprise-v2.1.176.tar.gz
-c9f6b014ab4ab94f5f22049b4b6d597a  kubeblocks-enterprise-v2.1.176-arm64.tar.gz
-fd26301ea44e128a90cb27751729d287  kubeblocks-enterprise-patch-v2.1.176.tar.gz
-fb3cc5e95af0727ac89054746716907b  kubeblocks-enterprise-patch-v2.1.176-arm64.tar.gz
+af9d4825d7044c8760a966daa3a7c960  kubeblocks-enterprise-v2.1.176.tar.gz
+718042d7b3fd309b108d64fe73540cca  kubeblocks-enterprise-v2.1.176-arm64.tar.gz
+97ad3c63d65cc8278aa0e43be1507549  kubeblocks-enterprise-patch-v2.1.176.tar.gz
+37c798333d7811b4cde2275b1fb5d192  kubeblocks-enterprise-patch-v2.1.176-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz
