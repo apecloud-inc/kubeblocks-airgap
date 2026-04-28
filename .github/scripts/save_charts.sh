@@ -1085,10 +1085,10 @@ main() {
         # Update addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt
         update_addon_image_chart_versions_from_manifest
     fi
-#
-#     add_charts_list
-#
-#     tar_charts_package
+
+    add_charts_list
+
+    tar_charts_package
 }
 
 main "$@"
