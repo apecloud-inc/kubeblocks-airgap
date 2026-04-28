@@ -619,6 +619,322 @@ with open('$tmp_file', 'w') as f:
     done  # End of for i loop
 }
 
+update_addon_chart_versions_from_manifest() {
+    local charts_file=".github/charts/kubeblocks-enterprise.txt"
+    
+    if [[ ! -f "$charts_file" ]]; then
+        echo "Charts file not found: $charts_file"
+        return
+    fi
+    
+    echo "$(tput -T xterm setaf 3)Updating addon chart versions in kubeblocks-enterprise.txt$(tput -T xterm sgr0)"
+    
+    # Debug: Show file state before deduplication
+    echo "  DEBUG: File state before deduplication:"
+    grep -E "^(mssql|loki):" "$charts_file" | cat -n
+    
+    # First, deduplicate the entire file to start with a clean state
+    echo "  DEBUG: Deduplicating charts file before processing..."
+    local lines_before=$(wc -l < "$charts_file")
+    local tmp_dedup=$(mktemp)
+    awk '!seen[$0]++' "$charts_file" > "$tmp_dedup"
+    mv "$tmp_dedup" "$charts_file"
+    local lines_after=$(wc -l < "$charts_file")
+    echo "  DEBUG: Deduplication complete: ${lines_before} -> ${lines_after} lines"
+    
+    # Debug: Show file state after deduplication
+    echo "  DEBUG: File state after deduplication:"
+    grep -E "^(mssql|loki):" "$charts_file" | cat -n
+    
+    # List of engine addons to sync
+    local engine_addons=(
+        "clickhouse" "elasticsearch" "kafka" "mongodb" "mysql" "greatdb"
+        "oceanbase" "postgresql" "qdrant" "rabbitmq" "redis" "starrocks"
+        "zookeeper" "damengdb" "kingbase" "tidb" "vastbase" "minio"
+        "victoria-metrics" "gaussdb" "loki" "mssql" "oceanbase-proxy"
+        "pulsar" "rocketmq" "goldendb" "tdsql" "influxdb" "etcd"
+        "milvus" "nebula" "tdengine" "oracle" "doris" "hadoop"
+        "hive" "nacos" "camellia-redis-proxy"
+    )
+    
+    for addon_name in "${engine_addons[@]}"; do
+        # Get versions from manifest
+        mapfile -t manifest_versions < <(yq e ".${addon_name}[].version" ${MANIFESTS_FILE} 2>/dev/null || true)
+        
+        if [[ ${#manifest_versions[@]} -eq 0 ]]; then
+            # No versions in manifest, skip
+            continue
+        fi
+        
+        echo "  Processing ${addon_name}: ${#manifest_versions[@]} version(s) in manifest"
+        
+        # Get existing versions from charts file
+        mapfile -t existing_lines < <(grep "^${addon_name}:" "$charts_file" || true)
+        
+        echo "    DEBUG: Found ${#existing_lines[@]} existing line(s): ${existing_lines[*]}"
+        
+        # Build arrays of existing and manifest versions for comparison
+        local existing_versions=()
+        for line in "${existing_lines[@]}"; do
+            if [[ -n "$line" ]]; then
+                local ver="${line#*:}"
+                existing_versions+=("$ver")
+            fi
+        done
+        
+        echo "    DEBUG: Existing versions: ${existing_versions[*]}"
+        echo "    DEBUG: Manifest versions: ${manifest_versions[*]}"
+        
+        # Find versions to add (in manifest but not in existing)
+        local versions_to_add=()
+        for manifest_ver in "${manifest_versions[@]}"; do
+            local found=0
+            for existing_ver in "${existing_versions[@]}"; do
+                if [[ "$manifest_ver" == "$existing_ver" ]]; then
+                    found=1
+                    break
+                fi
+            done
+            if [[ $found -eq 0 ]]; then
+                echo "    DEBUG: Will add ${addon_name}:${manifest_ver} (not found in existing: ${existing_versions[*]})"
+                versions_to_add+=("$manifest_ver")
+            else
+                echo "    DEBUG: ${addon_name}:${manifest_ver} already exists, skip adding"
+            fi
+        done
+        
+        # Find versions to remove (in existing but not in manifest)
+        local versions_to_remove=()
+        for existing_ver in "${existing_versions[@]}"; do
+            local found=0
+            for manifest_ver in "${manifest_versions[@]}"; do
+                if [[ "$existing_ver" == "$manifest_ver" ]]; then
+                    found=1
+                    break
+                fi
+            done
+            if [[ $found -eq 0 ]]; then
+                versions_to_remove+=("$existing_ver")
+            fi
+        done
+        
+        # Update existing versions (match by position) - only update positions that exist in both arrays
+        local existing_count=${#existing_lines[@]}
+        local manifest_count=${#manifest_versions[@]}
+        local min_count=$((existing_count < manifest_count ? existing_count : manifest_count))
+        
+        for ((idx=0; idx<min_count; idx++)); do
+            local manifest_ver="${manifest_versions[$idx]}"
+            local existing_line="${existing_lines[$idx]}"
+            local existing_ver="${existing_line#*:}"
+            
+            if [[ "$manifest_ver" != "$existing_ver" ]]; then
+                echo "    Updating ${addon_name}:${existing_ver} -> ${addon_name}:${manifest_ver}"
+                # Use fixed string replacement instead of regex to avoid escaping issues
+                if [[ "$UNAME" == "Darwin" ]]; then
+                    local tmp_charts=$(mktemp)
+                    awk -v old="$existing_line" -v new="${addon_name}:${manifest_ver}" '{if ($0 == old) print new; else print}' "$charts_file" > "$tmp_charts"
+                    mv "$tmp_charts" "$charts_file"
+                else
+                    local tmp_charts=$(mktemp)
+                    awk -v old="$existing_line" -v new="${addon_name}:${manifest_ver}" '{if ($0 == old) print new; else print}' "$charts_file" > "$tmp_charts"
+                    mv "$tmp_charts" "$charts_file"
+                fi
+            fi
+        done
+        
+        # Add new versions (only if manifest has more versions than existing)
+        if [[ $manifest_count -gt $existing_count ]]; then
+            echo "    DEBUG: versions_to_add count: ${#versions_to_add[@]}, content: ${versions_to_add[*]}"
+            for ver in "${versions_to_add[@]}"; do
+                echo "    Adding ${addon_name}:${ver}"
+                echo "${addon_name}:${ver}" >> "$charts_file"
+            done
+        else
+            echo "    DEBUG: No new versions to add (manifest_count=$manifest_count, existing_count=$existing_count)"
+        fi
+        
+        # Remove obsolete versions (only if existing has more versions than manifest)
+        if [[ $existing_count -gt $manifest_count ]]; then
+            for ver in "${versions_to_remove[@]}"; do
+                echo "    Removing ${addon_name}:${ver}"
+                if [[ "$UNAME" == "Darwin" ]]; then
+                    sed -i '' "/^${addon_name}:${ver}$/d" "$charts_file"
+                else
+                    sed -i "/^${addon_name}:${ver}$/d" "$charts_file"
+                fi
+            done
+        fi
+    done
+    
+    echo "$(tput -T xterm setaf 2)Addon chart versions updated successfully$(tput -T xterm sgr0)"
+}
+
+update_addon_image_chart_versions_from_manifest() {
+    local images_files=(".github/images/kubeblocks-enterprise.txt" ".github/images/kubeblocks-cloud.txt")
+    local charts_file=".github/charts/kubeblocks-enterprise.txt"
+    
+    echo "$(tput -T xterm setaf 3)Updating addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt$(tput -T xterm sgr0)"
+    
+    # List of engine addons to sync
+    local engine_addons=(
+        "clickhouse" "elasticsearch" "kafka" "mongodb" "mysql" "greatdb"
+        "oceanbase" "postgresql" "qdrant" "rabbitmq" "redis" "starrocks"
+        "zookeeper" "damengdb" "kingbase" "tidb" "vastbase" "minio"
+        "victoria-metrics" "gaussdb" "loki" "mssql" "oceanbase-proxy"
+        "pulsar" "rocketmq" "goldendb" "tdsql" "influxdb" "etcd"
+        "milvus" "nebula" "tdengine" "oracle" "doris" "hadoop"
+        "hive" "nacos" "camellia-redis-proxy"
+    )
+    
+    for images_file in "${images_files[@]}"; do
+        if [[ ! -f "$images_file" ]]; then
+            echo "  WARNING: Images file not found: $images_file, skipping"
+            continue
+        fi
+        
+        echo "  Processing file: $images_file"
+        
+        for addon_name in "${engine_addons[@]}"; do
+            # Get versions from manifest
+            mapfile -t manifest_versions < <(yq e ".${addon_name}[].version" ${MANIFESTS_FILE} 2>/dev/null || true)
+            
+            if [[ ${#manifest_versions[@]} -eq 0 ]]; then
+                # No versions in manifest, skip
+                continue
+            fi
+            
+            # Check if this addon exists in charts file
+            if [[ -f "$charts_file" ]]; then
+                local charts_lines=$(grep "^${addon_name}:" "$charts_file" || true)
+                if [[ -z "$charts_lines" ]]; then
+                    # Addon not in charts file, skip
+                    continue
+                fi
+            fi
+            
+            # Get existing image chart lines from images file
+            # Use word boundary or end-of-pattern matching to avoid matching similar addon names (e.g., oceanbase vs oceanbase-proxy)
+            mapfile -t existing_lines < <(grep "docker.io/apecloud/apecloud-addon-charts:${addon_name}-[0-9]" "$images_file" || true)
+            
+            # Build arrays of existing and manifest versions for comparison
+            local existing_versions=()
+            for line in "${existing_lines[@]}"; do
+                if [[ -n "$line" ]]; then
+                    # Extract version from line like docker.io/apecloud/apecloud-addon-charts:addon_name-version
+                    local ver="${line#*${addon_name}-}"
+                    ver="${ver%% *}"  # Remove any trailing spaces
+                    existing_versions+=("$ver")
+                fi
+            done
+            
+            # Find versions to add (in manifest but not in existing)
+            local versions_to_add=()
+            for manifest_ver in "${manifest_versions[@]}"; do
+                local found=0
+                for existing_ver in "${existing_versions[@]}"; do
+                    if [[ "$manifest_ver" == "$existing_ver" ]]; then
+                        found=1
+                        break
+                    fi
+                done
+                if [[ $found -eq 0 ]]; then
+                    versions_to_add+=("$manifest_ver")
+                fi
+            done
+            
+            # Find versions to remove (in existing but not in manifest)
+            local versions_to_remove=()
+            for existing_ver in "${existing_versions[@]}"; do
+                local found=0
+                for manifest_ver in "${manifest_versions[@]}"; do
+                    if [[ "$existing_ver" == "$manifest_ver" ]]; then
+                        found=1
+                        break
+                    fi
+                done
+                if [[ $found -eq 0 ]]; then
+                    versions_to_remove+=("$existing_ver")
+                fi
+            done
+            
+            # Update existing image chart versions (match by position) - only update positions that exist in both arrays
+            local existing_count=${#existing_lines[@]}
+            local manifest_count=${#manifest_versions[@]}
+            local min_count=$((existing_count < manifest_count ? existing_count : manifest_count))
+            
+            for ((idx=0; idx<min_count; idx++)); do
+                local manifest_ver="${manifest_versions[$idx]}"
+                local existing_line="${existing_lines[$idx]}"
+                local existing_ver="${existing_line#*${addon_name}-}"
+                existing_ver="${existing_ver%% *}"  # Extract version
+                
+                if [[ "$manifest_ver" != "$existing_ver" ]]; then
+                    echo "    Updating ${existing_line} -> docker.io/apecloud/apecloud-addon-charts:${addon_name}-${manifest_ver}"
+                    # Use fixed string replacement instead of regex to avoid escaping issues
+                    if [[ "$UNAME" == "Darwin" ]]; then
+                        local tmp_images=$(mktemp)
+                        awk -v old="$existing_line" -v new="docker.io/apecloud/apecloud-addon-charts:${addon_name}-${manifest_ver}" '{if ($0 == old) print new; else print}' "$images_file" > "$tmp_images"
+                        mv "$tmp_images" "$images_file"
+                    else
+                        local tmp_images=$(mktemp)
+                        awk -v old="$existing_line" -v new="docker.io/apecloud/apecloud-addon-charts:${addon_name}-${manifest_ver}" '{if ($0 == old) print new; else print}' "$images_file" > "$tmp_images"
+                        mv "$tmp_images" "$images_file"
+                    fi
+                fi
+            done
+            
+            # Add new image chart versions (only if manifest has more versions than existing)
+            if [[ $manifest_count -gt $existing_count ]]; then
+                for ver in "${versions_to_add[@]}"; do
+                    echo "    Adding docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}"
+                    
+                    # Find the insertion point: before the first comment line that's not a version comment at the beginning
+                    # We want to insert before lines like "# casdoor", "# KubeBlocks", etc.
+                    local insert_line=""
+                    
+                    # Find all comment lines
+                    while IFS=: read -r line_num line_content; do
+                        # Skip comments at the very beginning of file (lines 1-5)
+                        if [[ $line_num -le 5 ]]; then
+                            continue
+                        fi
+                        # This is a good insertion point (before this comment)
+                        insert_line=$((line_num - 1))
+                        break
+                    done < <(grep -n "^# " "$images_file")
+                    
+                    if [[ -z "$insert_line" ]]; then
+                        # If no suitable comment found, append to end
+                        echo "docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}" >> "$images_file"
+                    else
+                        # Insert before the comment line
+                        local tmp_images=$(mktemp)
+                        head -n "$insert_line" "$images_file" > "$tmp_images"
+                        echo "docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}" >> "$tmp_images"
+                        tail -n +$((insert_line + 1)) "$images_file" >> "$tmp_images"
+                        mv "$tmp_images" "$images_file"
+                    fi
+                done
+            fi
+            
+            # Remove obsolete image chart versions (only if existing has more versions than manifest)
+            if [[ $existing_count -gt $manifest_count ]]; then
+                for ver in "${versions_to_remove[@]}"; do
+                    echo "    Removing docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}"
+                    if [[ "$UNAME" == "Darwin" ]]; then
+                        sed -i '' "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-${ver}/d" "$images_file"
+                    else
+                        sed -i "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-${ver}/d" "$images_file"
+                    fi
+                done
+            fi
+        done
+    done
+    
+    echo "$(tput -T xterm setaf 2)Addon image chart versions updated successfully$(tput -T xterm sgr0)"
+}
+
 generate_release_note() {
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
@@ -844,6 +1160,12 @@ main() {
                 update_addon_images_from_manifest "hive"
                 update_addon_images_from_manifest "nacos"
                 update_addon_images_from_manifest "camellia-redis-proxy"
+                
+                # Update addon chart versions in kubeblocks-enterprise.txt
+                update_addon_chart_versions_from_manifest
+                
+                # Update addon image chart versions in kubeblocks-enterprise.txt
+                update_addon_image_chart_versions_from_manifest
             fi
         ;;
         2)
