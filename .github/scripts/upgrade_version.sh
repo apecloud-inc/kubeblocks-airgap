@@ -382,6 +382,243 @@ change_servicemirror_version() {
     done
 }
 
+update_addon_images_from_manifest() {
+    local addon_name="$1"
+    
+    # Extract all versions for this addon from deploy-manifests.yaml
+    mapfile -t versions < <(yq e ".${addon_name}[].version" ${MANIFESTS_FILE} 2>/dev/null || true)
+    
+    if [[ ${#versions[@]} -eq 0 ]]; then
+        echo "  No versions found for ${addon_name} in manifest"
+        return
+    fi
+    
+    echo "$(tput -T xterm setaf 3)Updating ${addon_name} images from manifest (${#versions[@]} versions)$(tput -T xterm sgr0)"
+    
+    # Determine if this addon has ARM-specific files and special handling
+    local has_arm_files=0
+    local arm_only=0  # For damengdb: only update arm file, skip regular file
+    case "$addon_name" in
+        damengdb)
+            has_arm_files=1
+            arm_only=1  # Only update arm file
+            ;;
+        elasticsearch|mysql|oceanbase)
+            has_arm_files=1
+            ;;
+    esac
+    
+    # Process each version
+    for i in "${!versions[@]}"; do
+        local version="${versions[$i]}"
+        local major_minor="${version%%.*}"
+        local target_dir=""
+        
+        # Determine target directory based on version prefix
+        if [[ "$version" == 0.9.* ]]; then
+            target_dir=".github/images/0.9"
+        elif [[ "$version" == 1.0.* ]]; then
+            target_dir=".github/images/1.0"
+        else
+            echo "  WARNING: Unknown version prefix for ${addon_name} v${version}, skipping"
+            continue
+        fi
+        
+        # List of files to update (regular file and optionally ARM file)
+        local files_to_update=()
+        
+        # For damengdb, only update arm file
+        if [[ $arm_only -eq 1 ]]; then
+            files_to_update=("${target_dir}/${addon_name}-arm.txt")
+        else
+            # For other addons, update regular file
+            files_to_update=("${target_dir}/${addon_name}.txt")
+            # And also arm file if applicable
+            if [[ $has_arm_files -eq 1 ]]; then
+                files_to_update+=("${target_dir}/${addon_name}-arm.txt")
+            fi
+        fi
+        
+        # Process each file (regular and ARM)
+        for txt_file in "${files_to_update[@]}"; do
+            if [[ ! -f "$txt_file" ]]; then
+                echo "  WARNING: File not found: ${txt_file}, skipping"
+                continue
+            fi
+            
+            echo "  Processing ${addon_name} v${version} -> ${txt_file}"
+            
+            # Extract images for this specific version from manifest
+            mapfile -t manifest_images < <(yq e ".${addon_name}[${i}].images[]" ${MANIFESTS_FILE} 2>/dev/null || true)
+            
+            if [[ ${#manifest_images[@]} -eq 0 ]]; then
+                echo "    WARNING: No images found for ${addon_name} v${version}"
+                continue
+            fi
+            
+            # Apply special filtering rules for ARM-specific files
+            local filtered_images=()
+            for img in "${manifest_images[@]}"; do
+                local should_include=1
+                
+                # Check if this is an ARM-specific file
+                if [[ "$txt_file" == *"-arm.txt" ]]; then
+                    # elasticsearch-arm: exclude 6.8.23 versions
+                    if [[ "$addon_name" == "elasticsearch" ]]; then
+                        if [[ "$img" == *"elasticsearch:6.8.23"* ]] || [[ "$img" == *"kibana:6.8.23"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                    
+                    # mysql-arm: exclude 5.7.44 and xtrabackup 2.4
+                    if [[ "$addon_name" == "mysql" ]]; then
+                        if [[ "$img" == *"mysql:5.7.44"* ]] || \
+                           [[ "$img" == *"mysql_audit_log:5.7.44"* ]] || \
+                           [[ "$img" == *"percona-xtrabackup:2.4"* ]] || \
+                           [[ "$img" == *"xtrabackup:2.4"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                    
+                    # oceanbase-arm: exclude ocp suffix
+                    if [[ "$addon_name" == "oceanbase" ]]; then
+                        if [[ "$img" == *"-ocp"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                else
+                    # For non-ARM files, apply oceanbase filtering (exclude arm64 suffix)
+                    if [[ "$addon_name" == "oceanbase" ]]; then
+                        if [[ "$img" == *"-arm64"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                fi
+                
+                if [[ $should_include -eq 1 ]]; then
+                    filtered_images+=("$img")
+                fi
+            done
+            
+            # Use filtered images
+            manifest_images=("${filtered_images[@]}")
+        
+        # Read the original file and find where the first comment section ends
+        # We need to preserve everything after the first block of images (including other # comments)
+        local first_comment_line=1
+        local first_image_block_end=0
+        local line_num=0
+        local found_first_image=0
+        
+        while IFS= read -r line; do
+            line_num=$((line_num + 1))
+            
+            # Skip empty lines at the beginning
+            if [[ $line_num -eq 1 && -z "$line" ]]; then
+                continue
+            fi
+            
+            # First line should be the version comment
+            if [[ $line_num -eq 1 && "$line" == \#* ]]; then
+                first_comment_line=1
+                continue
+            fi
+            
+            # Check if this is an image line (starts with docker.io or contains /)
+            if [[ "$line" == docker.io/* || "$line" == *"/"* ]] && [[ "$line" != \#* ]]; then
+                if [[ $found_first_image -eq 0 ]]; then
+                    found_first_image=1
+                fi
+                first_image_block_end=$line_num
+            elif [[ "$line" == \#* ]] && [[ $found_first_image -eq 1 ]]; then
+                # Found a new comment section after images, this is where first block ends
+                break
+            elif [[ -z "$line" ]] && [[ $found_first_image -eq 1 ]]; then
+                # Empty line after images might be end of first block
+                # Check if next non-empty line is a comment
+                local next_line_num=$((line_num + 1))
+                local next_line=$(sed -n "${next_line_num}p" "$txt_file")
+                if [[ "$next_line" == \#* ]]; then
+                    first_image_block_end=$line_num
+                    break
+                fi
+            fi
+        done < "$txt_file"
+        
+        # If we didn't find a clear boundary, assume all content after first comment is first block
+        if [[ $first_image_block_end -eq 0 ]]; then
+            first_image_block_end=$(wc -l < "$txt_file")
+        fi
+        
+        # Extract content to preserve (everything after first image block)
+        local preserved_content=""
+        if [[ $first_image_block_end -lt $(wc -l < "$txt_file") ]]; then
+            preserved_content=$(tail -n +$((first_image_block_end + 1)) "$txt_file")
+        fi
+        
+        # Create temporary file with new content
+        local tmp_file="${txt_file}.tmp"
+        
+        # Write version comment
+        echo "# ${addon_name} v${version}" > "$tmp_file"
+        
+        # Write images from manifest (add docker.io/ prefix if needed)
+        for img in "${manifest_images[@]}"; do
+            # Ensure proper prefix
+            if [[ "$img" != docker.io/* ]]; then
+                echo "docker.io/${img}" >> "$tmp_file"
+            else
+                echo "$img" >> "$tmp_file"
+            fi
+        done
+        
+        # Append preserved content if exists
+        if [[ -n "$preserved_content" ]]; then
+            # Remove trailing blank lines from preserved content before appending
+            local cleaned_content=$(echo "$preserved_content" | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}')
+            if [[ -n "$cleaned_content" ]]; then
+                echo "$cleaned_content" >> "$tmp_file"
+            fi
+        fi
+        
+        # Ensure exactly one trailing newline
+        # Simple and reliable approach: use perl to remove all trailing newlines, then add one
+        if command -v perl &> /dev/null; then
+            perl -pi -e 'chomp if eof' "$tmp_file"  # Remove trailing newlines
+            echo "" >> "$tmp_file"  # Add exactly one
+        else
+            # Fallback: use python if available
+            if command -v python3 &> /dev/null; then
+                python3 -c "
+import sys
+with open('$tmp_file', 'r') as f:
+    content = f.read()
+content = content.rstrip('\\n') + '\\n'
+with open('$tmp_file', 'w') as f:
+    f.write(content)
+"
+            else
+                # Last resort: manual approach with sed
+                # Remove all trailing empty lines
+                while [[ $(tail -c 1 "$tmp_file" | wc -l) -eq 1 ]] && [[ -s "$tmp_file" ]]; do
+                    if [[ "$UNAME" == "Darwin" ]]; then
+                        sed -i '' -e '${/^$/d;}' "$tmp_file"
+                    else
+                        sed -i -e '${/^$/d;}' "$tmp_file"
+                    fi
+                done
+                echo "" >> "$tmp_file"
+            fi
+        fi
+        
+        # Replace original file
+        mv "$tmp_file" "$txt_file"
+        
+        echo "    Updated ${#manifest_images[@]} images for ${addon_name} v${version}"
+        done  # End of for txt_file loop
+    done  # End of for i loop
+}
+
 generate_release_note() {
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
@@ -564,6 +801,49 @@ main() {
 
             if [[ -n "$SERVICEMIRROR_VERSION" ]]; then
                 change_servicemirror_version
+            fi
+
+            # Update addon images from deploy-manifests.yaml
+            if [[ -n "$MANIFESTS_FILE" && -f "${MANIFESTS_FILE}" ]]; then
+                echo "$(tput -T xterm setaf 3)Updating addon images from manifest$(tput -T xterm sgr0)"
+                update_addon_images_from_manifest "clickhouse"
+                update_addon_images_from_manifest "elasticsearch"
+                update_addon_images_from_manifest "kafka"
+                update_addon_images_from_manifest "mongodb"
+                update_addon_images_from_manifest "mysql"
+                update_addon_images_from_manifest "greatdb"
+                update_addon_images_from_manifest "oceanbase"
+                update_addon_images_from_manifest "postgresql"
+                update_addon_images_from_manifest "qdrant"
+                update_addon_images_from_manifest "rabbitmq"
+                update_addon_images_from_manifest "redis"
+                update_addon_images_from_manifest "starrocks"
+                update_addon_images_from_manifest "zookeeper"
+                update_addon_images_from_manifest "damengdb"
+                update_addon_images_from_manifest "kingbase"
+                update_addon_images_from_manifest "tidb"
+                update_addon_images_from_manifest "vastbase"
+                update_addon_images_from_manifest "minio"
+                update_addon_images_from_manifest "victoria-metrics"
+                update_addon_images_from_manifest "gaussdb"
+                update_addon_images_from_manifest "loki"
+                update_addon_images_from_manifest "mssql"
+                update_addon_images_from_manifest "oceanbase-proxy"
+                update_addon_images_from_manifest "pulsar"
+                update_addon_images_from_manifest "rocketmq"
+                update_addon_images_from_manifest "goldendb"
+                update_addon_images_from_manifest "tdsql"
+                update_addon_images_from_manifest "influxdb"
+                update_addon_images_from_manifest "etcd"
+                update_addon_images_from_manifest "milvus"
+                update_addon_images_from_manifest "nebula"
+                update_addon_images_from_manifest "tdengine"
+                update_addon_images_from_manifest "oracle"
+                update_addon_images_from_manifest "doris"
+                update_addon_images_from_manifest "hadoop"
+                update_addon_images_from_manifest "hive"
+                update_addon_images_from_manifest "nacos"
+                update_addon_images_from_manifest "camellia-redis-proxy"
             fi
         ;;
         2)
