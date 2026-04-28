@@ -279,7 +279,7 @@ check_charts_images() {
                 chart_index=$(( $chart_index + 1 ))
             done
             if [[ $chart_version_include -eq 0 && -n "${chart_versions}" ]]; then
-                check_result_tmp="$(tput -T xterm setaf 1)Not found ${IMAGES_TXT_DIR} ${chart_version} in manifests ${chart_versions} $(tput -T xterm sgr0)"
+                check_result_tmp="$(tput -T xterm setaf 1)Not found ${chart_name} ${chart_version} in manifests ${chart_versions} $(tput -T xterm sgr0)"
                 echo "${check_result_tmp}"
                 echo "${check_result_tmp}" >> check_airgap_result
             fi
