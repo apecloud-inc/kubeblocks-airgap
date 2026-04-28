@@ -65,9 +65,9 @@ check_service_version_images() {
             if [[ $check_flag -eq 0 ]]; then
                 check_result_tmp="$(tput -T xterm setaf 1)Not found ${chart_name_tmp} ${chart_version_tmp} image:${repository} in ${IMAGES_TXT_DIR}/${chart_name_tmp}.txt $(tput -T xterm sgr0)"
                 echo "${check_result_tmp}"
-                CHECK_RESULTS="$(cat check_manifest_result)"
+                CHECK_RESULTS="$(cat check_airgap_result)"
                 if [[ "${CHECK_RESULTS}" != *"${check_result_tmp}"* ]]; then
-                    echo "${check_result_tmp}" >> check_manifest_result
+                    echo "${check_result_tmp}" >> check_airgap_result
                 fi
                 echo 1 > exit_result
             fi
