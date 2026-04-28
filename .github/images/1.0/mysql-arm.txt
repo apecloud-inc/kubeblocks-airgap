@@ -15,3 +15,4 @@ docker.io/apecloud/percona-xtrabackup:8.0
 docker.io/apecloud/percona-xtrabackup:8.4
 docker.io/apecloud/xtrabackup:8.0
 docker.io/apecloud/xtrabackup:8.4
+docker.io/apecloud/mydumper:v0.21.3-2
