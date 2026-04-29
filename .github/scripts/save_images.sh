@@ -971,9 +971,9 @@ main() {
         update_addon_image_chart_versions_from_manifest
     fi
 
-#     add_images_list
-#
-#     save_images_package
+    add_images_list
+
+    save_images_package
 }
 
 main "$@"
