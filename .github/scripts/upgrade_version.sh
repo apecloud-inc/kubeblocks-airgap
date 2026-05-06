@@ -17,6 +17,7 @@ Usage: $(basename "$0") <options>
     -ov, --oteld-version          Oteld Version
     -iv, --installer-version      Offline Installer Version
     -dv, --dms-version            Dms Version
+    -amv, --apecloud-mcp-version  Apecloud-MCP Version
     -mf, --manifests-file         Cloud Manifests File Path
 EOF
 }
@@ -67,6 +68,12 @@ parse_command_line() {
             -dv|--dms-version)
                 if [[ -n "${2:-}" ]]; then
                     DMS_VERSION="$2"
+                    shift
+                fi
+                ;;
+            -amv|--apecloud-mcp-version)
+                if [[ -n "${2:-}" ]]; then
+                    APECLOUD_MCP_VERSION="$2"
                     shift
                 fi
                 ;;
@@ -262,6 +269,20 @@ change_dms_version() {
             sed -i '' "s/^docker.io\/apecloud\/dms:.*/docker.io\/apecloud\/dms:${DMS_VERSION}/" $image_file_path
         else
             sed -i "s/^docker.io\/apecloud\/dms:.*/docker.io\/apecloud\/dms:${DMS_VERSION}/" $image_file_path
+        fi
+    done
+}
+
+change_apecloud_mcp_version() {
+    echo "$(tput -T xterm setaf 3)change apecloud-mcp image version:${APECLOUD_MCP_VERSION}$(tput -T xterm sgr0)"
+    imageFiles=("kubeblocks-cloud.txt" "kubeblocks-enterprise.txt" "kubeblocks-enterprise-patch.txt")
+    for imageFile in "${imageFiles[@]}"; do
+        echo "change ${imageFile} images tag"
+        image_file_path=.github/images/${imageFile}
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^docker.io\/apecloud\/apecloud-mcp:.*/docker.io\/apecloud\/apecloud-mcp:${APECLOUD_MCP_VERSION}/" $image_file_path
+        else
+            sed -i "s/^docker.io\/apecloud\/apecloud-mcp:.*/docker.io\/apecloud\/apecloud-mcp:${APECLOUD_MCP_VERSION}/" $image_file_path
         fi
     done
 }
@@ -1019,6 +1040,11 @@ main() {
                     DMS_VERSION="${DMS_IMAGE#*:}"
                 fi
 
+                APECLOUD_MCP_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/apecloud-mcp:" || true))
+                if [[ -n "$APECLOUD_MCP_IMAGE" ]]; then
+                    APECLOUD_MCP_VERSION="${APECLOUD_MCP_IMAGE#*:}"
+                fi
+
                 CLOUD_APE_DTS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
                 if [[ -n "$CLOUD_APE_DTS_IMAGE" ]]; then
                     CLOUD_APE_DTS_VERSION="${CLOUD_APE_DTS_IMAGE#*:}"
@@ -1045,6 +1071,7 @@ main() {
                 echo "MANIFESTS OTELD_VERSION:"${OTELD_VERSION}
                 echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
                 echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
+                echo "MANIFESTS APECLOUD_MCP_VERSION:"${APECLOUD_MCP_VERSION}
                 echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
                 echo "MANIFESTS CLOUD_APE_DTS_VERSION:${CLOUD_APE_DTS_VERSION}"
                 echo "MANIFESTS GEMINI_APE_DTS_VERSION:${GEMINI_APE_DTS_VERSION}"
@@ -1093,6 +1120,13 @@ main() {
                     $DMS_VERSION="${DMS_VERSION/v/}"
                 fi
                 change_dms_version
+            fi
+
+            if [[ -n "$APECLOUD_MCP_VERSION" ]]; then
+                if [[ "${APECLOUD_MCP_VERSION}" == "v"* ]]; then
+                    APECLOUD_MCP_VERSION="${APECLOUD_MCP_VERSION/v/}"
+                fi
+                change_apecloud_mcp_version
             fi
 
             if [[ -n "$APE_LOCAL_CSI_DRIVER_VERSION" ]]; then
