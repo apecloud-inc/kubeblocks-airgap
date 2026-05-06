@@ -9,5 +9,3 @@ docker.io/apecloud/tpcds:latest
 docker.io/apecloud/go-ycsb:latest
 docker.io/apecloud/fio:latest
 docker.io/apecloud/redis:7.0.5
-
-

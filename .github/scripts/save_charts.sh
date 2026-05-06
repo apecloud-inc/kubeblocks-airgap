@@ -369,6 +369,7 @@ tar_charts_package() {
 
     tar_flag=0
     for i in {1..10}; do
+        local fetch_all_success=1
         while read -r chart
         do
             ent_flag=0
@@ -405,6 +406,7 @@ tar_charts_package() {
             esac
 
             echo "fetch chart $chart_tmp"
+            local fetch_success=0
             for j in {1..10}; do
                 if [[ $ent_flag -eq 1 ]]; then
                     helm pull -d ${KB_CHART_NAME} ${ENT_REPO_NAME}/${chart_name} --version ${chart_version}
@@ -414,11 +416,26 @@ tar_charts_package() {
                 ret_msg=$?
                 if [[ $ret_msg -eq 0 ]]; then
                     echo "$(tput -T xterm setaf 2)fetch chart $chart_tmp success$(tput -T xterm sgr0)"
+                    fetch_success=1
                     break
                 fi
+                echo "$(tput -T xterm setaf 3)fetch chart $chart_tmp failed (attempt $j/10), retrying...$(tput -T xterm sgr0)"
                 sleep 1
             done
+            
+            if [[ $fetch_success -eq 0 ]]; then
+                echo "$(tput -T xterm setaf 1)fetch chart $chart_tmp failed after 10 attempts$(tput -T xterm sgr0)"
+                fetch_all_success=0
+                break
+            fi
         done < $CHART_FILE_PATH
+        
+        if [[ $fetch_all_success -eq 0 ]]; then
+            echo "$(tput -T xterm setaf 3)Some charts failed to fetch, retrying entire process (attempt $i/10)...$(tput -T xterm sgr0)"
+            sleep 2
+            continue
+        fi
+        
         echo "tar ${KB_CHART_NAME}"
         tar -czvf ${APP_PKG_NAME} ${KB_CHART_NAME}
         ret_msg=$?
@@ -427,6 +444,7 @@ tar_charts_package() {
             tar_flag=1
             break
         fi
+        echo "$(tput -T xterm setaf 3)tar failed, retrying...$(tput -T xterm sgr0)"
         sleep 1
     done
     if [[ $tar_flag -eq 0 ]]; then
