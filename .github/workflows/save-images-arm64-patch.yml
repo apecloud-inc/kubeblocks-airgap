@@ -38,6 +38,10 @@ on:
         description: 'Dms version'
         required: false
         default: ''
+      APECLOUD_MCP_VERSION:
+        description: 'Apecloud-MCP version'
+        required: false
+        default: ''
 
 run-name: save Arm64 ${{ inputs.APP_NAME }}:${{ inputs.APP_VERSION }} ${{ inputs.ADD_IMAGES }}
 
@@ -50,7 +54,7 @@ env:
   OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
-  OSS_DIR: "images/cloud2.1/arm64"
+  OSS_DIR: "images/cloud2.2/arm64"
   DOCKER_VERSION: "v28.0.4"
 
 jobs:
@@ -111,6 +115,7 @@ jobs:
           oteld_version: ${{ inputs.OTELD_VERSION }}
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
+          apecloud_mcp_version: ${{ inputs.APECLOUD_MCP_VERSION }}
           images_file: .github/images/${{ inputs.APP_NAME }}.txt
           platform: "linux/arm64"
         run: |

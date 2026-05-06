@@ -295,6 +295,7 @@ check_charts_images() {
                 set_values="${set_values} --set images.sentryInit.tag=${chart_version} "
                 set_values="${set_values} --set images.relay.tag=${chart_version} "
                 set_values="${set_values} --set images.cr4w.tag=${chart_version} "
+                set_values="${set_values} --set images.console.tag=${chart_version} "
                 set_values="${set_values} --set images.openconsole.tag=${chart_version} "
                 set_values="${set_values} --set images.openconsoleAdmin.tag=${chart_version} "
                 set_values="${set_values} --set images.taskManager.tag=${chart_version} "

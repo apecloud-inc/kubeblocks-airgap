@@ -11,6 +11,7 @@ readonly GEMINI_VERSION_TMP="${gemini_version?}"
 readonly OTELD_VERSION_TMP="${oteld_version?}"
 readonly OFFLINE_INSTALLER_VERSION_TMP="${installer_version?}"
 readonly DMS_VERSION_TMP="${dms_version?}"
+readonly APECLOUD_MCP_VERSION_TMP="${apecloud_mcp_version?}"
 
 echo "ADD_CHARTS_LIST:"${ADD_CHARTS_LIST}
 echo "APP_NAME:"${APP_NAME}
@@ -22,6 +23,7 @@ echo "GEMINI_VERSION:"${GEMINI_VERSION_TMP}
 echo "OTELD_VERSION:"${OTELD_VERSION_TMP}
 echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION_TMP}
 echo "DMS_VERSION:"${DMS_VERSION_TMP}
+echo "APECLOUD_MCP_VERSION:"${APECLOUD_MCP_VERSION_TMP}
 
 add_charts_list() {
     if [[ -z "${ADD_CHARTS_LIST}" ]]; then
@@ -83,6 +85,7 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/cr4w:.*/docker.io\/apecloud\/cr4w:${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-console:.*/docker.io\/apecloud\/kubeblocks-console:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/relay:.*/docker.io\/apecloud\/relay:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -98,6 +101,7 @@ change_charts_version() {
             sed -i "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/cr4w:.*/docker.io\/apecloud\/cr4w:${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^docker.io\/apecloud\/kubeblocks-console:.*/docker.io\/apecloud\/kubeblocks-console:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/relay:.*/docker.io\/apecloud\/relay:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -187,6 +191,24 @@ change_charts_version() {
             sed -i '' "s/^docker.io\/apecloud\/dms:.*/docker.io\/apecloud\/dms:${DMS_VERSION}/" $IMAGE_FILE_PATH
         else
             sed -i "s/^docker.io\/apecloud\/dms:.*/docker.io\/apecloud\/dms:${DMS_VERSION}/" $IMAGE_FILE_PATH
+        fi
+    fi
+
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$APECLOUD_MCP_VERSION" ]]; then
+        echo "change Apecloud-MCP images tag"
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^docker.io\/apecloud\/apecloud-mcp:.*/docker.io\/apecloud\/apecloud-mcp:${APECLOUD_MCP_VERSION}/" $IMAGE_FILE_PATH
+        else
+            sed -i "s/^docker.io\/apecloud\/apecloud-mcp:.*/docker.io\/apecloud\/apecloud-mcp:${APECLOUD_MCP_VERSION}/" $IMAGE_FILE_PATH
+        fi
+    fi
+
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$OB_GRPC_SERVER_VERSION" ]]; then
+        echo "change OB-GRPC-Server images tag"
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^docker.io\/apecloud\/ob-grpc-server:.*/docker.io\/apecloud\/ob-grpc-server:${OB_GRPC_SERVER_VERSION}/" $IMAGE_FILE_PATH
+        else
+            sed -i "s/^docker.io\/apecloud\/ob-grpc-server:.*/docker.io\/apecloud\/ob-grpc-server:${OB_GRPC_SERVER_VERSION}/" $IMAGE_FILE_PATH
         fi
     fi
 
@@ -389,7 +411,7 @@ tar_charts_package() {
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
                 ;;
-                "tdengine"*)
+                "tdengine"*|"victoria-metrics"*)
                     if [[ "${chart_version}" != "0.9.1" ]]; then
                         helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                         helm repo update ${ENT_REPO_NAME}
@@ -477,6 +499,16 @@ check_manifests_version() {
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
 
+    APECLOUD_MCP_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/apecloud-mcp:" || true))
+    if [[ -n "$APECLOUD_MCP_IMAGE" ]]; then
+        APECLOUD_MCP_VERSION="${APECLOUD_MCP_IMAGE#*:}"
+    fi
+
+    OB_GRPC_SERVER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ob-grpc-server:" || true))
+    if [[ -n "$OB_GRPC_SERVER_IMAGE" ]]; then
+        OB_GRPC_SERVER_VERSION="${OB_GRPC_SERVER_IMAGE#*:}"
+    fi
+
     CLOUD_APE_DTS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
     if [[ -n "$CLOUD_APE_DTS_IMAGE" ]]; then
         CLOUD_APE_DTS_VERSION="${CLOUD_APE_DTS_IMAGE#*:}"
@@ -504,6 +536,8 @@ check_manifests_version() {
     echo "MANIFESTS OTELD_VERSION:"${OTELD_VERSION}
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
+    echo "MANIFESTS APECLOUD_MCP_VERSION:"${APECLOUD_MCP_VERSION}
+    echo "MANIFESTS OB_GRPC_SERVER_VERSION:${OB_GRPC_SERVER_VERSION}"
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
     echo "MANIFESTS CLOUD_APE_DTS_VERSION:${CLOUD_APE_DTS_VERSION}"
     echo "MANIFESTS GEMINI_APE_DTS_VERSION:${GEMINI_APE_DTS_VERSION}"
@@ -1040,6 +1074,8 @@ main() {
     local OTELD_VERSION="${OTELD_VERSION_TMP?}"
     local OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_VERSION_TMP}"
     local DMS_VERSION="${DMS_VERSION_TMP}"
+    local APECLOUD_MCP_VERSION="${APECLOUD_MCP_VERSION_TMP}"
+    local OB_GRPC_SERVER_VERSION=""
     local REPO_URL="https://github.com/apecloud/helm-charts/releases/download"
     local KB_REPO_URL="https://github.com/apecloud/kubeblocks/releases/download"
     local KB_ENT_REPO_URL="https://jihulab.com/api/v4/projects/${CHART_PROJECT_ID}/packages/helm/stable"

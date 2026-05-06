@@ -27,6 +27,10 @@ on:
         description: 'Dms version'
         required: false
         default: ''
+      APECLOUD_MCP_VERSION:
+        description: 'Apecloud-MCP version'
+        required: false
+        default: ''
 
 run-name: ref_name:${{ github.ref_name }} Cloud:${{ inputs.APP_VERSION }} KubeBlocks:${{ inputs.KB_VERSION }} Gemini:${{ inputs.GEMINI_VERSION }} Oteld:${{ inputs.OTELD_VERSION }} Installer:${{ inputs.INSTALLER_VERSION }} Dms:${{ inputs.DMS_VERSION }}
 
@@ -105,6 +109,11 @@ jobs:
           if [[ -n "${{ inputs.DMS_VERSION }}" ]]; then
               update_version_cmd="${update_version_cmd} --dms-version ${{ inputs.DMS_VERSION }} "
               commit_message="${commit_message} dms ${{ inputs.DMS_VERSION }}"
+          fi
+          
+          if [[ -n "${{ inputs.APECLOUD_MCP_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --apecloud-mcp-version ${{ inputs.APECLOUD_MCP_VERSION }} "
+              commit_message="${commit_message} apecloud-mcp ${{ inputs.APECLOUD_MCP_VERSION }}"
           fi
           
           echo "${update_version_cmd}"
