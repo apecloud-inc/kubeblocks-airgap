@@ -4,7 +4,6 @@ docker.io/apecloud/openconsole:v2.2.0-beta.0
 docker.io/apecloud/openconsole:v2.2.0-beta.0-console
 docker.io/apecloud/openconsole:v2.2.0-beta.0-admin
 docker.io/apecloud/apiserver:v2.2.0-beta.0
-docker.io/apecloud/cubetran-front:v2.2.0-beta.0
 docker.io/apecloud/cr4w:v2.2.0-beta.0
 docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.0
 docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.0
