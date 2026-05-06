@@ -33,7 +33,7 @@ jobs:
                   echo "Processing $filePath"
                   release_version="$(head -n 1 $filePath | (awk '{print $3}'|| true))"
                   release_name="${filePath##*/}"
-                  release_name="${release_name%.*}
+                  release_name="${release_name%.*}"
             
                   release_dir=${filePath%/*}
                   release_dir=${release_dir##*/}
