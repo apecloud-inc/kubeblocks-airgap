@@ -12,6 +12,7 @@ readonly OTELD_VERSION_TMP="${oteld_version?}"
 readonly OFFLINE_INSTALLER_VERSION_TMP="${installer_version?}"
 readonly DMS_VERSION_TMP="${dms_version?}"
 readonly APECLOUD_MCP_VERSION_TMP="${apecloud_mcp_version?}"
+readonly OB_GRPC_SERVER_VERSION_TMP="${ob_grpc_server_version?}"
 readonly PLATFORM="${platform?}"
 
 echo "ADD_IMAGES_LIST:"${ADD_IMAGES_LIST}
@@ -25,6 +26,7 @@ echo "OTELD_VERSION:"${OTELD_VERSION_TMP}
 echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION_TMP}
 echo "DMS_VERSION:"${DMS_VERSION_TMP}
 echo "APECLOUD_MCP_VERSION:"${APECLOUD_MCP_VERSION_TMP}
+echo "OB_GRPC_SERVER_VERSION:"${OB_GRPC_SERVER_VERSION_TMP}
 echo "PLATFORM:"${PLATFORM}
 
 add_images_list() {
@@ -207,6 +209,15 @@ save_images_package() {
         fi
     fi
 
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$OB_GRPC_SERVER_VERSION" ]]; then
+        echo "change OB-GRPC-Server images tag"
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^docker.io\/apecloud\/ob-grpc-server:.*/docker.io\/apecloud\/ob-grpc-server:${OB_GRPC_SERVER_VERSION}/" $IMAGE_FILE_PATH
+        else
+            sed -i "s/^docker.io\/apecloud\/ob-grpc-server:.*/docker.io\/apecloud\/ob-grpc-server:${OB_GRPC_SERVER_VERSION}/" $IMAGE_FILE_PATH
+        fi
+    fi
+
     if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$APE_LOCAL_CSI_DRIVER_VERSION" ]]; then
         echo "change ape-local-csi-driver images tag"
         image_file_path_tmp=".github/images/ape-local-csi-driver.txt"
@@ -366,6 +377,11 @@ check_manifests_version() {
         APECLOUD_MCP_VERSION="${APECLOUD_MCP_IMAGE#*:}"
     fi
 
+    OB_GRPC_SERVER_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ob-grpc-server:" || true))
+    if [[ -n "$OB_GRPC_SERVER_IMAGE" ]]; then
+        OB_GRPC_SERVER_VERSION="${OB_GRPC_SERVER_IMAGE#*:}"
+    fi
+
     CLOUD_APE_DTS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/ape-dts:" || true))
     if [[ -n "$CLOUD_APE_DTS_IMAGE" ]]; then
         CLOUD_APE_DTS_VERSION="${CLOUD_APE_DTS_IMAGE#*:}"
@@ -394,6 +410,7 @@ check_manifests_version() {
     echo "MANIFESTS OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION}
     echo "MANIFESTS DMS_VERSION:"${DMS_VERSION}
     echo "MANIFESTS APECLOUD_MCP_VERSION:"${APECLOUD_MCP_VERSION}
+    echo "MANIFESTS OB_GRPC_SERVER_VERSION:${OB_GRPC_SERVER_VERSION}"
     echo "MANIFESTS APE_LOCAL_CSI_DRIVER_VERSION:${APE_LOCAL_CSI_DRIVER_VERSION}"
     echo "MANIFESTS CLOUD_APE_DTS_VERSION:${CLOUD_APE_DTS_VERSION}"
     echo "MANIFESTS GEMINI_APE_DTS_VERSION:${GEMINI_APE_DTS_VERSION}"
@@ -931,6 +948,7 @@ main() {
     local OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_VERSION_TMP}"
     local DMS_VERSION="${DMS_VERSION_TMP}"
     local APECLOUD_MCP_VERSION="${APECLOUD_MCP_VERSION_TMP}"
+    local OB_GRPC_SERVER_VERSION="${OB_GRPC_SERVER_VERSION_TMP}"
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
     local CLOUD_APE_DTS_VERSION=""
