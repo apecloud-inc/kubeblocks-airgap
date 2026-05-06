@@ -400,7 +400,7 @@ tar_charts_package() {
                     helm repo update ${ENT_REPO_NAME}
                     ent_flag=1
                 ;;
-                "tdengine"*)
+                "tdengine"*|"victoria-metrics"*)
                     if [[ "${chart_version}" != "0.9.1" ]]; then
                         helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                         helm repo update ${ENT_REPO_NAME}
