@@ -18,7 +18,6 @@ Usage: $(basename "$0") <options>
     -iv, --installer-version      Offline Installer Version
     -dv, --dms-version            Dms Version
     -amv, --apecloud-mcp-version  Apecloud-MCP Version
-    -ogv, --ob-grpc-server-version OB-GRPC-Server Version
     -mf, --manifests-file         Cloud Manifests File Path
 EOF
 }
@@ -75,12 +74,6 @@ parse_command_line() {
             -amv|--apecloud-mcp-version)
                 if [[ -n "${2:-}" ]]; then
                     APECLOUD_MCP_VERSION="$2"
-                    shift
-                fi
-                ;;
-            -ogv|--ob-grpc-server-version)
-                if [[ -n "${2:-}" ]]; then
-                    OB_GRPC_SERVER_VERSION="$2"
                     shift
                 fi
                 ;;

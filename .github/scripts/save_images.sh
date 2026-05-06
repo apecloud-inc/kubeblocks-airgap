@@ -12,7 +12,6 @@ readonly OTELD_VERSION_TMP="${oteld_version?}"
 readonly OFFLINE_INSTALLER_VERSION_TMP="${installer_version?}"
 readonly DMS_VERSION_TMP="${dms_version?}"
 readonly APECLOUD_MCP_VERSION_TMP="${apecloud_mcp_version?}"
-readonly OB_GRPC_SERVER_VERSION_TMP="${ob_grpc_server_version?}"
 readonly PLATFORM="${platform?}"
 
 echo "ADD_IMAGES_LIST:"${ADD_IMAGES_LIST}
@@ -26,7 +25,6 @@ echo "OTELD_VERSION:"${OTELD_VERSION_TMP}
 echo "OFFLINE_INSTALLER_VERSION:"${OFFLINE_INSTALLER_VERSION_TMP}
 echo "DMS_VERSION:"${DMS_VERSION_TMP}
 echo "APECLOUD_MCP_VERSION:"${APECLOUD_MCP_VERSION_TMP}
-echo "OB_GRPC_SERVER_VERSION:"${OB_GRPC_SERVER_VERSION_TMP}
 echo "PLATFORM:"${PLATFORM}
 
 add_images_list() {
@@ -948,7 +946,7 @@ main() {
     local OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_VERSION_TMP}"
     local DMS_VERSION="${DMS_VERSION_TMP}"
     local APECLOUD_MCP_VERSION="${APECLOUD_MCP_VERSION_TMP}"
-    local OB_GRPC_SERVER_VERSION="${OB_GRPC_SERVER_VERSION_TMP}"
+    local OB_GRPC_SERVER_VERSION=""
     local MANIFESTS_FILE="apecloud/manifests/deploy-manifests.yaml"
     local APE_LOCAL_CSI_DRIVER_VERSION=""
     local CLOUD_APE_DTS_VERSION=""
