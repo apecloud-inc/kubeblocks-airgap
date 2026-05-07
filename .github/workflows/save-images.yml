@@ -62,6 +62,7 @@ on:
           - starrocks-3.3.3
           - starrocks-3.4.1
           - spiderpool
+          - selectdb
           - victoria-metrics
           - zookeeper
           - ingress-nginx
