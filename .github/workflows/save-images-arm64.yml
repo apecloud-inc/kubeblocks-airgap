@@ -47,6 +47,7 @@ on:
           - ingress-nginx
           - ape-local-csi-driver
           - spiderpool
+          - selectdb
           - metrics-server
           - kubechat
           - postgres-operator
