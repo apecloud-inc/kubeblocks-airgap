@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - oceanbase-ent
           - syncer
           - dbctl
           - apecloud-addon-charts
