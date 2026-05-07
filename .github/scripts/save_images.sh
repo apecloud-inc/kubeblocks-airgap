@@ -939,6 +939,314 @@ update_addon_image_chart_versions_from_manifest() {
     echo "$(tput -T xterm setaf 2)Addon image chart versions updated successfully$(tput -T xterm sgr0)"
 }
 
+update_kubeblocks_enterprise_sections_from_manifest() {
+    local enterprise_txt=".github/images/kubeblocks-enterprise.txt"
+    
+    if [[ ! -f "$enterprise_txt" ]]; then
+        echo "  WARNING: kubeblocks-enterprise.txt not found, skipping"
+        return
+    fi
+    
+    echo "$(tput -T xterm setaf 3)Checking and updating kubeblocks-enterprise.txt target sections$(tput -T xterm sgr0)"
+    
+    # Define the 5 target sections and their corresponding charts in manifests
+    declare -A section_charts
+    section_charts=(
+        ["KubeBlocks-Cloud"]="kubeblocks-cloud kb-cloud-installer"
+        ["KubeBlocks v"]="kubeblocks"
+        ["Gemini v"]="gemini gemini-monitor"
+        ["Minio"]="minio"
+        ["Loki"]="loki"
+    )
+    
+    # Images to skip (as defined in airgap_charts_image_check.sh)
+    local skip_images=(
+        "apecloud/postgres-exporter:v0.13.2"
+        "apecloud/kubeblocks-tools:1.0.0"
+    )
+    
+    for section_keyword in "${!section_charts[@]}"; do
+        echo "  Processing section: ${section_keyword}"
+        
+        # Find the line number where this section starts in txt file
+        local section_start_line=0
+        local line_num=0
+        while IFS= read -r line; do
+            line_num=$((line_num + 1))
+            if [[ "$line" == \#*"${section_keyword}"* ]]; then
+                section_start_line=$line_num
+                break
+            fi
+        done < "$enterprise_txt"
+        
+        if [[ $section_start_line -eq 0 ]]; then
+            echo "    WARNING: Section '${section_keyword}' not found in txt file"
+            continue
+        fi
+        
+        # Find the end of this section (next comment line or EOF)
+        local section_end_line=0
+        line_num=0
+        while IFS= read -r line; do
+            line_num=$((line_num + 1))
+            if [[ $line_num -le $section_start_line ]]; then
+                continue
+            fi
+            if [[ "$line" == \#* ]]; then
+                section_end_line=$((line_num - 1))
+                break
+            fi
+        done < "$enterprise_txt"
+        
+        # If no next comment found, section goes to end of file
+        if [[ $section_end_line -eq 0 ]]; then
+            section_end_line=$(wc -l < "$enterprise_txt")
+        fi
+        
+        # Collect images from manifests for this section
+        declare -A manifest_images_map
+        local charts="${section_charts[$section_keyword]}"
+        
+        for chart in $charts; do
+            # Extract target version from txt comment (e.g., "# KubeBlocks v1.0.3-beta.5")
+            local target_version=""
+            local ver_line=$(sed -n "${section_start_line}p" "$enterprise_txt")
+            if [[ "$ver_line" == \#* ]]; then
+                target_version=$(echo "$ver_line" | sed -n 's/.*[vV]\([0-9][^ ]*\).*/\1/p')
+            fi
+            
+            # For charts with multiple versions (kubeblocks, minio, loki), filter by version
+            if [[ -n "$target_version" && ("$chart" == "kubeblocks" || "$chart" == "minio" || "$chart" == "loki") ]]; then
+                # Get all versions for this chart
+                local all_versions=$(yq e '[.'${chart}'[].version] | .[]' ${MANIFESTS_FILE} 2>/dev/null)
+                local matched_version=""
+                for ver in $all_versions; do
+                    local ver_clean=${ver#v}
+                    local target_clean=${target_version#v}
+                    if [[ "$ver_clean" == "$target_clean" ]]; then
+                        matched_version="$ver"
+                        break
+                    fi
+                done
+                
+                if [[ -n "$matched_version" ]]; then
+                    # Only get images for matched version
+                    local chart_images=$(yq e '.'${chart}'[] | select(.version == "'${matched_version}'") | .images[]' ${MANIFESTS_FILE} 2>/dev/null)
+                    if [[ -n "$chart_images" ]]; then
+                        while IFS= read -r img; do
+                            if [[ -n "$img" ]]; then
+                                # Remove docker.io/ prefix to match txt format
+                                local normalized_img=$(echo "$img" | sed 's|^docker.io/||')
+                                
+                                # Skip images that are already handled by other update functions:
+                                # 1. apecloud-addon-charts: handled by update_addon_image_chart_versions_from_manifest()
+                                # 2. openconsole and other cloud components: handled by sed commands at the beginning
+                                # 3. kubeblocks core images: handled by sed commands with KUBEBLOCKS_VERSIONS
+                                # 4. gemini images: handled by sed commands with GEMINI_VERSION
+                                # 5. Other specific images: handled by their respective version variables
+                                case "$normalized_img" in
+                                    apecloud/apecloud-addon-charts:*) continue ;;
+                                    apecloud/openconsole:*) continue ;;
+                                    apecloud/apiserver:*) continue ;;
+                                    apecloud/task-manager:*) continue ;;
+                                    apecloud/cubetran-front:*) continue ;;
+                                    apecloud/cr4w:*) continue ;;
+                                    apecloud/kubeblocks-console:*) continue ;;
+                                    apecloud/relay:*) continue ;;
+                                    apecloud/sentry:*) continue ;;
+                                    apecloud/sentry-init:*) continue ;;
+                                    apecloud/kb-cloud-installer:*) continue ;;
+                                    apecloud/kb-cloud-hook:*) continue ;;
+                                    apecloud/kb-cloud-docs:*) continue ;;
+                                    apecloud/kubeblocks-dataprotection:*) continue ;;
+                                    apecloud/kubeblocks-datascript:*) continue ;;
+                                    apecloud/kubeblocks-tools:*) continue ;;
+                                    apecloud/kubeblocks-charts:*) continue ;;
+                                    apecloud/gemini-tools:*) continue ;;
+                                    apecloud/easymetrics:*) continue ;;
+                                    apecloud/sla:*) continue ;;
+                                    apecloud/oteld:*) continue ;;
+                                    apecloud/kubeblocks-installer:*) continue ;;
+                                    apecloud/dms:*) continue ;;
+                                    apecloud/apecloud-mcp:*) continue ;;
+                                    apecloud/ob-grpc-server:*) continue ;;
+                                    apecloud/ape-local:*) continue ;;
+                                    apecloud/ape-dts:*) continue ;;
+                                    apecloud/cubetran-platform:*) continue ;;
+                                    apecloud/kubebench:*) continue ;;
+                                esac
+                                
+                                # Check if image should be skipped
+                                local should_skip=0
+                                for skip_img in "${skip_images[@]}"; do
+                                    if [[ "$normalized_img" == "$skip_img" ]]; then
+                                        should_skip=1
+                                        break
+                                    fi
+                                done
+                                if [[ $should_skip -eq 0 ]]; then
+                                    manifest_images_map["$normalized_img"]=1
+                                fi
+                            fi
+                        done <<< "$chart_images"
+                    fi
+                else
+                    echo "    WARNING: No matching version found for ${chart} in manifests (looking for ${target_version})"
+                fi
+            else
+                # For charts without version filtering (kubeblocks-cloud, gemini, etc.), get all images
+                local chart_images=$(yq e '.'${chart}'[].images[]' ${MANIFESTS_FILE} 2>/dev/null)
+                if [[ -n "$chart_images" ]]; then
+                    while IFS= read -r img; do
+                        if [[ -n "$img" ]]; then
+                            # Remove docker.io/ prefix to match txt format
+                            local normalized_img=$(echo "$img" | sed 's|^docker.io/||')
+                            
+                            # Skip images that are already handled by other update functions (same list as above)
+                            case "$normalized_img" in
+                                apecloud/apecloud-addon-charts:*) continue ;;
+                                apecloud/openconsole:*) continue ;;
+                                apecloud/apiserver:*) continue ;;
+                                apecloud/task-manager:*) continue ;;
+                                apecloud/cubetran-front:*) continue ;;
+                                apecloud/cr4w:*) continue ;;
+                                apecloud/kubeblocks-console:*) continue ;;
+                                apecloud/relay:*) continue ;;
+                                apecloud/sentry:*) continue ;;
+                                apecloud/sentry-init:*) continue ;;
+                                apecloud/kb-cloud-installer:*) continue ;;
+                                apecloud/kb-cloud-hook:*) continue ;;
+                                apecloud/kb-cloud-docs:*) continue ;;
+                                apecloud/kubeblocks-dataprotection:*) continue ;;
+                                apecloud/kubeblocks-datascript:*) continue ;;
+                                apecloud/kubeblocks-tools:*) continue ;;
+                                apecloud/kubeblocks-charts:*) continue ;;
+                                apecloud/gemini-tools:*) continue ;;
+                                apecloud/easymetrics:*) continue ;;
+                                apecloud/sla:*) continue ;;
+                                apecloud/oteld:*) continue ;;
+                                apecloud/kubeblocks-installer:*) continue ;;
+                                apecloud/dms:*) continue ;;
+                                apecloud/apecloud-mcp:*) continue ;;
+                                apecloud/ob-grpc-server:*) continue ;;
+                                apecloud/ape-local:*) continue ;;
+                                apecloud/ape-dts:*) continue ;;
+                                apecloud/cubetran-platform:*) continue ;;
+                                apecloud/kubebench:*) continue ;;
+                            esac
+                            
+                            # Check if image should be skipped
+                            local should_skip=0
+                            for skip_img in "${skip_images[@]}"; do
+                                if [[ "$normalized_img" == "$skip_img" ]]; then
+                                    should_skip=1
+                                    break
+                                fi
+                            done
+                            if [[ $should_skip -eq 0 ]]; then
+                                manifest_images_map["$normalized_img"]=1
+                            fi
+                        fi
+                    done <<< "$chart_images"
+                fi
+            fi
+        done
+        
+        # Now check and fix issues one by one
+        local fixed_count=0
+        
+        for manifest_image in "${!manifest_images_map[@]}"; do
+            local manifest_img_name=$(echo "$manifest_image" | cut -d':' -f1)
+            local manifest_img_tag=$(echo "$manifest_image" | rev | cut -d':' -f1 | rev)
+            
+            # Search for this image name in current section
+            local found_in_section=0
+            local line_to_update=0
+            
+            line_num=$section_start_line
+            while IFS= read -r line; do
+                line_num=$((line_num + 1))
+                if [[ $line_num -gt $section_end_line ]]; then
+                    break
+                fi
+                
+                if [[ -n "$line" && "$line" != \#* ]]; then
+                    # Normalize the line to match manifest format (remove docker.io/ prefix)
+                    local normalized_line=$(echo "$line" | sed 's|^docker.io/||')
+                    local existing_img_name=$(echo "$normalized_line" | cut -d':' -f1)
+                    local existing_img_tag=$(echo "$normalized_line" | rev | cut -d':' -f1 | rev)
+                    
+                    # Special handling for images where tag distinguishes different components:
+                    # 1. apecloud-addon-charts (tag contains addon name)
+                    # 2. openconsole (multiple variants with different tags)
+                    if [[ "$existing_img_name" == "apecloud/apecloud-addon-charts" || 
+                          "$manifest_img_name" == "apecloud/apecloud-addon-charts" ||
+                          "$existing_img_name" == "apecloud/openconsole" || 
+                          "$manifest_img_name" == "apecloud/openconsole" ]]; then
+                        # For these images, compare the entire image string
+                        if [[ "$normalized_line" == "$manifest_image" ]]; then
+                            found_in_section=1
+                            # Exact match, no update needed
+                            break
+                        fi
+                    elif [[ "$existing_img_name" == "$manifest_img_name" ]]; then
+                        # For other images, compare by name and check tag
+                        found_in_section=1
+                        # Check if tag needs update
+                        if [[ "$existing_img_tag" != "$manifest_img_tag" ]]; then
+                            # Fix: update tag in-place, keep original format (with or without docker.io/)
+                            if [[ "$UNAME" == "Darwin" ]]; then
+                                sed -i '' "${line_num}s|^.*$|${line%%:*}:${manifest_img_tag}|" "$enterprise_txt"
+                            else
+                                sed -i "${line_num}s|^.*$|${line%%:*}:${manifest_img_tag}|" "$enterprise_txt"
+                            fi
+                            echo "    Fixed tag: ${line} -> ${line%%:*}:${manifest_img_tag}"
+                            fixed_count=$((fixed_count + 1))
+                        fi
+                        break
+                    fi
+                fi
+            done < <(sed -n "$((section_start_line + 1)),${section_end_line}p" "$enterprise_txt")
+            
+            # If not found, add to end of section
+            if [[ $found_in_section -eq 0 ]]; then
+                # Ensure docker.io/ prefix is present
+                local img_to_add="$manifest_image"
+                if [[ "$manifest_image" != docker.io/* ]]; then
+                    img_to_add="docker.io/$manifest_image"
+                fi
+                
+                # Use a temporary file approach for more reliable line insertion
+                local tmp_file=$(mktemp)
+                local current_line=0
+                while IFS= read -r txt_line; do
+                    current_line=$((current_line + 1))
+                    echo "$txt_line" >> "$tmp_file"
+                    # After writing the section_end_line, add the new image
+                    if [[ $current_line -eq $section_end_line ]]; then
+                        echo "$img_to_add" >> "$tmp_file"
+                    fi
+                done < "$enterprise_txt"
+                mv "$tmp_file" "$enterprise_txt"
+                
+                echo "    Added missing: ${img_to_add}"
+                fixed_count=$((fixed_count + 1))
+                section_end_line=$((section_end_line + 1))
+            fi
+        done
+        
+        if [[ $fixed_count -eq 0 ]]; then
+            echo "    No changes needed"
+        else
+            echo "    Fixed ${fixed_count} issue(s)"
+        fi
+        
+        unset manifest_images_map
+    done
+    
+    echo "$(tput -T xterm setaf 2)kubeblocks-enterprise.txt target sections updated successfully$(tput -T xterm sgr0)"
+}
+
 main() {
     local UNAME=`uname -s`
     local APP_VERSION=${APP_VERSION_TMP}
@@ -999,12 +1307,15 @@ main() {
         update_addon_images_from_manifest "hive"
         update_addon_images_from_manifest "nacos"
         update_addon_images_from_manifest "camellia-redis-proxy"
-        
+
         # Update addon chart versions in kubeblocks-enterprise.txt
         update_addon_chart_versions_from_manifest
-        
+
         # Update addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt
         update_addon_image_chart_versions_from_manifest
+        
+        # Update kubeblocks-enterprise.txt target sections (5 key sections)
+        update_kubeblocks_enterprise_sections_from_manifest
     fi
 
     add_images_list

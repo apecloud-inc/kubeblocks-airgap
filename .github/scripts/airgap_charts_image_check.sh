@@ -378,6 +378,26 @@ check_kubeblocks_enterprise_txt() {
     
     echo ""
     echo "Summary: Found ${missing_count} images in manifests but missing or mismatched in kubeblocks-enterprise.txt"
+    
+    # Step 4: Check txt -> manifests (find images in txt but not in manifests)
+    echo ""
+    echo "Checking for images in kubeblocks-enterprise.txt but not in deploy-manifests.yaml..."
+    local obsolete_count=0
+    
+    for txt_image in "${!txt_images_map[@]}"; do
+        # Check if this image exists in manifests
+        if [[ -z "${manifest_images_map[$txt_image]}" ]]; then
+            # Image not found in manifests - this is a warning, not an error
+            check_result_tmp="$(tput -T xterm setaf 3)[Warning] Obsolete in txt: ${txt_image}$(tput -T xterm sgr0)"
+            echo "${check_result_tmp}"
+            # Write to check_airgap_result but don't set exit code
+            echo "${check_result_tmp}" >> check_airgap_result
+            obsolete_count=$((obsolete_count + 1))
+        fi
+    done
+    
+    echo ""
+    echo "Summary: Found ${obsolete_count} images in kubeblocks-enterprise.txt but not in manifests (warnings only)"
 }
 
 check_charts_images() {
