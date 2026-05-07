@@ -1450,10 +1450,10 @@ main() {
         # Update kubeblocks-enterprise.txt target sections (5 key sections)
         update_kubeblocks_enterprise_sections_from_manifest
     fi
-#
-#     add_charts_list
-#
-#     tar_charts_package
+
+    add_charts_list
+
+    tar_charts_package
 }
 
 main "$@"
