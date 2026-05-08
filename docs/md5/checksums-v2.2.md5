@@ -151,10 +151,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 036c48ea5b6fba884c3d76ee16e9fdcd  kubebench-v0.0.12.tar.gz
 2bea0dbdd328ee7b447815559c20635a  kubebench-v0.0.12-arm64.tar.gz
-96b8f7724d82015d27007825fdcb6933  kubeblocks-enterprise-v2.2.0-beta.8.tar.gz
-2b5d8930cdb17df75dd346285ee3c4d8  kubeblocks-enterprise-v2.2.0-beta.8-arm64.tar.gz
-454d291968e7201f931a584f925aba2b  kubeblocks-enterprise-patch-v2.2.0-beta.8.tar.gz
-d247a4114c4e241ce6c859a5a4174f48  kubeblocks-enterprise-patch-v2.2.0-beta.8-arm64.tar.gz
+8dd91353bed0beadc45aca62be4e5392  kubeblocks-enterprise-v2.2.0-beta.8.tar.gz
+8bccf7d8186ee905966da5a246675508  kubeblocks-enterprise-v2.2.0-beta.8-arm64.tar.gz
+3bab90e6796147262bbe8ce28af45cbd  kubeblocks-enterprise-patch-v2.2.0-beta.8.tar.gz
+ca1694581fec7ff20d50d1485de54e4d  kubeblocks-enterprise-patch-v2.2.0-beta.8-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz
