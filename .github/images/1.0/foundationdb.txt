@@ -1,0 +1,3 @@
+# foundationdb v1.0.2
+docker.io/apecloud/foundationdb:7.1.57
+docker.io/apecloud/kubectl:1.29

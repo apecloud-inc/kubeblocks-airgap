@@ -1,7 +1,4 @@
-#selectdb  and foundationdb v1.0.2
-docker.io/apecloud/foundationdb:7.1.57
-docker.io/apecloud/kubectl:1.29
+# selectdb v1.0.2
 docker.io/apecloud/doris-fe:3.0.10-rc01
 docker.io/apecloud/doris-be:3.0.10-rc01
 docker.io/apecloud/doris-ms:3.0.10-rc01
-      

@@ -23,6 +23,7 @@ on:
           - influxdb
           - etcd
           - elasticsearch
+          - foundationdb
           - gaussdb
           - goldendb
           - greatdb
