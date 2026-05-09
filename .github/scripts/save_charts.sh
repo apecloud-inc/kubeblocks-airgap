@@ -402,30 +402,14 @@ tar_charts_package() {
             chart_name=${chart%:*}
             chart_version=${chart#*:}
 
-            case "$chart_tmp" in
-                "kubeblocks-cloud"*|"ape-local-csi-driver"*|"damengdb"*|"gaussdb"*|\
-                "kingbase"*|"mssql"*|"oceanbase"*|"starrocks"*|"vastbase"*|"goldendb"*|"tdsql"*|\
-                "oracle"*|"greatdb"*|"doris"*|"hadoop"*|"hive"*|"nacos"*|\
-                "camellia-redis-proxy"*|"victoria-logs"*|"selectdb"*|"foundationdb"*)
-                    helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
-                    helm repo update ${ENT_REPO_NAME}
-                    ent_flag=1
-                ;;
-                "tdengine"*|"victoria-metrics"*)
-                    if [[ "${chart_version}" != "0.9.1" ]]; then
-                        helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
-                        helm repo update ${ENT_REPO_NAME}
-                        ent_flag=1
-                    fi
-                ;;
-                "mongodb"*|"mysql"*|"rabbitmq"*)
-                    if [[ "${chart_version}" != "0.9."* ]]; then
-                        helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
-                        helm repo update ${ENT_REPO_NAME}
-                        ent_flag=1
-                    fi
-                ;;
-            esac
+            # Check if this chart is enterprise version based on deploy-manifests.yaml
+            is_enterprise=$(yq e ".${chart_name}[] | select(.version == \"${chart_version}\") | .isEnterprise" ${MANIFESTS_FILE} 2>/dev/null || echo "false")
+
+            if [[ "$is_enterprise" == "true" ]]; then
+                helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
+                helm repo update ${ENT_REPO_NAME}
+                ent_flag=1
+            fi
 
             echo "fetch chart $chart_tmp"
             local fetch_success=0
