@@ -28,6 +28,7 @@ on:
           - hive
           - influxdb
           - etcd
+          - foundationdb
           - kafka
           - kata
           - kubebench
@@ -47,6 +48,7 @@ on:
           - ingress-nginx
           - ape-local-csi-driver
           - spiderpool
+          - selectdb
           - metrics-server
           - kubechat
           - postgres-operator

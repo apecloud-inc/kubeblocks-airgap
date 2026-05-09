@@ -1,0 +1,4 @@
+# selectdb v1.0.2
+docker.io/apecloud/doris-fe:3.0.10-rc01
+docker.io/apecloud/doris-be:3.0.10-rc01
+docker.io/apecloud/doris-ms:3.0.10-rc01
