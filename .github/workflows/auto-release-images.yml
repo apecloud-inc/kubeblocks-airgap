@@ -1,6 +1,7 @@
 name: Auto Release Images
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - release-2.1

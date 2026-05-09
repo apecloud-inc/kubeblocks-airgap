@@ -103,6 +103,10 @@ on:
         description: 'Dms version'
         required: false
         default: ''
+      APECLOUD_MCP_VERSION:
+        description: 'Apecloud-MCP version'
+        required: false
+        default: ''
 
 run-name: save Arm64 ${{ inputs.APP_NAME }}:${{ inputs.APP_VERSION }} ${{ inputs.ADD_IMAGES }}
 
@@ -187,6 +191,7 @@ jobs:
           oteld_version: ${{ inputs.OTELD_VERSION }}
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
+          apecloud_mcp_version: ${{ inputs.APECLOUD_MCP_VERSION }}
           images_file: ${{ steps.get-images-file.outputs.images-file }}
           platform: "linux/arm64"
         run: |

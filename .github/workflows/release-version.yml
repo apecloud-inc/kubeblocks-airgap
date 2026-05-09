@@ -27,6 +27,10 @@ on:
         description: 'Dms version'
         required: false
         default: ''
+      APECLOUD_MCP_VERSION:
+        description: 'Apecloud-MCP version'
+        required: false
+        default: ''
 
 run-name: ref_name:${{ github.ref_name }} Cloud:${{ inputs.APP_VERSION }} KubeBlocks:${{ inputs.KB_VERSION }} Gemini:${{ inputs.GEMINI_VERSION }} Oteld:${{ inputs.OTELD_VERSION }} Installer:${{ inputs.INSTALLER_VERSION }} Dms:${{ inputs.DMS_VERSION }}
 
@@ -107,6 +111,11 @@ jobs:
               commit_message="${commit_message} dms ${{ inputs.DMS_VERSION }}"
           fi
           
+          if [[ -n "${{ inputs.APECLOUD_MCP_VERSION }}" ]]; then
+              update_version_cmd="${update_version_cmd} --apecloud-mcp-version ${{ inputs.APECLOUD_MCP_VERSION }} "
+              commit_message="${commit_message} apecloud-mcp ${{ inputs.APECLOUD_MCP_VERSION }}"
+          fi
+          
           echo "${update_version_cmd}"
           eval "${update_version_cmd}"
           
@@ -116,8 +125,8 @@ jobs:
           FILE_CHANGES=`git diff --name-only ${{ github.sha }}`
           if [[ ! -z "$FILE_CHANGES" ]]; then
               echo $FILE_CHANGES
-              git config --local user.name "$GITHUB_ACTOR"
-              git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+              git config --local user.name "apecloud-bot"
+              git config --local user.email "apecloud-bot@users.noreply.github.com"
               git commit -a -m "${commit_message}"
           fi
           echo file_changes=$FILE_CHANGES >> $GITHUB_OUTPUT
@@ -150,6 +159,33 @@ jobs:
           tag_name: "${{ steps.update_version.outputs.release_version }}"
           target_commitish: "${{ steps.update_version.outputs.release_commit }}"
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: trigger auto release images workflow
+        if: ${{ always() && steps.update_version.outputs.file_changes }}
+        run: |
+          # Check if any changed files match the trigger conditions
+          TRIGGER_WORKFLOW=false
+          FILE_CHANGES="${{ steps.update_version.outputs.file_changes }}"
+          for filePath in $(echo "${FILE_CHANGES}"); do
+              if [[ "$filePath" == .github/images/0.9/*.txt || "$filePath" == .github/images/1.0/*.txt ]]; then
+                  TRIGGER_WORKFLOW=true
+                  break
+              fi
+          done
+          
+          if [[ "$TRIGGER_WORKFLOW" == "true" ]]; then
+              # Wait for the push to complete
+              sleep 5
+
+              # Trigger the auto-release-images workflow
+              bash .github/scripts/trigger_workflow.sh \
+                --github-token "${{ env.GITHUB_TOKEN }}" \
+                --github-repo "${{ github.repository }}" \
+                --branch-name "${{ github.ref_name }}" \
+                --workflow-id "auto-release-images.yml"
+          else
+              echo "No matching files in .github/images/0.9/ or .github/images/1.0/, skip triggering auto-release-images workflow"
+          fi
 
   release-result:
     runs-on: ubuntu-latest

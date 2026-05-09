@@ -1,0 +1,82 @@
+name: Release All Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_dir:
+        description: 'Select addon directory version'
+        required: true
+        default: '1.0'
+        type: choice
+        options:
+          - '0.9'
+          - '1.0'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+run-name: Release All Images Version:${{ inputs.app_dir }}
+
+jobs:
+  release-all-images:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: release all images
+        run: |
+          dir="${{ inputs.app_dir }}"
+          echo "Processing directory: $dir"
+          for filePath in .github/images/$dir/*.txt; do
+              if [[ -f "$filePath" ]]; then
+                  echo "Processing $filePath"
+                  release_version="$(head -n 1 $filePath | (awk '{print $3}'|| true))"
+                  release_name="${filePath##*/}"
+                  release_name="${release_name%.*}"
+            
+                  release_dir=${filePath%/*}
+                  release_dir=${release_dir##*/}
+                        
+                  if [[ ${release_dir} =~ ^[0-9.]+$ ]]; then
+                      echo "release_dir: $release_dir"
+                  else
+                      echo "$(tput -T xterm setaf 3)Not found $filePath$(tput -T xterm sgr0)"
+                      continue
+                  fi
+            
+                  if [[ -z "${release_version}" || -z "${release_name}" ]]; then
+                      echo "$(tput -T xterm setaf 3)Not found ${release_name}:${release_version}$(tput -T xterm sgr0)"
+                      continue
+                  fi
+            
+                  cmd="bash .github/scripts/trigger_workflow.sh "
+                  cmd=$cmd"--github-token \"${{ env.GITHUB_TOKEN }}\" "
+                  cmd=$cmd"--github-repo \"${{ github.repository }}\" "
+                  cmd=$cmd"--branch-name \"${{ github.ref_name }}\" "
+            
+                  if [[ ${release_dir} =~ ^[0-9.]+$ ]]; then
+                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_DIR=${release_dir}#APP_VERSION=${release_version}\" "
+                  else
+                      cmd=$cmd"--extra-args \"APP_NAME=${release_name}#APP_VERSION=${release_version}\" "
+                  fi
+                        
+                  if [[ "${release_name}" == *"-arm" ]]; then
+                      cmd=$cmd"--workflow-id \"save-images-arm64.yml\" "
+                  elif [[ "${release_name}" == "damengdb"* 
+                      || "${release_name}" == "mysql"* 
+                      || "${release_name}" == "elasticsearch"* 
+                      || "${release_name}" == "mssql"* 
+                      || "${release_name}" == "goldendb"* 
+                      || ("${release_name}" == oceanbase* && "${release_name}" != oceanbase-proxy* && "$filePath" == .github/images/1.0/*.txt) ]]; then
+                      cmd=$cmd"--workflow-id \"save-images.yml\" "
+                  else
+                      cmd=$cmd"--workflow-id \"save-images.yml|save-images-arm64.yml\" "
+                  fi
+                        
+                  echo "$cmd"
+                  eval "$cmd"
+              else
+                  echo "No files found in $filePath"
+              fi
+          done

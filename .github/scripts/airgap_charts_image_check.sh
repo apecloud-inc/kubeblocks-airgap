@@ -186,6 +186,220 @@ check_images() {
     done
 }
 
+check_kubeblocks_enterprise_txt() {
+    local enterprise_txt="${IMAGES_TXT_DIR}/kubeblocks-enterprise.txt"
+    
+    if [[ ! -f "${enterprise_txt}" ]]; then
+        echo "$(tput -T xterm setaf 3)Warning: Not found kubeblocks-enterprise.txt:${enterprise_txt} $(tput -T xterm sgr0)"
+        return
+    fi
+
+    if [[ ! -f "${MANIFESTS_FILE}" ]]; then
+        echo "$(tput -T xterm setaf 1)Not found manifests file:${MANIFESTS_FILE} $(tput -T xterm sgr0)"
+        return
+    fi
+
+    echo "Checking kubeblocks-enterprise.txt images consistency with deploy-manifests.yaml..."
+    
+    # Define which sections to check based on comments in the file
+    declare -A sections_to_check
+    sections_to_check=(
+        ["KubeBlocks-Cloud"]=1
+        ["KubeBlocks v"]=1
+        ["Gemini v"]=1
+        ["Minio"]=1
+        ["Loki"]=1
+    )
+    
+    # Step 1: Parse enterprise txt and collect images from specified sections
+    declare -A txt_images_map
+    local txt_image_count=0
+    local current_section=""
+    local in_target_section=0
+    
+    while IFS= read -r line; do
+        # Check if this is a comment line indicating a new section
+        if [[ "$line" == \#* ]]; then
+            current_section="$line"
+            # Check if this section should be checked
+            in_target_section=0
+            for section_keyword in "${!sections_to_check[@]}"; do
+                if [[ "$line" == *"$section_keyword"* ]]; then
+                    in_target_section=1
+                    break
+                fi
+            done
+            continue
+        fi
+        
+        # Skip empty lines or lines not in target sections
+        if [[ -z "$line" || $in_target_section -eq 0 ]]; then
+            continue
+        fi
+        
+        # Parse image (format: docker.io/apecloud/image:tag)
+        local txt_image=$(echo "$line" | sed 's|^docker.io/||')
+        local txt_image_name=$(echo "$txt_image" | cut -d':' -f1)
+        local txt_image_tag=$(echo "$txt_image" | rev | cut -d':' -f1 | rev)
+        
+        if [[ -n "$txt_image_name" && -n "$txt_image_tag" ]]; then
+            # Store full image as key for exact matching
+            txt_images_map["$txt_image"]=1
+            txt_image_count=$((txt_image_count + 1))
+        fi
+    done < "${enterprise_txt}"
+    
+    echo "  Total images in target sections of kubeblocks-enterprise.txt: ${txt_image_count}"
+    
+    # Step 2: Collect ALL images from deploy-manifests.yaml for the corresponding charts
+    # Map txt sections to chart names in manifests
+    declare -A section_to_charts
+    section_to_charts=(
+        ["KubeBlocks-Cloud"]="kubeblocks-cloud kb-cloud-installer"
+        ["KubeBlocks v"]="kubeblocks"
+        ["Gemini v"]="gemini gemini-monitor"
+        ["Minio"]="minio"
+        ["Loki"]="loki"
+    )
+    
+    # Images to skip from checking
+    local skip_images=(
+        "apecloud/postgres-exporter:v0.13.2"
+        "apecloud/kubeblocks-tools:1.0.0"
+    )
+    declare -A skip_images_map
+    for skip_img in "${skip_images[@]}"; do
+        skip_images_map["$skip_img"]=1
+    done
+    
+    declare -A manifest_images_map
+    declare -A image_to_module  # Track which module each image belongs to
+    local manifest_image_count=0
+    
+    for section_keyword in "${!sections_to_check[@]}"; do
+        local charts="${section_to_charts[$section_keyword]}"
+        for chart in $charts; do
+            # For minio and loki, only check specific versions based on txt comments
+            local chart_versions_to_check=""
+            if [[ "$chart" == "minio" || "$chart" == "loki" ]]; then
+                # Extract version from txt comment (e.g., "# Minio v1.0.3")
+                local target_version=""
+                while IFS= read -r line; do
+                    if [[ "$line" == \#*"${section_keyword}"* ]]; then
+                        target_version=$(echo "$line" | sed -n 's/.*[vV]\([0-9][^ ]*\).*/\1/p')
+                        break
+                    fi
+                done < "${enterprise_txt}"
+                
+                if [[ -n "$target_version" ]]; then
+                    # Get all versions for this chart
+                    local all_versions=$(yq e '[.'${chart}'[].version] | .[]' "${MANIFESTS_FILE}" 2>/dev/null)
+                    for ver in $all_versions; do
+                        # Remove 'v' prefix for comparison
+                        local ver_clean=${ver#v}
+                        local target_clean=${target_version#v}
+                        if [[ "$ver_clean" == "$target_clean" ]]; then
+                            chart_versions_to_check="$ver"
+                            break
+                        fi
+                    done
+                fi
+            fi
+            
+            local chart_images=""
+            if [[ -n "$chart_versions_to_check" ]]; then
+                # Only get images for specific version
+                chart_images=$(yq e '.'${chart}'[] | select(.version == "'${chart_versions_to_check}'") | .images[]' "${MANIFESTS_FILE}" 2>/dev/null)
+            else
+                # Get all images for this chart
+                chart_images=$(yq e '.'${chart}'[].images[]' "${MANIFESTS_FILE}" 2>/dev/null)
+            fi
+            
+            if [[ -n "$chart_images" ]]; then
+                while IFS= read -r img; do
+                    if [[ -n "$img" ]]; then
+                        # Skip images in the skip list
+                        if [[ -n "${skip_images_map[$img]}" ]]; then
+                            continue
+                        fi
+                        manifest_images_map["$img"]=1
+                        image_to_module["$img"]="$chart"  # Store module name
+                        manifest_image_count=$((manifest_image_count + 1))
+                    fi
+                done <<< "$chart_images"
+            fi
+        done
+    done
+    
+    echo "  Total images in corresponding charts of deploy-manifests.yaml: ${manifest_image_count}"
+    
+    # Step 3: Check manifests -> txt (reverse check)
+    # Find images that exist in manifests but NOT in txt, or have different tags
+    echo ""
+    echo "Checking for images in manifests but missing or mismatched in kubeblocks-enterprise.txt..."
+    local missing_count=0
+    
+    # Build a map of image names to tags from txt for tag comparison
+    declare -A txt_image_name_to_tag
+    for txt_image in "${!txt_images_map[@]}"; do
+        local img_name=$(echo "$txt_image" | cut -d':' -f1)
+        local img_tag=$(echo "$txt_image" | rev | cut -d':' -f1 | rev)
+        txt_image_name_to_tag["$img_name"]="$img_tag"
+    done
+    
+    for manifest_image in "${!manifest_images_map[@]}"; do
+        local manifest_img_name=$(echo "$manifest_image" | cut -d':' -f1)
+        local manifest_img_tag=$(echo "$manifest_image" | rev | cut -d':' -f1 | rev)
+        local module_name="${image_to_module[$manifest_image]}"
+        
+        # Check if this exact image exists in txt
+        if [[ -z "${txt_images_map[$manifest_image]}" ]]; then
+            # Image not found with exact match, check if same name but different tag
+            if [[ -n "${txt_image_name_to_tag[$manifest_img_name]}" ]]; then
+                local txt_tag="${txt_image_name_to_tag[$manifest_img_name]}"
+                if [[ "$txt_tag" != "$manifest_img_tag" ]]; then
+                    # Tag mismatch
+                    check_result_tmp="$(tput -T xterm setaf 1)[${module_name}] Tag mismatch: ${manifest_image}$(tput -T xterm sgr0)"
+                    echo "${check_result_tmp}"
+                    echo "${check_result_tmp}" >> check_airgap_result
+                    echo 1 > exit_result
+                    missing_count=$((missing_count + 1))
+                fi
+            else
+                # Completely missing from txt
+                check_result_tmp="$(tput -T xterm setaf 1)[${module_name}] Missing: ${manifest_image}$(tput -T xterm sgr0)"
+                echo "${check_result_tmp}"
+                echo "${check_result_tmp}" >> check_airgap_result
+                echo 1 > exit_result
+                missing_count=$((missing_count + 1))
+            fi
+        fi
+    done
+    
+    echo ""
+    echo "Summary: Found ${missing_count} images in manifests but missing or mismatched in kubeblocks-enterprise.txt"
+    
+    # Step 4: Check txt -> manifests (find images in txt but not in manifests)
+    echo ""
+    echo "Checking for images in kubeblocks-enterprise.txt but not in deploy-manifests.yaml..."
+    local obsolete_count=0
+    
+    for txt_image in "${!txt_images_map[@]}"; do
+        # Check if this image exists in manifests
+        if [[ -z "${manifest_images_map[$txt_image]}" ]]; then
+            # Image not found in manifests - this is a warning, not an error
+            check_result_tmp="$(tput -T xterm setaf 3)[Warning] Obsolete in txt: ${txt_image}$(tput -T xterm sgr0)"
+            echo "${check_result_tmp}"
+            # Write to check_airgap_result but don't set exit code
+            echo "${check_result_tmp}" >> check_airgap_result
+            obsolete_count=$((obsolete_count + 1))
+        fi
+    done
+    
+    echo ""
+    echo "Summary: Found ${obsolete_count} images in kubeblocks-enterprise.txt but not in manifests (warnings only)"
+}
+
 check_charts_images() {
     touch exit_result check_airgap_result
     echo 0 > exit_result
@@ -199,6 +413,9 @@ check_charts_images() {
         echo "$(tput -T xterm setaf 1)Not found manifests file:${MANIFESTS_FILE} $(tput -T xterm sgr0)"
         return
     fi
+
+    # Check kubeblocks-enterprise.txt consistency first
+    check_kubeblocks_enterprise_txt
 
     for image_txt in $(ls "${IMAGES_TXT_DIR}"); do
         if [[ "${image_txt}" == "damengdb.txt" ]]; then
@@ -295,6 +512,7 @@ check_charts_images() {
                 set_values="${set_values} --set images.sentryInit.tag=${chart_version} "
                 set_values="${set_values} --set images.relay.tag=${chart_version} "
                 set_values="${set_values} --set images.cr4w.tag=${chart_version} "
+                set_values="${set_values} --set images.console.tag=${chart_version} "
                 set_values="${set_values} --set images.openconsole.tag=${chart_version} "
                 set_values="${set_values} --set images.openconsoleAdmin.tag=${chart_version} "
                 set_values="${set_values} --set images.taskManager.tag=${chart_version} "

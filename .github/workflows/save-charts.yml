@@ -41,6 +41,10 @@ on:
         description: 'Dms version'
         required: false
         default: ''
+      APECLOUD_MCP_VERSION:
+        description: 'Apecloud-MCP version'
+        required: false
+        default: ''
 
 run-name: save ${{ inputs.APP_NAME }}:${{ inputs.APP_VERSION }} KB_VERSION:${{ inputs.KB_VERSION }} ${{ inputs.ADD_CHARTS }}
 
@@ -96,6 +100,7 @@ jobs:
           oteld_version: ${{ inputs.OTELD_VERSION }}
           installer_version: ${{ inputs.INSTALLER_VERSION }}
           dms_version: ${{ inputs.DMS_VERSION }}
+          apecloud_mcp_version: ${{ inputs.APECLOUD_MCP_VERSION }}
           charts_file: .github/charts/${{ inputs.APP_NAME }}.txt
         run: |
           bash .github/scripts/save_charts.sh
