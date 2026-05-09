@@ -418,7 +418,7 @@ tar_charts_package() {
                         ent_flag=1
                     fi
                 ;;
-                "mongodb"*|"mysql"*)
+                "mongodb"*|"mysql"*|"rabbitmq"*)
                     if [[ "${chart_version}" != "0.9."* ]]; then
                         helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                         helm repo update ${ENT_REPO_NAME}
