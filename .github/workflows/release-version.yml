@@ -160,6 +160,33 @@ jobs:
           target_commitish: "${{ steps.update_version.outputs.release_commit }}"
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
+      - name: trigger auto release images workflow
+        if: ${{ always() && steps.update_version.outputs.file_changes }}
+        run: |
+          # Check if any changed files match the trigger conditions
+          TRIGGER_WORKFLOW=false
+          FILE_CHANGES="${{ steps.update_version.outputs.file_changes }}"
+          for filePath in $(echo "${FILE_CHANGES}"); do
+              if [[ "$filePath" == .github/images/0.9/*.txt || "$filePath" == .github/images/1.0/*.txt ]]; then
+                  TRIGGER_WORKFLOW=true
+                  break
+              fi
+          done
+          
+          if [[ "$TRIGGER_WORKFLOW" == "true" ]]; then
+              # Wait for the push to complete
+              sleep 5
+
+              # Trigger the auto-release-images workflow
+              bash .github/scripts/trigger_workflow.sh \
+                --github-token "${{ env.GITHUB_TOKEN }}" \
+                --github-repo "${{ github.repository }}" \
+                --branch-name "${{ github.ref_name }}" \
+                --workflow-id "auto-release-images.yml"
+          else
+              echo "No matching files in .github/images/0.9/ or .github/images/1.0/, skip triggering auto-release-images workflow"
+          fi
+
   release-result:
     runs-on: ubuntu-latest
     needs: [ release-version ]
