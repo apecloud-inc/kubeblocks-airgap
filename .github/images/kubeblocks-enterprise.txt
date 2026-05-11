@@ -1,16 +1,16 @@
-# kubeblocks-enterprise v2.2.0-beta.17
-# KubeBlocks-Cloud v2.2.0-beta.17
+# kubeblocks-enterprise v2.2.0-beta.20
+# KubeBlocks-Cloud v2.2.0-beta.20
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/kubeblocks-console:v2.2.0-beta.17
-docker.io/apecloud/openconsole:v2.2.0-beta.17
-docker.io/apecloud/openconsole:v2.2.0-beta.17-console
-docker.io/apecloud/openconsole:v2.2.0-beta.17-admin
-docker.io/apecloud/apiserver:v2.2.0-beta.17
-docker.io/apecloud/cr4w:v2.2.0-beta.17
-docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.17
-docker.io/apecloud/kb-cloud-docs:v2.2.0-beta.17
-docker.io/apecloud/kubeblocks-installer:v2.2.0-beta.17-offline
-docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.17
+docker.io/apecloud/kubeblocks-console:v2.2.0-beta.20
+docker.io/apecloud/openconsole:v2.2.0-beta.20
+docker.io/apecloud/openconsole:v2.2.0-beta.20-console
+docker.io/apecloud/openconsole:v2.2.0-beta.20-admin
+docker.io/apecloud/apiserver:v2.2.0-beta.20
+docker.io/apecloud/cr4w:v2.2.0-beta.20
+docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.20
+docker.io/apecloud/kb-cloud-docs:v2.2.0-beta.20
+docker.io/apecloud/kubeblocks-installer:v2.2.0-beta.20-offline
+docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.20
 docker.io/apecloud/dms:0.0.3-alpha.37
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.2
 docker.io/apecloud/ob-grpc-server:0.1.6
