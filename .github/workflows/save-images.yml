@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - xtrabackup-minimal
           - oceanbase-ent
           - syncer
           - dbctl

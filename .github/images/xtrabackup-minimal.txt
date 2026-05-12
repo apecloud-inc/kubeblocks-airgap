@@ -1,0 +1,2 @@
+# xtrabackup-minimal v8.0.35
+docker.io/apecloud/xtrabackup-minimal:8.0.35
