@@ -1,15 +1,15 @@
-# kubeblocks-enterprise-patch v2.2.0-beta.28
-# KubeBlocks-Cloud v2.2.0-beta.28
-docker.io/apecloud/kubeblocks-console:v2.2.0-beta.28
-docker.io/apecloud/openconsole:v2.2.0-beta.28
-docker.io/apecloud/openconsole:v2.2.0-beta.28-console
-docker.io/apecloud/openconsole:v2.2.0-beta.28-admin
-docker.io/apecloud/apiserver:v2.2.0-beta.28
-docker.io/apecloud/cr4w:v2.2.0-beta.28
-docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.28
-docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.28
-docker.io/apecloud/kb-cloud-docs:v2.2.0-beta.28
-docker.io/apecloud/kubeblocks-installer:v2.2.0-beta.28-offline
+# kubeblocks-enterprise-patch v2.2.0-beta.35
+# KubeBlocks-Cloud v2.2.0-beta.35
+docker.io/apecloud/kubeblocks-console:v2.2.0-beta.35
+docker.io/apecloud/openconsole:v2.2.0-beta.35
+docker.io/apecloud/openconsole:v2.2.0-beta.35-console
+docker.io/apecloud/openconsole:v2.2.0-beta.35-admin
+docker.io/apecloud/apiserver:v2.2.0-beta.35
+docker.io/apecloud/cr4w:v2.2.0-beta.35
+docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.35
+docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.35
+docker.io/apecloud/kb-cloud-docs:v2.2.0-beta.35
+docker.io/apecloud/kubeblocks-installer:v2.2.0-beta.35-offline
 docker.io/apecloud/dms:0.0.3-alpha.37
 # KubeBlocks v0.9.6-beta.9
 docker.io/apecloud/kubeblocks:0.9.6-beta.9
