@@ -1,6 +1,7 @@
 # kubeblocks-enterprise-patch v2.2.0-beta.48
 # KubeBlocks-Cloud v2.2.0-beta.48
 docker.io/apecloud/kubeblocks-console:v2.2.0-beta.48
+docker.io/apecloud/kubeblocks-console:v2.2.0-beta.48-rds
 docker.io/apecloud/openconsole:v2.2.0-beta.48
 docker.io/apecloud/openconsole:v2.2.0-beta.48-console
 docker.io/apecloud/openconsole:v2.2.0-beta.48-admin
