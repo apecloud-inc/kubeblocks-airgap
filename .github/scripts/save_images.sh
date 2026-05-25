@@ -91,7 +91,7 @@ save_images_package() {
             sed -i '' "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/cr4w:.*/docker.io\/apecloud\/cr4w:${APP_VERSION}/" $IMAGE_FILE_PATH
-            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-console:.*/docker.io\/apecloud\/kubeblocks-console:${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i '' "s/^docker.io\/apecloud\/kubeblocks-console:.*[0-9]/docker.io\/apecloud\/kubeblocks-console:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/relay:.*/docker.io\/apecloud\/relay:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i '' "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -107,7 +107,7 @@ save_images_package() {
             sed -i "s/^docker.io\/apecloud\/task-manager:.*/docker.io\/apecloud\/task-manager:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/cubetran-front:.*/docker.io\/apecloud\/cubetran-front:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/cr4w:.*/docker.io\/apecloud\/cr4w:${APP_VERSION}/" $IMAGE_FILE_PATH
-            sed -i "s/^docker.io\/apecloud\/kubeblocks-console:.*/docker.io\/apecloud\/kubeblocks-console:${APP_VERSION}/" $IMAGE_FILE_PATH
+            sed -i "s/^docker.io\/apecloud\/kubeblocks-console:.*[0-9]/docker.io\/apecloud\/kubeblocks-console:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/relay:.*/docker.io\/apecloud\/relay:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/sentry:.*/docker.io\/apecloud\/sentry:${APP_VERSION}/" $IMAGE_FILE_PATH
             sed -i "s/^docker.io\/apecloud\/sentry-init:.*/docker.io\/apecloud\/sentry-init:${APP_VERSION}/" $IMAGE_FILE_PATH
@@ -300,6 +300,21 @@ save_images_package() {
         done
     fi
 
+    if [[ ("${APP_NAME}" == "kubeblocks-enterprise" || "$APP_NAME" == "kubeblocks-cloud" || "$APP_NAME" == "kubeblocks-enterprise-patch") && -n "$CASDOOR_VERSION" ]]; then
+        echo "change casdoor images tag"
+        imageFiles=("kubeblocks-enterprise.txt" "kubeblocks-cloud.txt")
+        for imageFile in "${imageFiles[@]}"; do
+            image_file_path_tmp=.github/images/${imageFile}
+            if [[ "$UNAME" == "Darwin" ]]; then
+                sed -i '' "s/^# casdoor .*/# casdoor ${CASDOOR_VERSION}/" $image_file_path_tmp
+                sed -i '' "s|^docker.io/apecloud/casdoor:.*|docker.io/apecloud/casdoor:${CASDOOR_VERSION}|" $image_file_path_tmp
+            else
+                sed -i "s/^# casdoor .*/# casdoor ${CASDOOR_VERSION}/" $image_file_path_tmp
+                sed -i "s|^docker.io/apecloud/casdoor:.*|docker.io/apecloud/casdoor:${CASDOOR_VERSION}|" $image_file_path_tmp
+            fi
+        done
+    fi
+
     app_package_name=${APP_NAME}-${APP_VERSION}.tar.gz
     save_flag=0
     for i in {1..10}; do
@@ -356,6 +371,7 @@ check_manifests_version() {
     KUBEBLOCKS_VERSIONS=$(yq e '[.kubeblocks[].version] | join("|")' ${MANIFESTS_FILE})
     GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
     APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
+    CASDOOR_VERSION=$(yq e ".casdoor-helm-charts[0].version"  ${MANIFESTS_FILE})
 
     OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
     if [[ -n "$OTELD_IMAGE" ]]; then
@@ -416,6 +432,7 @@ check_manifests_version() {
     echo "MANIFESTS GEMINI_APE_DTS_VERSION:${GEMINI_APE_DTS_VERSION}"
     echo "MANIFESTS CUBETRAN_PLATFORM_VERSION:${CUBETRAN_PLATFORM_VERSION}"
     echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
+    echo "MANIFESTS CASDOOR_VERSION:${CASDOOR_VERSION}"
 }
 
 update_addon_images_from_manifest() {
@@ -1263,6 +1280,8 @@ main() {
     local GEMINI_APE_DTS_VERSION=""
     local CUBETRAN_PLATFORM_VERSION=""
     local KUBEBENCH_VERSION=""
+    local APECLOUD_MCP_VERSION=""
+    local CASDOOR_VERSION=""
 
     check_manifests_version
 

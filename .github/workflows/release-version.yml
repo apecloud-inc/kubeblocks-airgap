@@ -125,8 +125,8 @@ jobs:
           FILE_CHANGES=`git diff --name-only ${{ github.sha }}`
           if [[ ! -z "$FILE_CHANGES" ]]; then
               echo $FILE_CHANGES
-              git config --local user.name "$GITHUB_ACTOR"
-              git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+              git config --local user.name "apecloud-bot"
+              git config --local user.email "apecloud-bot@users.noreply.github.com"
               git commit -a -m "${commit_message}"
           fi
           echo file_changes=$FILE_CHANGES >> $GITHUB_OUTPUT
