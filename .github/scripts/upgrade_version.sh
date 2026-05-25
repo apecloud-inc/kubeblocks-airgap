@@ -405,6 +405,34 @@ change_kubebench_version() {
     done
 }
 
+change_casdoor_version() {
+    echo "$(tput -T xterm setaf 3)change casdoor image version:${CASDOOR_VERSION}$(tput -T xterm sgr0)"
+    imageFiles=("kubeblocks-enterprise.txt" "kubeblocks-cloud.txt")
+    for imageFile in "${imageFiles[@]}"; do
+        echo "change ${imageFile} images tag"
+        image_file_path=.github/images/${imageFile}
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^# casdoor .*/# casdoor ${CASDOOR_VERSION}/" $image_file_path
+            sed -i '' "s|^docker.io/apecloud/casdoor:.*|docker.io/apecloud/casdoor:${CASDOOR_VERSION}|" $image_file_path
+        else
+            sed -i "s/^# casdoor .*/# casdoor ${CASDOOR_VERSION}/" $image_file_path
+            sed -i "s|^docker.io/apecloud/casdoor:.*|docker.io/apecloud/casdoor:${CASDOOR_VERSION}|" $image_file_path
+        fi
+    done
+
+    echo "$(tput -T xterm setaf 3)change casdoor chart version:${CASDOOR_VERSION}$(tput -T xterm sgr0)"
+    chartFiles=("kubeblocks-enterprise.txt")
+    for chartFile in "${chartFiles[@]}"; do
+        echo "change ${chartFile} chart version"
+        chart_file_path=.github/charts/${chartFile}
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^casdoor-helm-charts:.*/casdoor-helm-charts:${CASDOOR_VERSION}/" $chart_file_path
+        else
+            sed -i "s/^casdoor-helm-charts:.*/casdoor-helm-charts:${CASDOOR_VERSION}/" $chart_file_path
+        fi
+    done
+}
+
 change_servicemirror_version() {
     echo "$(tput -T xterm setaf 3)change servicemirror image version:${SERVICEMIRROR_VERSION}$(tput -T xterm sgr0)"
     imageFiles=("kubeblocks-enterprise.txt" "kubeblocks-cloud.txt")
@@ -1333,6 +1361,7 @@ main() {
     local SERVICEMIRROR_VERSION=""
     local OB_GRPC_SERVER_VERSION=""
     local APECLOUD_MCP_VERSION=""
+    local CASDOOR_VERSION=""
 
     parse_command_line "$@"
 
@@ -1350,6 +1379,7 @@ main() {
                 KUBEBLOCKS_VERSIONS=$(yq e '[.kubeblocks[].version] | join("|")' ${MANIFESTS_FILE})
                 GEMINI_VERSION=$(yq e ".gemini[0].version"  ${MANIFESTS_FILE})
                 APE_LOCAL_CSI_DRIVER_VERSION=$(yq e ".ape-local-csi-driver[0].version"  ${MANIFESTS_FILE})
+                CASDOOR_VERSION=$(yq e ".casdoor-helm-charts[0].version"  ${MANIFESTS_FILE})
 
                 OTELD_IMAGE=$(yq e ".gemini-monitor[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/oteld:" || true))
                 if [[ -n "$OTELD_IMAGE" ]]; then
@@ -1409,6 +1439,7 @@ main() {
                 echo "MANIFESTS GEMINI_APE_DTS_VERSION:${GEMINI_APE_DTS_VERSION}"
                 echo "MANIFESTS CUBETRAN_PLATFORM_VERSION:${CUBETRAN_PLATFORM_VERSION}"
                 echo "MANIFESTS KUBEBENCH_VERSION:${KUBEBENCH_VERSION}"
+                echo "MANIFESTS CASDOOR_VERSION:${CASDOOR_VERSION}"
             fi
 
 
@@ -1490,6 +1521,10 @@ main() {
 
             if [[ -n "$SERVICEMIRROR_VERSION" ]]; then
                 change_servicemirror_version
+            fi
+
+            if [[ -n "$CASDOOR_VERSION" ]]; then
+                change_casdoor_version
             fi
 
             # Update addon images from deploy-manifests.yaml
