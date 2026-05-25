@@ -1,17 +1,17 @@
-# KubeBlocks-Cloud v2.2.0-beta.49
+# KubeBlocks-Cloud v2.2.0-beta.55
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/kubeblocks-console:v2.2.0-beta.49
-docker.io/apecloud/kubeblocks-console:v2.2.0-beta.49-rds
-docker.io/apecloud/openconsole:v2.2.0-beta.49
-docker.io/apecloud/openconsole:v2.2.0-beta.49-console
-docker.io/apecloud/openconsole:v2.2.0-beta.49-admin
-docker.io/apecloud/apiserver:v2.2.0-beta.49
-docker.io/apecloud/cr4w:v2.2.0-beta.49
-docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.49
-docker.io/apecloud/kb-cloud-docs:v2.2.0-beta.49
-docker.io/apecloud/kubeblocks-installer:v2.2.0-beta.49-offline
-docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.49
-docker.io/apecloud/dms:0.0.3-beta.1
+docker.io/apecloud/kubeblocks-console:v2.2.0-beta.55
+docker.io/apecloud/kubeblocks-console:v2.2.0-beta.55-rds
+docker.io/apecloud/openconsole:v2.2.0-beta.55
+docker.io/apecloud/openconsole:v2.2.0-beta.55-console
+docker.io/apecloud/openconsole:v2.2.0-beta.55-admin
+docker.io/apecloud/apiserver:v2.2.0-beta.55
+docker.io/apecloud/cr4w:v2.2.0-beta.55
+docker.io/apecloud/kb-cloud-hook:v2.2.0-beta.55
+docker.io/apecloud/kb-cloud-docs:v2.2.0-beta.55
+docker.io/apecloud/kubeblocks-installer:v2.2.0-beta.55-offline
+docker.io/apecloud/kb-cloud-installer:v2.2.0-beta.55
+docker.io/apecloud/dms:0.0.3-beta.2
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.4
 docker.io/apecloud/ob-grpc-server:0.1.6
 docker.io/apecloud/redisinsight:2.70.0
@@ -48,9 +48,9 @@ docker.io/apecloud/apecloud-addon-charts:minio-1.0.3
 docker.io/apecloud/apecloud-addon-charts:mongodb-0.9.6
 docker.io/apecloud/apecloud-addon-charts:mongodb-1.0.4
 docker.io/apecloud/apecloud-addon-charts:mssql-0.9.2
-docker.io/apecloud/apecloud-addon-charts:mssql-1.0.4
+docker.io/apecloud/apecloud-addon-charts:mssql-1.0.5
 docker.io/apecloud/apecloud-addon-charts:mysql-0.9.4
-docker.io/apecloud/apecloud-addon-charts:mysql-1.0.4
+docker.io/apecloud/apecloud-addon-charts:mysql-1.0.5
 docker.io/apecloud/apecloud-addon-charts:greatdb-0.9.1
 docker.io/apecloud/apecloud-addon-charts:greatdb-1.0.1
 docker.io/apecloud/apecloud-addon-charts:oceanbase-0.9.5
