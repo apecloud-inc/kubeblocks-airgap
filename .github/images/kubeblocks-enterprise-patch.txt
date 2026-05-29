@@ -2,9 +2,6 @@
 # KubeBlocks-Cloud v2.2.15
 docker.io/apecloud/kubeblocks-console:v2.2.15
 docker.io/apecloud/kubeblocks-console:v2.2.15-rds
-docker.io/apecloud/openconsole:v2.2.15
-docker.io/apecloud/openconsole:v2.2.15-console
-docker.io/apecloud/openconsole:v2.2.15-admin
 docker.io/apecloud/apiserver:v2.2.15
 docker.io/apecloud/cr4w:v2.2.15
 docker.io/apecloud/kb-cloud-installer:v2.2.15
