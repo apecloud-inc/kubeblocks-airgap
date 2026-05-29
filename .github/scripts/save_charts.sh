@@ -405,7 +405,7 @@ tar_charts_package() {
             # Check if this chart is enterprise version based on deploy-manifests.yaml
             is_enterprise=$(yq e ".${chart_name}[] | select(.version == \"${chart_version}\") | .isEnterprise" ${MANIFESTS_FILE} 2>/dev/null || echo "false")
 
-            if [[ "$is_enterprise" == "true" ]]; then
+            if [[ "$is_enterprise" == "true" || ("${chart_name}" == "victoria-logs" && -z "$is_enterprise") ]]; then
                 helm repo add ${ENT_REPO_NAME} --username ${CHART_ACCESS_USER} --password ${CHART_ACCESS_TOKEN} ${KB_ENT_REPO_URL}
                 helm repo update ${ENT_REPO_NAME}
                 ent_flag=1
