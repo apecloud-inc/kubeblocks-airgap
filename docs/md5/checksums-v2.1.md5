@@ -6,8 +6,8 @@
 4aee3ece28b409da75d43da7dac52cf5  apecloud-kube-airgap-arm64-v1.30.13.tar.gz
 95532f4203d11a734e3a697fd57a0a8a  apecloud-kube-airgap-arm64-v1.32.5.tar.gz
 c2966ab95dce4e7f698d6a17415dec91  apecloud-kube-airgap-arm64-v1.33.3.tar.gz
-773afd7914050f846a67776446439c10  clickhouse-v0.9.4.tar.gz
-abccc58bff5dccc29408168e33d74dde  clickhouse-v0.9.4-arm64.tar.gz
+278acb05ad4976e69688831fb94cf2b4  clickhouse-v0.9.4.tar.gz
+52499bd6d79346a102d2357ad39a1b68  clickhouse-v0.9.4-arm64.tar.gz
 f08d06d8a60ff408075f070727a68a21  damengdb-v0.9.3.tar.gz
 565cdef9e9baf87ce657fab79b595de3  damengdb-arm-v0.9.3-arm64.tar.gz
 5cfc60e3755556071800699a1c3c696e  elasticsearch-v0.9.1.tar.gz
@@ -69,8 +69,8 @@ f272ecb9104d1b172ec2d0bbdb18a8b8  zookeeper-v0.9.1.tar.gz
 b30fb61ac2e37c399eb6441851ba1fff  zookeeper-v0.9.1-arm64.tar.gz
 6248b6d7988bd7deedcfd701cf5da95d  camellia-redis-proxy-v1.0.3.tar.gz
 e306a10510d366843320b624d9bed9d5  camellia-redis-proxy-v1.0.3-arm64.tar.gz
-1e694284bd6a68c0be636c551d077f8c  clickhouse-v1.0.3.tar.gz
-1f503eb7a9d7fc0febe84caebd95637a  clickhouse-v1.0.3-arm64.tar.gz
+ae9eb624659e505a62d6d3b6aad33c4e  clickhouse-v1.0.3.tar.gz
+4b996df65ba5602f6d013333e4ce754a  clickhouse-v1.0.3-arm64.tar.gz
 441d06d977b0f5e39ce9962079d8ed2b  damengdb-v1.0.4.tar.gz
 3add6f8166945fd70ec024887ccedb22  damengdb-arm-v1.0.4-arm64.tar.gz
 6cab5d74cc0a1bf42632c48aeda967bf  doris-v1.0.3.tar.gz
@@ -149,9 +149,9 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 3a0e01bc191a515343bfbfa2188d1297  dbdrag-v0.1.1.tar.gz
 5fbd15067756e5247bb3c434bff8fc91  ingress-nginx-v4.12.1.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
-90c086e562a5d98f3f70560cf9f6690d  kubebench-v0.0.12.tar.gz
-a8586ddd813ab2c762c0df41ca7c1c25  kubebench-v0.0.12-arm64.tar.gz
-1a32055e6487139ead189684a1e84218  kubeblocks-enterprise-v2.1.183.tar.gz
+036c48ea5b6fba884c3d76ee16e9fdcd  kubebench-v0.0.12.tar.gz
+2bea0dbdd328ee7b447815559c20635a  kubebench-v0.0.12-arm64.tar.gz
+f4c7150c8d2d221a8b1f33c02ce91504  kubeblocks-enterprise-v2.1.183.tar.gz
 12128afb4a89365617f7c79007a682a9  kubeblocks-enterprise-v2.1.183-arm64.tar.gz
 ef9bd6b676eb4f24673699bf320ca3bf  kubeblocks-enterprise-patch-v2.1.183.tar.gz
 ad6fad6085d00c528f9ebc65ce047f7a  kubeblocks-enterprise-patch-v2.1.183-arm64.tar.gz
