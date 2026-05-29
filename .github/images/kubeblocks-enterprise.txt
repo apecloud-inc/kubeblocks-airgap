@@ -3,9 +3,6 @@
 docker.io/apecloud/nfs-proxy:0.1.0
 docker.io/apecloud/kubeblocks-console:v2.2.1
 docker.io/apecloud/kubeblocks-console:v2.2.1-rds
-docker.io/apecloud/openconsole:v2.2.1
-docker.io/apecloud/openconsole:v2.2.1-console
-docker.io/apecloud/openconsole:v2.2.1-admin
 docker.io/apecloud/apiserver:v2.2.1
 docker.io/apecloud/cr4w:v2.2.1
 docker.io/apecloud/kb-cloud-hook:v2.2.1
