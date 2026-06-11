@@ -98,7 +98,7 @@ docker.io/apecloud/apecloud-addon-charts:hadoop-1.0.3
 docker.io/apecloud/apecloud-addon-charts:hive-1.0.2
 docker.io/apecloud/apecloud-addon-charts:nacos-1.0.2
 docker.io/apecloud/apecloud-addon-charts:victoria-logs-1.0.1
-docker.io/apecloud/apecloud-addon-charts:foundationdb-1.0.2
+docker.io/apecloud/apecloud-addon-charts:foundationdb-1.0.3
 docker.io/apecloud/apecloud-addon-charts:selectdb-1.0.2
 # casdoor v1.753.0
 docker.io/apecloud/casdoor:v1.753.0
