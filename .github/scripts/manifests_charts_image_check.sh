@@ -4,6 +4,22 @@ ADD_CHART=${2:-"true"}
 CHECK_ENGINE_FILE=${3:-"./apecloud/fountain/hack/check-engine-images.py"}
 
 
+is_chart_enabled() {
+    local chart_name_tmp="${1:-}"
+    local deploy_values_file
+    deploy_values_file="$(dirname "${MANIFESTS_FILE}")/deploy-values.yaml"
+    if [[ ! -f "${deploy_values_file}" ]]; then
+        return 0
+    fi
+    local enable_val
+    enable_val=$(yq e ".${chart_name_tmp}.enable" "${deploy_values_file}" 2>/dev/null || echo "true")
+    if [[ "${enable_val}" == "false" ]]; then
+        echo "$(tput -T xterm setaf 3)Skip check chart ${chart_name_tmp}, enable is false in deploy-values.yaml$(tput -T xterm sgr0)"
+        return 1
+    fi
+    return 0
+}
+
 add_chart_repo() {
     echo "helm repo add ${KB_REPO_NAME}  ${KB_REPO_URL}"
     helm repo add ${KB_REPO_NAME} ${KB_REPO_URL}
@@ -181,6 +197,10 @@ check_addon_charts_images() {
             continue
         fi
 
+        if ! is_chart_enabled "$chart_name"; then
+            continue
+        fi
+
         if [[ "$chart_name" == "apecloud-mysql" || "$chart_name" == "mogdb" || "$chart_name" == "greatsql" ]]; then
             continue
         fi
@@ -239,6 +259,10 @@ check_charts_images() {
     charts_name=$(yq e "to_entries|map(.key)|.[]"  ${MANIFESTS_FILE})
     for chart_name in $(echo "$charts_name"); do
         if [[ -z "$chart_name" || "$chart_name" == "#"* || "$chart_name" == "kata" ]]; then
+            continue
+        fi
+
+        if ! is_chart_enabled "$chart_name"; then
             continue
         fi
 

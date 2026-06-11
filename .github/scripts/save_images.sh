@@ -682,16 +682,8 @@ update_addon_chart_versions_from_manifest() {
     
     echo "$(tput -T xterm setaf 3)Updating addon chart versions in kubeblocks-enterprise.txt$(tput -T xterm sgr0)"
     
-    # List of engine addons to sync
-    local engine_addons=(
-        "clickhouse" "elasticsearch" "kafka" "mongodb" "mysql" "greatdb"
-        "oceanbase" "postgresql" "qdrant" "rabbitmq" "redis" "starrocks"
-        "zookeeper" "damengdb" "kingbase" "tidb" "vastbase" "minio"
-        "victoria-metrics" "gaussdb" "loki" "mssql" "oceanbase-proxy"
-        "pulsar" "rocketmq" "goldendb" "tdsql" "influxdb" "etcd"
-        "milvus" "nebula" "tdengine" "oracle" "doris" "hadoop"
-        "hive" "nacos" "camellia-redis-proxy"
-    )
+    # Dynamically extract all engine addons from manifest
+    mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
     
     for addon_name in "${engine_addons[@]}"; do
         # Get versions from manifest
@@ -799,16 +791,8 @@ update_addon_image_chart_versions_from_manifest() {
     
     echo "$(tput -T xterm setaf 3)Updating addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt$(tput -T xterm sgr0)"
     
-    # List of engine addons to sync
-    local engine_addons=(
-        "clickhouse" "elasticsearch" "kafka" "mongodb" "mysql" "greatdb"
-        "oceanbase" "postgresql" "qdrant" "rabbitmq" "redis" "starrocks"
-        "zookeeper" "damengdb" "kingbase" "tidb" "vastbase" "minio"
-        "victoria-metrics" "gaussdb" "loki" "mssql" "oceanbase-proxy"
-        "pulsar" "rocketmq" "goldendb" "tdsql" "influxdb" "etcd"
-        "milvus" "nebula" "tdengine" "oracle" "doris" "hadoop"
-        "hive" "nacos" "camellia-redis-proxy"
-    )
+    # Dynamically extract all engine addons from manifest
+    mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
     
     for images_file in "${images_files[@]}"; do
         if [[ ! -f "$images_file" ]]; then
@@ -1288,44 +1272,12 @@ main() {
     # Update addon images from deploy-manifests.yaml
     if [[ -f "${MANIFESTS_FILE}" ]]; then
         echo "$(tput -T xterm setaf 3)Updating addon images from manifest$(tput -T xterm sgr0)"
-        update_addon_images_from_manifest "clickhouse"
-        update_addon_images_from_manifest "elasticsearch"
-        update_addon_images_from_manifest "kafka"
-        update_addon_images_from_manifest "mongodb"
-        update_addon_images_from_manifest "mysql"
-        update_addon_images_from_manifest "greatdb"
-        update_addon_images_from_manifest "oceanbase"
-        update_addon_images_from_manifest "postgresql"
-        update_addon_images_from_manifest "qdrant"
-        update_addon_images_from_manifest "rabbitmq"
-        update_addon_images_from_manifest "redis"
-        update_addon_images_from_manifest "starrocks"
-        update_addon_images_from_manifest "zookeeper"
-        update_addon_images_from_manifest "damengdb"
-        update_addon_images_from_manifest "kingbase"
-        update_addon_images_from_manifest "tidb"
-        update_addon_images_from_manifest "vastbase"
-        update_addon_images_from_manifest "minio"
-        update_addon_images_from_manifest "victoria-metrics"
-        update_addon_images_from_manifest "gaussdb"
-        update_addon_images_from_manifest "loki"
-        update_addon_images_from_manifest "mssql"
-        update_addon_images_from_manifest "oceanbase-proxy"
-        update_addon_images_from_manifest "pulsar"
-        update_addon_images_from_manifest "rocketmq"
-        update_addon_images_from_manifest "goldendb"
-        update_addon_images_from_manifest "tdsql"
-        update_addon_images_from_manifest "influxdb"
-        update_addon_images_from_manifest "etcd"
-        update_addon_images_from_manifest "milvus"
-        update_addon_images_from_manifest "nebula"
-        update_addon_images_from_manifest "tdengine"
-        update_addon_images_from_manifest "oracle"
-        update_addon_images_from_manifest "doris"
-        update_addon_images_from_manifest "hadoop"
-        update_addon_images_from_manifest "hive"
-        update_addon_images_from_manifest "nacos"
-        update_addon_images_from_manifest "camellia-redis-proxy"
+        # Dynamically extract all engine addons from manifest
+        mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
+
+        for addon_name in "${engine_addons[@]}"; do
+            update_addon_images_from_manifest "$addon_name"
+        done
 
         # Update addon chart versions in kubeblocks-enterprise.txt
         update_addon_chart_versions_from_manifest
