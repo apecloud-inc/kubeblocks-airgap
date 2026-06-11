@@ -12,3 +12,10 @@ app.log
 
 # Project-specific stuff
 !docs/release-notes/*
+
+# claude code
+CLAUDE.md*
+.claude/
+
+# codex
+AGENTS.md
