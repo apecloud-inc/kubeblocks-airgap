@@ -74,7 +74,7 @@ jobs:
           MANIFESTS_FILE_PATH="apecloud/manifests/deploy-manifests.yaml"
           commit_message="chore: upgrade"
           update_version_cmd="bash .github/scripts/upgrade_version.sh --type 1 --manifests-file ${MANIFESTS_FILE_PATH}"
-          generate_release_note_cmd="bash .github/scripts/upgrade_version.sh --type 2 "
+          generate_release_note_cmd="bash .github/scripts/upgrade_version.sh --type 2  --manifests-file ${MANIFESTS_FILE_PATH}"
           if [[ -n "${{ inputs.APP_VERSION }}" ]]; then
               update_version_cmd="${update_version_cmd} --cloud-version ${{ inputs.APP_VERSION }} "
               generate_release_note_cmd="${generate_release_note_cmd} --cloud-version ${{ inputs.APP_VERSION }} "

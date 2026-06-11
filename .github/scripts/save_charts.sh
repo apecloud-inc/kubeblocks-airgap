@@ -803,7 +803,7 @@ update_addon_chart_versions_from_manifest() {
     echo "$(tput -T xterm setaf 3)Updating addon chart versions in kubeblocks-enterprise.txt$(tput -T xterm sgr0)"
     
     # Dynamically extract all engine addons from manifest
-    mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "\${MANIFESTS_FILE}" 2>/dev/null || true)
+    mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
     
     for addon_name in "${engine_addons[@]}"; do
         # Get versions from manifest
@@ -912,7 +912,7 @@ update_addon_image_chart_versions_from_manifest() {
     echo "$(tput -T xterm setaf 3)Updating addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt$(tput -T xterm sgr0)"
     
     # Dynamically extract all engine addons from manifest
-    mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "\${MANIFESTS_FILE}" 2>/dev/null || true)
+    mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
     
     for images_file in "${images_files[@]}"; do
         if [[ ! -f "$images_file" ]]; then
@@ -1399,10 +1399,10 @@ main() {
     if [[ -f "${MANIFESTS_FILE}" ]]; then
         echo "$(tput -T xterm setaf 3)Updating addon images from manifest$(tput -T xterm sgr0)"
         # Dynamically extract all engine addons from manifest
-        mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "\${MANIFESTS_FILE}" 2>/dev/null || true)
+        mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
 
-        for addon_name in "\${engine_addons[@]}"; do
-            update_addon_images_from_manifest "\$addon_name"
+        for addon_name in "${engine_addons[@]}"; do
+            update_addon_images_from_manifest "$addon_name"
         done
         
         # Update addon chart versions in kubeblocks-enterprise.txt
