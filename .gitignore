@@ -13,9 +13,19 @@ app.log
 # Project-specific stuff
 !docs/release-notes/*
 
+
 # claude code
 CLAUDE.md*
 .claude/
 
 # codex
 AGENTS.md
+skills
+
+# apecloud
+apecloud
+
+# tmp
+check_airgap_result
+exit_result
+applications/kubesphere
