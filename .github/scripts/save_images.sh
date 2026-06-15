@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 
 readonly ADD_IMAGES_LIST=${add_images?}
 readonly APP_NAME=${app_name?}
