@@ -1,13 +1,13 @@
-# KubeBlocks-Cloud v2.2.33
+# KubeBlocks-Cloud v2.2.35
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/kubeblocks-console:v2.2.33
-docker.io/apecloud/kubeblocks-console:v2.2.33-rds
-docker.io/apecloud/apiserver:v2.2.33
-docker.io/apecloud/cr4w:v2.2.33
-docker.io/apecloud/kb-cloud-hook:v2.2.33
-docker.io/apecloud/kb-cloud-docs:v2.2.33
-docker.io/apecloud/kubeblocks-installer:v2.2.33-offline
-docker.io/apecloud/kb-cloud-installer:v2.2.33
+docker.io/apecloud/kubeblocks-console:v2.2.35
+docker.io/apecloud/kubeblocks-console:v2.2.35-rds
+docker.io/apecloud/apiserver:v2.2.35
+docker.io/apecloud/cr4w:v2.2.35
+docker.io/apecloud/kb-cloud-hook:v2.2.35
+docker.io/apecloud/kb-cloud-docs:v2.2.35
+docker.io/apecloud/kubeblocks-installer:v2.2.35-offline
+docker.io/apecloud/kb-cloud-installer:v2.2.35
 docker.io/apecloud/dms:0.0.3-beta.2
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.4
 docker.io/apecloud/ob-grpc-server:0.1.6
