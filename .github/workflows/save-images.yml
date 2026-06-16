@@ -9,7 +9,6 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
-          - oceanbase-4.2.1.7-107020012024061213-amd64
           - elasticsearch-7.7.1
           - elasticsearch-custom-plugins
           - xtrabackup-minimal
