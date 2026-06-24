@@ -53,7 +53,7 @@ while IFS= read -r image; do
         echo "❌ $(tput -T xterm setaf 1) $new_image create manifest failed $(tput -T xterm sgr0)"
     else
         # 推送镜像 manifest 到指定的 registry
-        docker manifest push "$new_image"
+        docker manifest push --insecure "$new_image"
         echo "✅ $(tput -T xterm setaf 2) $new_image manifest pushed successfully $(tput -T xterm sgr0)"
     fi
 
