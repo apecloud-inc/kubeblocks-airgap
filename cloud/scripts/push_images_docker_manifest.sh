@@ -44,7 +44,7 @@ while IFS= read -r image; do
     new_image_arm64="${new_image_name}:${image_tag}-arm64"
     # 对镜像执行 docker manifest
     set +e
-    docker manifest create "$new_image" "$new_image_amd64" "$new_image_arm64"
+    docker manifest create --insecure "$new_image" "$new_image_amd64" "$new_image_arm64"
     docker manifest annotate "$new_image" "$new_image_amd64" --os linux --arch amd64
     docker manifest annotate "$new_image" "$new_image_arm64" --os linux --arch arm64
     tag_ret=$?
