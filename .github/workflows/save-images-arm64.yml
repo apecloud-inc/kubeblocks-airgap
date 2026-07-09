@@ -68,6 +68,7 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
+          - chaos-mesh
       APP_DIR:
         description: 'select addon dir'
         required: false
