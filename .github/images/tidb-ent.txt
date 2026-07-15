@@ -1,0 +1,4 @@
+# tidb v7.1.6
+docker.io/apecloud/pd-enterprise:v7.1.6
+docker.io/apecloud/tidb-enterprise:v7.1.6
+docker.io/apecloud/tikv-enterprise:v7.1.6

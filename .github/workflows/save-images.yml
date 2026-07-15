@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - tidb-ent
           - damengdb-20260202
           - elasticsearch-7.7.1
           - elasticsearch-custom-plugins
