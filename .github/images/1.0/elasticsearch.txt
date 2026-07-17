@@ -1,13 +1,15 @@
-# elasticsearch v1.0.5
+# elasticsearch v1.0.6
 docker.io/apecloud/curl-jq:0.1.0
 docker.io/apecloud/elasticsearch-plugins:0.1.0
 docker.io/apecloud/elasticsearch:6.8.23
 docker.io/apecloud/elasticsearch:7.10.2
 docker.io/apecloud/elasticsearch:8.8.2
 docker.io/apecloud/elasticsearch:8.15.5
+docker.io/apecloud/elasticsearch:9.4.3
 docker.io/apecloud/kibana:6.8.23
 docker.io/apecloud/kibana:7.10.2
 docker.io/apecloud/kibana:8.15.5
+docker.io/apecloud/kibana:9.4.3
 docker.io/apecloud/elasticsearch-exporter:v1.7.0
 docker.io/apecloud/elasticsearch-agent:0.1.1
 docker.io/apecloud/elasticsearch-dump:v6.124.2

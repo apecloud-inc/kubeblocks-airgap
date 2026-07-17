@@ -1,13 +1,13 @@
-# KubeBlocks-Cloud v2.2.63
+# KubeBlocks-Cloud v2.2.72
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/kubeblocks-console:v2.2.63
-docker.io/apecloud/kubeblocks-console:v2.2.63-rds
-docker.io/apecloud/apiserver:v2.2.63
-docker.io/apecloud/cr4w:v2.2.63
-docker.io/apecloud/kb-cloud-hook:v2.2.63
-docker.io/apecloud/kb-cloud-docs:v2.2.63
-docker.io/apecloud/kubeblocks-installer:v2.2.63-offline
-docker.io/apecloud/kb-cloud-installer:v2.2.63
+docker.io/apecloud/kubeblocks-console:v2.2.72
+docker.io/apecloud/kubeblocks-console:v2.2.72-rds
+docker.io/apecloud/apiserver:v2.2.72
+docker.io/apecloud/cr4w:v2.2.72
+docker.io/apecloud/kb-cloud-hook:v2.2.72
+docker.io/apecloud/kb-cloud-docs:v2.2.72
+docker.io/apecloud/kubeblocks-installer:v2.2.72-offline
+docker.io/apecloud/kb-cloud-installer:v2.2.72
 docker.io/apecloud/dms:0.0.3-beta.2
 docker.io/apecloud/apecloud-mcp:2.1.0-alpha.4
 docker.io/apecloud/ob-grpc-server:0.1.6
@@ -31,7 +31,7 @@ docker.io/apecloud/apecloud-addon-charts:clickhouse-1.0.3
 docker.io/apecloud/apecloud-addon-charts:damengdb-0.9.3
 docker.io/apecloud/apecloud-addon-charts:damengdb-1.0.4
 docker.io/apecloud/apecloud-addon-charts:elasticsearch-0.9.1
-docker.io/apecloud/apecloud-addon-charts:elasticsearch-1.0.5
+docker.io/apecloud/apecloud-addon-charts:elasticsearch-1.0.6
 docker.io/apecloud/apecloud-addon-charts:gaussdb-0.9.2
 docker.io/apecloud/apecloud-addon-charts:gaussdb-1.0.3
 docker.io/apecloud/apecloud-addon-charts:kafka-0.9.2
@@ -47,7 +47,7 @@ docker.io/apecloud/apecloud-addon-charts:mongodb-1.0.4
 docker.io/apecloud/apecloud-addon-charts:mssql-0.9.2
 docker.io/apecloud/apecloud-addon-charts:mssql-1.0.5
 docker.io/apecloud/apecloud-addon-charts:mysql-0.9.4
-docker.io/apecloud/apecloud-addon-charts:mysql-1.0.5
+docker.io/apecloud/apecloud-addon-charts:mysql-1.0.6
 docker.io/apecloud/apecloud-addon-charts:greatdb-0.9.1
 docker.io/apecloud/apecloud-addon-charts:greatdb-1.0.1
 docker.io/apecloud/apecloud-addon-charts:oceanbase-0.9.5
