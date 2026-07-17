@@ -659,6 +659,13 @@ update_addon_images_from_manifest() {
                             should_include=0
                         fi
                     fi
+                    # damengdb-arm: exclude known amd64-only images
+                    if [[ "$addon_name" == "damengdb" ]]; then
+                        if [[ "$img" == *"dm:8.1.4-20260202"* ]] || \
+                           [[ "$img" == *"dmdb-tool:8.1.4-x86"* ]]; then
+                            should_include=0
+                        fi
+                    fi
                 else
                     # For non-ARM files, apply oceanbase filtering (exclude arm64 suffix)
                     if [[ "$addon_name" == "oceanbase" ]]; then
