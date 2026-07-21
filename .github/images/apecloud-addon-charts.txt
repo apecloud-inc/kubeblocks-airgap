@@ -1,4 +1,4 @@
-# apecloud-addon-charts v1.0.5
+# apecloud-addon-charts v2.2.63
 docker.io/apecloud/apecloud-addon-charts:elasticsearch-1.0.5
-docker.io/apecloud/elasticsearch-agent:0.1.1
-docker.io/apecloud/elasticsearch-custom-plugins:0.1.2
+docker.io/apecloud/apecloud-addon-charts:rabbitmq-1.0.3
+docker.io/apecloud/apecloud-addon-charts:mysql-1.0.5
