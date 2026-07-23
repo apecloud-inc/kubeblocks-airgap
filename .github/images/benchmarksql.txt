@@ -1,0 +1,2 @@
+# benchmarksql 2.0
+docker.io/apecloud/benchmarksql:2.0
