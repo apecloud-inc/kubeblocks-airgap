@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - benchmarksql
           - xtrabackup-minimal
           - syncer
           - dbctl
