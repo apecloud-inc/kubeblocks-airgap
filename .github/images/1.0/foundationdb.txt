@@ -1,3 +1,6 @@
 # foundationdb v1.0.3
 docker.io/apecloud/foundationdb:7.1.57
+docker.io/apecloud/foundationdb:7.3.77
+docker.io/apecloud/fdbexporter:2.3.3-7.1.57-amd64
+docker.io/apecloud/fdbexporter:2.3.3-7.3.77
 docker.io/apecloud/kubectl:1.29
