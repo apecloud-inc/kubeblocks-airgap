@@ -398,9 +398,23 @@ change_kubebench_version() {
         echo "change ${imageFile} images tag"
         image_file_path=.github/images/${imageFile}
         if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^# kubebench .*/# kubebench v${KUBEBENCH_VERSION}/" $image_file_path
             sed -i '' "s/^docker.io\/apecloud\/kubebench:.*/docker.io\/apecloud\/kubebench:${KUBEBENCH_VERSION}/" $image_file_path
         else
+            sed -i "s/^# kubebench .*/# kubebench v${KUBEBENCH_VERSION}/" $image_file_path
             sed -i "s/^docker.io\/apecloud\/kubebench:.*/docker.io\/apecloud\/kubebench:${KUBEBENCH_VERSION}/" $image_file_path
+        fi
+    done
+
+    echo "$(tput -T xterm setaf 3)change kubebench chart version:${KUBEBENCH_VERSION}$(tput -T xterm sgr0)"
+    chartFiles=("kubeblocks-enterprise.txt")
+    for chartFile in "${chartFiles[@]}"; do
+        echo "change ${chartFile} chart version"
+        chart_file_path=.github/charts/${chartFile}
+        if [[ "$UNAME" == "Darwin" ]]; then
+            sed -i '' "s/^kubebench:.*/kubebench:${KUBEBENCH_VERSION}/" $chart_file_path
+        else
+            sed -i "s/^kubebench:.*/kubebench:${KUBEBENCH_VERSION}/" $chart_file_path
         fi
     done
 }
@@ -548,6 +562,13 @@ update_addon_images_from_manifest() {
                     # oceanbase-arm: exclude ocp suffix
                     if [[ "$addon_name" == "oceanbase" ]]; then
                         if [[ "$img" == *"-ocp"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                    # damengdb-arm: exclude known amd64-only images
+                    if [[ "$addon_name" == "damengdb" ]]; then
+                        if [[ "$img" == *"dm:8.1.4-20260202"* ]] || \
+                           [[ "$img" == *"dmdb-tool:8.1.4-x86"* ]]; then
                             should_include=0
                         fi
                     fi
@@ -1292,6 +1313,60 @@ update_kubeblocks_enterprise_sections_from_manifest() {
     echo "$(tput -T xterm setaf 2)kubeblocks-enterprise.txt target sections updated successfully$(tput -T xterm sgr0)"
 }
 
+update_kubebench_images_from_manifest() {
+    local kubebench_txt=".github/images/kubebench.txt"
+
+    if [[ ! -f "$kubebench_txt" ]]; then
+        echo "  WARNING: kubebench.txt not found, skipping"
+        return
+    fi
+
+    echo "$(tput -T xterm setaf 3)Updating kubebench images from manifest$(tput -T xterm sgr0)"
+
+    # Extract version from manifest
+    local version=$(yq e ".kubebench[0].version" ${MANIFESTS_FILE} 2>/dev/null || true)
+    if [[ -z "$version" ]]; then
+        echo "  No version found for kubebench in manifest"
+        return
+    fi
+
+    # Extract images from manifest
+    mapfile -t manifest_images < <(yq e ".kubebench[0].images[]" ${MANIFESTS_FILE} 2>/dev/null || true)
+
+    if [[ ${#manifest_images[@]} -eq 0 ]]; then
+        echo "  WARNING: No images found for kubebench"
+        return
+    fi
+
+    # Create temporary file with new content
+    local tmp_file="${kubebench_txt}.tmp"
+
+    # Write version comment
+    echo "# kubebench v${version}" > "$tmp_file"
+
+    # Write images from manifest (add docker.io/ prefix if needed)
+    for img in "${manifest_images[@]}"; do
+        if [[ "$img" != docker.io/* ]]; then
+            echo "docker.io/${img}" >> "$tmp_file"
+        else
+            echo "$img" >> "$tmp_file"
+        fi
+    done
+
+    # Ensure exactly one trailing newline
+    if command -v perl &> /dev/null; then
+        perl -pi -e 'chomp if eof' "$tmp_file"
+        echo "" >> "$tmp_file"
+    else
+        echo "" >> "$tmp_file"
+    fi
+
+    # Replace original file
+    mv "$tmp_file" "$kubebench_txt"
+
+    echo "    Updated ${#manifest_images[@]} images for kubebench v${version}"
+}
+
 generate_release_note() {
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
@@ -1413,9 +1488,9 @@ main() {
                     CUBETRAN_PLATFORM_VERSION="${CUBETRAN_PLATFORM_IMAGE#*:}"
                 fi
 
-                KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
-                if [[ -n "$KUBEBENCH_IMAGE" ]]; then
-                    KUBEBENCH_VERSION="${KUBEBENCH_IMAGE#*:}"
+                KUBEBENCH_VERSION=$(yq e ".kubebench[0].version"  ${MANIFESTS_FILE})
+                if [[ "${KUBEBENCH_VERSION}" == "v"* ]]; then
+                    KUBEBENCH_VERSION="${KUBEBENCH_VERSION/v/}"
                 fi
 
                 echo "MANIFESTS CLOUD_VERSION:"${CLOUD_VERSION}
@@ -1537,6 +1612,9 @@ main() {
                 
                 # Update kubeblocks-enterprise.txt target sections (5 key sections)
                 update_kubeblocks_enterprise_sections_from_manifest
+
+                # Update kubebench images from manifest
+                update_kubebench_images_from_manifest
             fi
         ;;
         2)

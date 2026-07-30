@@ -68,7 +68,6 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
-          - chaos-mesh
       APP_DIR:
         description: 'select addon dir'
         required: false
@@ -130,6 +129,18 @@ jobs:
     name: save app images
     runs-on: ubuntu-22.04
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        continue-on-error: true
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: true
+
       - name: chown Runner
         run: |
           df -h
@@ -203,7 +214,13 @@ jobs:
       - name: get images size
         run: |
           docker images
-          du -sh ${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz 
+          IMAGE_PKG="${{ inputs.APP_NAME }}-${{ inputs.APP_VERSION }}.tar.gz"
+          du -sh "${IMAGE_PKG}"
+          SIZE=$(du -b "${IMAGE_PKG}" | awk '{print $1}')
+          if [[ "${SIZE}" -le 4096 ]]; then
+              echo "Error: ${IMAGE_PKG} size is ${SIZE} bytes, which indicates the save failed. Exiting."
+              exit 1
+          fi
 
       - uses: manyuanrong/setup-ossutil@v2.0
         with:

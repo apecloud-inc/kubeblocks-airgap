@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 
 readonly ADD_IMAGES_LIST=${add_images?}
 readonly APP_NAME=${app_name?}
@@ -293,8 +293,10 @@ save_images_package() {
         for imageFile in "${imageFiles[@]}"; do
             image_file_path_tmp=.github/images/${imageFile}
             if [[ "$UNAME" == "Darwin" ]]; then
+                sed -i '' "s/^# kubebench .*/# kubebench v${KUBEBENCH_VERSION}/" $image_file_path_tmp
                 sed -i '' "s/^docker.io\/apecloud\/kubebench:.*/docker.io\/apecloud\/kubebench:${KUBEBENCH_VERSION}/" $image_file_path_tmp
             else
+                sed -i "s/^# kubebench .*/# kubebench v${KUBEBENCH_VERSION}/" $image_file_path_tmp
                 sed -i "s/^docker.io\/apecloud\/kubebench:.*/docker.io\/apecloud\/kubebench:${KUBEBENCH_VERSION}/" $image_file_path_tmp
             fi
         done
@@ -413,9 +415,9 @@ check_manifests_version() {
         CUBETRAN_PLATFORM_VERSION="${CUBETRAN_PLATFORM_IMAGE#*:}"
     fi
 
-    KUBEBENCH_IMAGE=$(yq e ".kubebench[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/kubebench:" || true))
-    if [[ -n "$KUBEBENCH_IMAGE" ]]; then
-        KUBEBENCH_VERSION="${KUBEBENCH_IMAGE#*:}"
+    KUBEBENCH_VERSION=$(yq e ".kubebench[0].version"  ${MANIFESTS_FILE})
+    if [[ "${KUBEBENCH_VERSION}" == "v"* ]]; then
+        KUBEBENCH_VERSION="${KUBEBENCH_VERSION/v/}"
     fi
 
     echo "MANIFESTS APP_VERSION:"${APP_VERSION}
@@ -536,6 +538,13 @@ update_addon_images_from_manifest() {
                     # oceanbase-arm: exclude ocp suffix
                     if [[ "$addon_name" == "oceanbase" ]]; then
                         if [[ "$img" == *"-ocp"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                    # damengdb-arm: exclude known amd64-only images
+                    if [[ "$addon_name" == "damengdb" ]]; then
+                        if [[ "$img" == *"dm:8.1.4-20260202"* ]] || \
+                           [[ "$img" == *"dmdb-tool:8.1.4-x86"* ]]; then
                             should_include=0
                         fi
                     fi
@@ -1248,6 +1257,60 @@ update_kubeblocks_enterprise_sections_from_manifest() {
     echo "$(tput -T xterm setaf 2)kubeblocks-enterprise.txt target sections updated successfully$(tput -T xterm sgr0)"
 }
 
+update_kubebench_images_from_manifest() {
+    local kubebench_txt=".github/images/kubebench.txt"
+
+    if [[ ! -f "$kubebench_txt" ]]; then
+        echo "  WARNING: kubebench.txt not found, skipping"
+        return
+    fi
+
+    echo "$(tput -T xterm setaf 3)Updating kubebench images from manifest$(tput -T xterm sgr0)"
+
+    # Extract version from manifest
+    local version=$(yq e ".kubebench[0].version" ${MANIFESTS_FILE} 2>/dev/null || true)
+    if [[ -z "$version" ]]; then
+        echo "  No version found for kubebench in manifest"
+        return
+    fi
+
+    # Extract images from manifest
+    mapfile -t manifest_images < <(yq e ".kubebench[0].images[]" ${MANIFESTS_FILE} 2>/dev/null || true)
+
+    if [[ ${#manifest_images[@]} -eq 0 ]]; then
+        echo "  WARNING: No images found for kubebench"
+        return
+    fi
+
+    # Create temporary file with new content
+    local tmp_file="${kubebench_txt}.tmp"
+
+    # Write version comment
+    echo "# kubebench v${version}" > "$tmp_file"
+
+    # Write images from manifest (add docker.io/ prefix if needed)
+    for img in "${manifest_images[@]}"; do
+        if [[ "$img" != docker.io/* ]]; then
+            echo "docker.io/${img}" >> "$tmp_file"
+        else
+            echo "$img" >> "$tmp_file"
+        fi
+    done
+
+    # Ensure exactly one trailing newline
+    if command -v perl &> /dev/null; then
+        perl -pi -e 'chomp if eof' "$tmp_file"
+        echo "" >> "$tmp_file"
+    else
+        echo "" >> "$tmp_file"
+    fi
+
+    # Replace original file
+    mv "$tmp_file" "$kubebench_txt"
+
+    echo "    Updated ${#manifest_images[@]} images for kubebench v${version}"
+}
+
 main() {
     local UNAME=`uname -s`
     local APP_VERSION=${APP_VERSION_TMP}
@@ -1287,6 +1350,9 @@ main() {
         
         # Update kubeblocks-enterprise.txt target sections (5 key sections)
         update_kubeblocks_enterprise_sections_from_manifest
+
+        # Update kubebench images from manifest
+        update_kubebench_images_from_manifest
     fi
 
     add_images_list
