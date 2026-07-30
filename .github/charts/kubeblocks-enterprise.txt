@@ -1,7 +1,7 @@
 kubeblocks:0.9.6-beta.10
 kubeblocks:1.0.3-beta.9
-kubeblocks-cloud:v2.2.81
-kb-cloud-installer:2.2.81
+kubeblocks-cloud:v2.2.88
+kb-cloud-installer:2.2.88
 gemini:0.12.4
 gemini-monitor:0.12.4
 casdoor-helm-charts:v1.753.0
@@ -92,5 +92,5 @@ tdengine:0.9.1
 tdengine:1.0.3
 oracle:0.9.0
 oracle:1.0.3
-kubebench:0.0.1
+kubebench:0.0.15
 he3sql:1.0.3
