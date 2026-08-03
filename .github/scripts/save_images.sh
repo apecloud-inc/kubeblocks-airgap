@@ -518,9 +518,10 @@ update_addon_images_from_manifest() {
                 
                 # Check if this is an ARM-specific file
                 if [[ "$txt_file" == *"-arm.txt" ]]; then
-                    # elasticsearch-arm: exclude 6.8.23 versions
+                    # elasticsearch-arm: exclude versions without arm64 support (6.x, 7.7.x)
                     if [[ "$addon_name" == "elasticsearch" ]]; then
-                        if [[ "$img" == *"elasticsearch:6.8.23"* ]] || [[ "$img" == *"kibana:6.8.23"* ]]; then
+                        if [[ "$img" == *"elasticsearch:6.8.23"* ]] || [[ "$img" == *"kibana:6.8.23"* ]] || \
+                           [[ "$img" == *"elasticsearch:7.7.1"* ]] || [[ "$img" == *"kibana:7.7.1"* ]]; then
                             should_include=0
                         fi
                     fi
