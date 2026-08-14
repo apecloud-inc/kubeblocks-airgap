@@ -25,7 +25,7 @@ on:
           - doris
           - gemini
           - elasticsearch-arm
-          - mysql-arm
+          - mysql
           - mongodb
           - damengdb-arm
           - clickhouse
