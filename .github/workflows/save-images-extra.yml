@@ -3,12 +3,12 @@ name: Save Images Extra
 on:
   workflow_dispatch:
     inputs:
-      ADD_IMAGES:
+      extra-images:
         description: 'additional images (e.g. docker.io/apecloud/kubeblocks:0.8.1|apecloud/kubeblocks:0.8.1|kubeblocks:0.8.1)'
         required: true
         default: ''
 
-run-name: save extra images ${{ inputs.ADD_IMAGES }}
+run-name: save extra images ${{ inputs.extra-images }}
 
 env:
   DOCKER_REGISTRY_URL: docker.io
@@ -31,7 +31,7 @@ jobs:
       - id: save
         uses: ./.github/actions/save-extra-images
         with:
-          add-images: ${{ inputs.ADD_IMAGES }}
+          add-images: ${{ inputs.extra-images }}
           platform: linux/amd64
           oss-dir: images
           pkg-suffix: ""
@@ -45,7 +45,7 @@ jobs:
       - id: save
         uses: ./.github/actions/save-extra-images
         with:
-          add-images: ${{ inputs.ADD_IMAGES }}
+          add-images: ${{ inputs.extra-images }}
           platform: linux/arm64
           oss-dir: images/arm64
           pkg-suffix: "-arm64"
@@ -91,9 +91,11 @@ jobs:
               CONTENT="${CONTENT}"$'\n'"arm64: ${ARM64_RESULT}"
           fi
           
-          echo "content<<EOF" >> $GITHUB_OUTPUT
+          # 使用随机 delimiter 防止内容注入
+          DELIMITER="CONTENT_DELIM_$(openssl rand -hex 8)"
+          echo "content<<${DELIMITER}" >> $GITHUB_OUTPUT
           echo "${CONTENT}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "${DELIMITER}" >> $GITHUB_OUTPUT
 
   send-message:
     permissions:
