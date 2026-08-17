@@ -1,0 +1,108 @@
+name: Save Images Extra
+
+on:
+  workflow_dispatch:
+    inputs:
+      ADD_IMAGES:
+        description: 'additional images (e.g. docker.io/apecloud/kubeblocks:0.8.1|apecloud/kubeblocks:0.8.1|kubeblocks:0.8.1)'
+        required: true
+        default: ''
+
+run-name: save extra images ${{ inputs.ADD_IMAGES }}
+
+env:
+  DOCKER_REGISTRY_URL: docker.io
+  DOCKER_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+  OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
+  OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+  OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
+  OSS_BUCKET: "kubeblocks-oss"
+  DOCKER_VERSION: "v28.0.4"
+
+jobs:
+  save-app-images-amd64:
+    name: save app images (amd64)
+    runs-on: ubuntu-22.04
+    outputs:
+      image-pkg-name: ${{ steps.save.outputs.image-pkg-name }}
+    steps:
+      - id: save
+        uses: ./.github/actions/save-extra-images
+        with:
+          add-images: ${{ inputs.ADD_IMAGES }}
+          platform: linux/amd64
+          oss-dir: images
+          pkg-suffix: ""
+
+  save-app-images-arm64:
+    name: save app images (arm64)
+    runs-on: ubuntu-22.04
+    outputs:
+      image-pkg-name: ${{ steps.save.outputs.image-pkg-name }}
+    steps:
+      - id: save
+        uses: ./.github/actions/save-extra-images
+        with:
+          add-images: ${{ inputs.ADD_IMAGES }}
+          platform: linux/arm64
+          oss-dir: images/arm64
+          pkg-suffix: "-arm64"
+
+  save-result:
+    runs-on: ubuntu-latest
+    needs: [ save-app-images-amd64, save-app-images-arm64 ]
+    if: ${{ always() }}
+    outputs:
+      content: ${{ steps.build-message.outputs.content }}
+    steps:
+      - name: build message content
+        id: build-message
+        run: |
+          OSS_BASE="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}"
+          
+          AMD64_RESULT="${{ needs.save-app-images-amd64.result }}"
+          ARM64_RESULT="${{ needs.save-app-images-arm64.result }}"
+          AMD64_PKG="${{ needs.save-app-images-amd64.outputs.image-pkg-name }}"
+          ARM64_PKG="${{ needs.save-app-images-arm64.outputs.image-pkg-name }}"
+          
+          # 解析 app 名用于标题（amd64 一定存在，用它的）
+          if [[ -n "${AMD64_PKG}" ]]; then
+              APP_NAME="${AMD64_PKG%%-*}"
+              APP_REST="${AMD64_PKG#*-}"
+              APP_VERSION="${APP_REST%.tar.gz}"
+              TITLE="save images ${APP_NAME}-${APP_VERSION}"
+          else
+              TITLE="save images"
+          fi
+          
+          CONTENT="${TITLE}"
+          
+          if [[ "${AMD64_RESULT}" == "success" ]]; then
+              CONTENT="${CONTENT}"$'\n'"amd64: ${OSS_BASE}/images/${AMD64_PKG} success"
+          else
+              CONTENT="${CONTENT}"$'\n'"amd64: ${AMD64_RESULT}"
+          fi
+          
+          if [[ "${ARM64_RESULT}" == "success" ]]; then
+              CONTENT="${CONTENT}"$'\n'"arm64: ${OSS_BASE}/images/arm64/${ARM64_PKG} success"
+          else
+              CONTENT="${CONTENT}"$'\n'"arm64: ${ARM64_RESULT}"
+          fi
+          
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "${CONTENT}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  send-message:
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: ${{ needs.save-result.outputs.content }}
+    secrets: inherit

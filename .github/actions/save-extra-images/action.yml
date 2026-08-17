@@ -1,0 +1,211 @@
+name: Save Extra Images
+description: Pull and save extra images to OSS for a given architecture
+inputs:
+  add-images:
+    description: 'Images to save, separated by |'
+    required: true
+  platform:
+    description: 'Docker platform (e.g. linux/amd64)'
+    required: true
+  oss-dir:
+    description: 'OSS upload directory'
+    required: true
+  pkg-suffix:
+    description: 'Package filename suffix (e.g. -arm64)'
+    required: false
+    default: ''
+outputs:
+  app-name:
+    description: 'App name parsed from the first image'
+    value: ${{ steps.parse-info.outputs.app-name }}
+  app-version:
+    description: 'App version parsed from the first image'
+    value: ${{ steps.parse-info.outputs.app-version }}
+  image-pkg-name:
+    description: 'Final package file name'
+    value: ${{ steps.parse-info.outputs.app-name }}-${{ steps.parse-info.outputs.app-version }}${{ inputs.pkg-suffix }}.tar.gz
+runs:
+  using: composite
+  steps:
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      continue-on-error: true
+      with:
+        tool-cache: false
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: false
+        docker-images: true
+        swap-storage: true
+
+    - name: chown Runner
+      shell: bash
+      run: |
+        df -h
+        echo "sudo mkdir -p /mnt/setup-docker-action"
+        sudo mkdir -p /mnt/setup-docker-action
+        echo "sudo chown -R $USER:$USER /mnt/setup-docker-action"
+        sudo chown -R $USER:$USER /mnt/setup-docker-action
+
+    - name: Install Docker
+      uses: docker/setup-docker-action@v4
+      with:
+        runtime-basedir: /mnt/setup-docker-action
+        version: ${{ env.DOCKER_VERSION }}
+
+    - uses: actions/checkout@v4
+
+    - uses: docker/setup-qemu-action@v3
+
+    - name: parse images info
+      id: parse-info
+      shell: bash
+      run: |
+        ADD_IMAGES="${{ inputs.add-images }}"
+        # 取第一个镜像（按 | 分隔）
+        FIRST_IMAGE="${ADD_IMAGES%%|*}"
+        # 提取 tag（最后一个 : 之后的部分）
+        APP_VERSION="${FIRST_IMAGE##*:}"
+        # 去掉 tag 部分
+        IMAGE_WITHOUT_TAG="${FIRST_IMAGE%:*}"
+        # 提取镜像名（最后一个路径组件）
+        APP_NAME="${IMAGE_WITHOUT_TAG##*/}"
+        # 镜像列表文件：extra 模式下使用临时文件，由 add_images 填充
+        IMAGES_FILE="./extra-${APP_NAME}.txt"
+        echo "app-name=${APP_NAME}" >> $GITHUB_OUTPUT
+        echo "app-version=${APP_VERSION}" >> $GITHUB_OUTPUT
+        echo "images-file=${IMAGES_FILE}" >> $GITHUB_OUTPUT
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.DOCKER_REGISTRY_URL }}
+        username: ${{ env.DOCKER_USER }}
+        password: ${{ env.DOCKER_PASSWORD }}
+
+    - name: save images
+      env:
+        add_images: ${{ inputs.add-images }}
+        app_name: ${{ steps.parse-info.outputs.app-name }}
+        app_version: ${{ steps.parse-info.outputs.app-version }}
+        images_file: ${{ steps.parse-info.outputs.images-file }}
+        platform: ${{ inputs.platform }}
+        kubeblocks_version: ""
+        gemini_version: ""
+        oteld_version: ""
+        installer_version: ""
+        dms_version: ""
+        apecloud_mcp_version: ""
+      shell: bash
+      run: |
+        bash .github/scripts/save_images.sh
+
+    - name: get images size
+      shell: bash
+      run: |
+        docker images
+        APP_NAME="${{ steps.parse-info.outputs.app-name }}"
+        APP_VERSION="${{ steps.parse-info.outputs.app-version }}"
+        IMAGE_PKG="${APP_NAME}-${APP_VERSION}.tar.gz"
+        du -sh "${IMAGE_PKG}"
+        SIZE=$(du -b "${IMAGE_PKG}" | awk '{print $1}')
+        if [[ "${SIZE}" -le 4096 ]]; then
+            echo "Error: ${IMAGE_PKG} size is ${SIZE} bytes, which indicates the save failed. Exiting."
+            exit 1
+        fi
+
+    - uses: manyuanrong/setup-ossutil@v2.0
+      with:
+        access-key-id: "${{ env.OSS_KEY_ID }}"
+        access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+        endpoint: "${{ env.OSS_ENDPOINT }}"
+
+    - name: Upload images to oss
+      shell: bash
+      run: |
+        APP_NAME="${{ steps.parse-info.outputs.app-name }}"
+        APP_VERSION="${{ steps.parse-info.outputs.app-version }}"
+        OSS_DIR="${{ inputs.oss-dir }}"
+        PKG_SUFFIX="${{ inputs.pkg-suffix }}"
+        
+        IMAGE_PKG_NAME="${APP_NAME}-${APP_VERSION}.tar.gz"
+        IMAGE_PKG_NAME_FINAL="${APP_NAME}-${APP_VERSION}${PKG_SUFFIX}.tar.gz"
+        
+        # 非 amd64 架构重命名包名，加上架构后缀
+        if [[ "${PKG_SUFFIX}" != "" ]]; then
+            mv "${IMAGE_PKG_NAME}" "${IMAGE_PKG_NAME_FINAL}"
+        fi
+        
+        echo "Free space:"
+        df -h
+        
+        upload_ret=0
+        for i in {1..10}; do
+            echo "ossutil cp ${IMAGE_PKG_NAME_FINAL} to oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_FINAL} ..."
+            ossutil cp -rf "./${IMAGE_PKG_NAME_FINAL}" "oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_FINAL}"
+            upload_ret=$?
+        
+            if [[ -d "ossutil_output" ]]; then
+                ossutil_report_files=$(ls ossutil_output)
+                if [[ -n "${ossutil_report_files}" ]]; then
+                    ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
+                    if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
+                        echo "cp ${IMAGE_PKG_NAME_FINAL} to oss error, retry..."
+                        cat "${ossutil_report_file_name}"
+                        rm -rf ossutil_output/ossutil_report_*.report
+                        upload_ret=1
+                    fi
+                fi
+            fi
+            if [[ $upload_ret -eq 0 ]]; then
+                break
+            fi
+            sleep 1
+        done
+        
+        if [[ $upload_ret -eq 0 ]]; then
+            echo "upload ${IMAGE_PKG_NAME_FINAL} to oss successfully"
+        else
+            exit 1
+        fi
+        
+        IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME_FINAL}.md5"
+        echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+        upload_ret=0
+        for i in {1..10}; do
+            md5sum "${IMAGE_PKG_NAME_FINAL}" > "${IMAGE_PKG_NAME_MD}"
+            md5sum_check=$(md5sum -c "${IMAGE_PKG_NAME_MD}")
+            check_ret=$?
+            if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                echo "${md5sum_check}"
+            else
+                sleep 1
+                continue
+            fi
+        
+            echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_MD} ..."
+            ossutil cp -rf "./${IMAGE_PKG_NAME_MD}" "oss://${{ env.OSS_BUCKET }}/${OSS_DIR}/${IMAGE_PKG_NAME_MD}"
+            upload_ret=$?
+        
+            if [[ -d "ossutil_output" ]]; then
+                ossutil_report_files=$(ls ossutil_output)
+                if [[ -n "${ossutil_report_files}" ]]; then
+                    ossutil_report_file_name="$(ls ossutil_output/ossutil_report_*.report)"
+                    if [[ -n "${ossutil_report_file_name}" && -f "${ossutil_report_file_name}" ]]; then
+                        echo "cp ${IMAGE_PKG_NAME_MD} to oss error, retry..."
+                        cat "${ossutil_report_file_name}"
+                        rm -rf ossutil_output/ossutil_report_*.report
+                        upload_ret=1
+                    fi
+                fi
+            fi
+            if [[ $upload_ret -eq 0 ]]; then
+                break
+            fi
+            sleep 1
+        done
+        
+        if [[ $upload_ret -eq 0 ]]; then
+            echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+        fi
