@@ -38,23 +38,40 @@ add_images_list() {
     echo "
 
 " >> $IMAGE_FILE_PATH
-    for image in $(echo "$ADD_IMAGES_LIST" | sed 's/|/ /g'); do
-        # 归一化镜像地址
-        # 1. 没有 tag（不含 :）的跳过不处理
+    # 使用 read -ra 数组安全地按 | 分割，避免 word splitting 导致的命令注入
+    # 同时对每个镜像名做格式校验，只允许合法的 OCI 镜像名字符
+    IFS='|' read -ra _images <<< "${ADD_IMAGES_LIST}"
+    for image in "${_images[@]}"; do
+        # 去掉首尾空白
+        image="${image#"${image%%[![:space:]]*}"}"
+        image="${image%"${image##*[![:space:]]}"}"
+        [[ -z "${image}" ]] && continue
+
+        # 必须包含 tag（即包含 :）
         if [[ "${image}" != *":"* ]]; then
             echo "skip image without tag: ${image}"
             continue
         fi
-        # 2. 统计 / 的数量，判断格式并补齐
+
+        # 格式校验：只允许 OCI 镜像名合法字符 [a-z0-9._/-] + : + [a-zA-Z0-9._-]
+        # 且不能包含 ; $ ` & | < > ' " 等危险字符
+        local image_ref="${image}"
+        if [[ "${image_ref}" =~ [^a-zA-Z0-9._:/@-] ]]; then
+            echo "skip invalid image (contains illegal characters): ${image}"
+            continue
+        fi
+
+        # 归一化镜像地址
+        # 统计 tag 前部分中 / 的数量，判断格式并补齐
         slash_count=$(awk -F'/' '{print NF-1}' <<< "${image%:*}")
         if [[ ${slash_count} -eq 0 ]]; then
             # 只有镜像名，如 kubeblocks:0.8.1 → 补 docker.io/apecloud/
             image="docker.io/apecloud/${image}"
         elif [[ ${slash_count} -eq 1 ]]; then
-            #  namespace/name 格式，如 apecloud/kubeblocks:0.8.1 → 补 docker.io/
+            # namespace/name 格式，如 apecloud/kubeblocks:0.8.1 → 补 docker.io/
             image="docker.io/${image}"
         fi
-        # 3. 完整路径如 docker.io/apecloud/kubeblocks:0.8.1 直接使用
+        # 完整路径如 docker.io/apecloud/kubeblocks:0.8.1 直接使用
 
         image_name="${image%:*}"
         exists_images_list="$(cat $IMAGE_FILE_PATH | (grep "$image_name" || true))"
@@ -71,7 +88,7 @@ add_images_list() {
             e_image_name="${e_image%:*}"
             if [[ "$e_image_name" == "$image_name" ]]; then
                 e_image_tmp=$( echo ${e_image}| sed 's/\./\\./g;s/\//\\\//g' )
-                image_tmp=$( echo ${image}| sed 's/\./\\./g;s/\//\\//g' )
+                image_tmp=$( echo ${image}| sed 's/\./\\./g;s/\//\\\//g' )
                 if [[ "$UNAME" == "Darwin" ]]; then
                     sed -i '' "s/${e_image_tmp}/${image_tmp}/" $IMAGE_FILE_PATH
                 else

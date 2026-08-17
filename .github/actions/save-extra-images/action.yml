@@ -1,7 +1,7 @@
 name: Save Extra Images
 description: Pull and save extra images to OSS for a given architecture
 inputs:
-  add-images:
+  extra-images:
     description: 'Images to save, separated by |'
     required: true
   platform:
@@ -58,19 +58,64 @@ runs:
 
     - uses: docker/setup-qemu-action@v3
 
-    - name: parse images info
+    - name: validate inputs and parse images info
       id: parse-info
       shell: bash
       run: |
-        ADD_IMAGES="${{ inputs.add-images }}"
-        # 取第一个镜像（按 | 分隔）
+        # 1. 校验 oss-dir：只允许安全路径字符，禁止路径穿越
+        OSS_DIR="${{ inputs.oss-dir }}"
+        if [[ "${OSS_DIR}" =~ [^a-zA-Z0-9._/-] ]] || [[ "${OSS_DIR}" == /* ]] || [[ "${OSS_DIR}" == *..* ]]; then
+            echo "Error: invalid oss-dir: ${OSS_DIR}"
+            exit 1
+        fi
+
+        # 2. 校验 pkg-suffix：只允许安全字符
+        PKG_SUFFIX="${{ inputs.pkg-suffix }}"
+        if [[ "${PKG_SUFFIX}" =~ [^a-zA-Z0-9._-] ]]; then
+            echo "Error: invalid pkg-suffix: ${PKG_SUFFIX}"
+            exit 1
+        fi
+
+        # 3. 解析第一个镜像的 app-name / app-version
+        ADD_IMAGES="${{ inputs.extra-images }}"
         FIRST_IMAGE="${ADD_IMAGES%%|*}"
+
+        # 去掉首尾空白
+        FIRST_IMAGE="${FIRST_IMAGE#"${FIRST_IMAGE%%[![:space:]]*}"}"
+        FIRST_IMAGE="${FIRST_IMAGE%"${FIRST_IMAGE##*[![:space:]]}"}"
+
+        if [[ -z "${FIRST_IMAGE}" ]]; then
+            echo "Error: no image specified in ADD_IMAGES"
+            exit 1
+        fi
+        if [[ "${FIRST_IMAGE}" != *":"* ]]; then
+            echo "Error: first image has no tag: ${FIRST_IMAGE}"
+            exit 1
+        fi
+
+        # 校验镜像名字符集（OCI 规范子集）
+        if [[ "${FIRST_IMAGE}" =~ [^a-zA-Z0-9._:/@-] ]]; then
+            echo "Error: first image contains illegal characters: ${FIRST_IMAGE}"
+            exit 1
+        fi
+
         # 提取 tag（最后一个 : 之后的部分）
         APP_VERSION="${FIRST_IMAGE##*:}"
         # 去掉 tag 部分
         IMAGE_WITHOUT_TAG="${FIRST_IMAGE%:*}"
         # 提取镜像名（最后一个路径组件）
         APP_NAME="${IMAGE_WITHOUT_TAG##*/}"
+
+        # 校验 app-name 和 app-version 只包含安全字符
+        if [[ "${APP_NAME}" =~ [^a-zA-Z0-9._-] ]]; then
+            echo "Error: invalid app name: ${APP_NAME}"
+            exit 1
+        fi
+        if [[ "${APP_VERSION}" =~ [^a-zA-Z0-9._-] ]]; then
+            echo "Error: invalid app version: ${APP_VERSION}"
+            exit 1
+        fi
+
         # 镜像列表文件：extra 模式下使用临时文件，由 add_images 填充
         IMAGES_FILE="./extra-${APP_NAME}.txt"
         echo "app-name=${APP_NAME}" >> $GITHUB_OUTPUT
@@ -86,7 +131,7 @@ runs:
 
     - name: save images
       env:
-        add_images: ${{ inputs.add-images }}
+        add_images: ${{ inputs.extra-images }}
         app_name: ${{ steps.parse-info.outputs.app-name }}
         app_version: ${{ steps.parse-info.outputs.app-version }}
         images_file: ${{ steps.parse-info.outputs.images-file }}
