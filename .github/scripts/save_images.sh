@@ -39,6 +39,23 @@ add_images_list() {
 
 " >> $IMAGE_FILE_PATH
     for image in $(echo "$ADD_IMAGES_LIST" | sed 's/|/ /g'); do
+        # 归一化镜像地址
+        # 1. 没有 tag（不含 :）的跳过不处理
+        if [[ "${image}" != *":"* ]]; then
+            echo "skip image without tag: ${image}"
+            continue
+        fi
+        # 2. 统计 / 的数量，判断格式并补齐
+        slash_count=$(awk -F'/' '{print NF-1}' <<< "${image%:*}")
+        if [[ ${slash_count} -eq 0 ]]; then
+            # 只有镜像名，如 kubeblocks:0.8.1 → 补 docker.io/apecloud/
+            image="docker.io/apecloud/${image}"
+        elif [[ ${slash_count} -eq 1 ]]; then
+            #  namespace/name 格式，如 apecloud/kubeblocks:0.8.1 → 补 docker.io/
+            image="docker.io/${image}"
+        fi
+        # 3. 完整路径如 docker.io/apecloud/kubeblocks:0.8.1 直接使用
+
         image_name="${image%:*}"
         exists_images_list="$(cat $IMAGE_FILE_PATH | (grep "$image_name" || true))"
         if [[ -z "$exists_images_list" ]]; then
@@ -54,7 +71,7 @@ add_images_list() {
             e_image_name="${e_image%:*}"
             if [[ "$e_image_name" == "$image_name" ]]; then
                 e_image_tmp=$( echo ${e_image}| sed 's/\./\\./g;s/\//\\\//g' )
-                image_tmp=$( echo ${image}| sed 's/\./\\./g;s/\//\\\//g' )
+                image_tmp=$( echo ${image}| sed 's/\./\\./g;s/\//\\//g' )
                 if [[ "$UNAME" == "Darwin" ]]; then
                     sed -i '' "s/${e_image_tmp}/${image_tmp}/" $IMAGE_FILE_PATH
                 else
@@ -69,6 +86,7 @@ add_images_list() {
         fi
     done
 }
+
 
 save_images_package() {
     if [[ ! -f "$IMAGE_FILE_PATH" ]]; then
