@@ -1,13 +1,13 @@
-# kubeblocks-enterprise-patch v2.2.93
-# KubeBlocks-Cloud v2.2.93
-docker.io/apecloud/kubeblocks-console:v2.2.93
-docker.io/apecloud/kubeblocks-console:v2.2.93-rds
-docker.io/apecloud/apiserver:v2.2.93
-docker.io/apecloud/cr4w:v2.2.93
-docker.io/apecloud/kb-cloud-installer:v2.2.93
-docker.io/apecloud/kb-cloud-hook:v2.2.93
-docker.io/apecloud/kb-cloud-docs:v2.2.93
-docker.io/apecloud/kubeblocks-installer:v2.2.93-offline
+# kubeblocks-enterprise-patch v2.2.95
+# KubeBlocks-Cloud v2.2.95
+docker.io/apecloud/kubeblocks-console:v2.2.95
+docker.io/apecloud/kubeblocks-console:v2.2.95-rds
+docker.io/apecloud/apiserver:v2.2.95
+docker.io/apecloud/cr4w:v2.2.95
+docker.io/apecloud/kb-cloud-installer:v2.2.95
+docker.io/apecloud/kb-cloud-hook:v2.2.95
+docker.io/apecloud/kb-cloud-docs:v2.2.95
+docker.io/apecloud/kubeblocks-installer:v2.2.95-offline
 docker.io/apecloud/dms:0.0.3-beta.3
 # KubeBlocks v0.9.6-beta.10
 docker.io/apecloud/kubeblocks:0.9.6-beta.10
