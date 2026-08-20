@@ -28,6 +28,7 @@ jobs:
     outputs:
       image-pkg-name: ${{ steps.save.outputs.image-pkg-name }}
     steps:
+      - uses: actions/checkout@v4
       - id: save
         uses: ./.github/actions/save-extra-images
         with:
@@ -42,6 +43,7 @@ jobs:
     outputs:
       image-pkg-name: ${{ steps.save.outputs.image-pkg-name }}
     steps:
+      - uses: actions/checkout@v4
       - id: save
         uses: ./.github/actions/save-extra-images
         with:
@@ -61,12 +63,12 @@ jobs:
         id: build-message
         run: |
           OSS_BASE="http://kubeblocks-oss.${{ env.OSS_ENDPOINT }}"
-          
+
           AMD64_RESULT="${{ needs.save-app-images-amd64.result }}"
           ARM64_RESULT="${{ needs.save-app-images-arm64.result }}"
           AMD64_PKG="${{ needs.save-app-images-amd64.outputs.image-pkg-name }}"
           ARM64_PKG="${{ needs.save-app-images-arm64.outputs.image-pkg-name }}"
-          
+
           # 解析 app 名用于标题（amd64 一定存在，用它的）
           if [[ -n "${AMD64_PKG}" ]]; then
               APP_NAME="${AMD64_PKG%%-*}"
@@ -76,26 +78,23 @@ jobs:
           else
               TITLE="save images"
           fi
-          
-          CONTENT="${TITLE}"
-          
+
+          # 单行拼接，避免多行 content 破坏飞书 webhook 的 JSON/curl 命令
           if [[ "${AMD64_RESULT}" == "success" ]]; then
-              CONTENT="${CONTENT}"$'\n'"amd64: ${OSS_BASE}/images/${AMD64_PKG} success"
+              AMD64_MSG="amd64: ${OSS_BASE}/images/${AMD64_PKG} success"
           else
-              CONTENT="${CONTENT}"$'\n'"amd64: ${AMD64_RESULT}"
+              AMD64_MSG="amd64: ${AMD64_RESULT}"
           fi
-          
+
           if [[ "${ARM64_RESULT}" == "success" ]]; then
-              CONTENT="${CONTENT}"$'\n'"arm64: ${OSS_BASE}/images/arm64/${ARM64_PKG} success"
+              ARM64_MSG="arm64: ${OSS_BASE}/images/arm64/${ARM64_PKG} success"
           else
-              CONTENT="${CONTENT}"$'\n'"arm64: ${ARM64_RESULT}"
+              ARM64_MSG="arm64: ${ARM64_RESULT}"
           fi
-          
-          # 使用随机 delimiter 防止内容注入
-          DELIMITER="CONTENT_DELIM_$(openssl rand -hex 8)"
-          echo "content<<${DELIMITER}" >> $GITHUB_OUTPUT
-          echo "${CONTENT}" >> $GITHUB_OUTPUT
-          echo "${DELIMITER}" >> $GITHUB_OUTPUT
+
+          CONTENT="${TITLE} | ${AMD64_MSG} | ${ARM64_MSG}"
+
+          echo "content=${CONTENT}" >> $GITHUB_OUTPUT
 
   send-message:
     permissions:
