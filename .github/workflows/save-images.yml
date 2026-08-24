@@ -133,7 +133,7 @@ env:
   OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
-  OSS_DIR: "images/cloud2.2"
+  OSS_DIR: "images/cloud2.3"
   DOCKER_VERSION: "v28.0.4"
 
 jobs:
