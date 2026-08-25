@@ -25,6 +25,7 @@ on:
           - gaussdb
           - greatdb
           - hadoop
+          - he3sql
           - hive
           - influxdb
           - etcd
@@ -44,6 +45,7 @@ on:
           - postgresql
           - qdrant
           - redis
+          - rustfs
           - starrocks
           - ingress-nginx
           - ape-local-csi-driver
