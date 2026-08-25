@@ -28,6 +28,7 @@ on:
           - goldendb
           - greatdb
           - hadoop
+          - he3sql
           - hive
           - kafka
           - kata
@@ -55,6 +56,7 @@ on:
           - rabbitmq
           - rocketmq
           - redis
+          - rustfs
           - camellia-redis-proxy
           - starrocks
           - starrocks-3.2.2
