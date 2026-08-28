@@ -1,6 +1,8 @@
 # doris v1.0.3
 docker.io/apecloud/doris-be:2.1.6
 docker.io/apecloud/doris-fe:2.1.6
+docker.io/apecloud/doris-be:2.1.8.1
+docker.io/apecloud/doris-fe:2.1.8.1
 docker.io/apecloud/doris-fe:4.0.5
 docker.io/apecloud/doris-be:4.0.5
 docker.io/apecloud/doris-ms:4.0.5
