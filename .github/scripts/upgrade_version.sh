@@ -1369,6 +1369,10 @@ update_kubebench_images_from_manifest() {
 }
 
 generate_release_note() {
+    release_note_dir="./docs/release-notes"
+    if [[ ! -d "${release_note_dir}" ]]; then
+        mkdir -p ${release_note_dir}
+    fi
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
     cp -r "$kubeblocks_enterprise_txt" "$release_note_file"
