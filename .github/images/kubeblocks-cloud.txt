@@ -9,7 +9,7 @@ docker.io/apecloud/kb-cloud-docs:v2.2.93
 docker.io/apecloud/kubeblocks-installer:v2.2.93-offline
 docker.io/apecloud/kb-cloud-installer:v2.2.93
 docker.io/apecloud/dms:0.0.3-beta.3
-docker.io/apecloud/apecloud-mcp:2.1.0-alpha.4
+docker.io/apecloud/hermes-agent:0.0.1-alpha.4
 docker.io/apecloud/ob-grpc-server:0.1.6
 docker.io/apecloud/redisinsight:2.70.0
 docker.io/apecloud/zoonavigator:1.1.3
