@@ -38,6 +38,7 @@ on:
           - k3s
           - kubernetes
           - loki
+          - mariadb
           - milvus
           - minio
           - mongodb
