@@ -1,0 +1,6 @@
+# mariadb v1.0.2
+docker.io/apecloud/mariadb:10.6.15
+docker.io/apecloud/mariadb:11.4.10
+docker.io/apecloud/mariadb:11.8.4
+docker.io/apecloud/mysqld-exporter:v0.14.0
+docker.io/apecloud/syncer:0.7.9
