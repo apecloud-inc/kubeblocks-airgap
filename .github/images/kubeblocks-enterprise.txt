@@ -1,14 +1,14 @@
-# kubeblocks-enterprise v2.3.1
-# KubeBlocks-Cloud v2.3.1
+# kubeblocks-enterprise v2.3.2
+# KubeBlocks-Cloud v2.3.2
 docker.io/apecloud/nfs-proxy:0.1.0
-docker.io/apecloud/kubeblocks-console:v2.3.1
-docker.io/apecloud/kubeblocks-console:v2.3.1-rds
-docker.io/apecloud/apiserver:v2.3.1
-docker.io/apecloud/cr4w:v2.3.1
-docker.io/apecloud/kb-cloud-hook:v2.3.1
-docker.io/apecloud/kb-cloud-docs:v2.3.1
-docker.io/apecloud/kubeblocks-installer:v2.3.1-offline
-docker.io/apecloud/kb-cloud-installer:v2.3.1
+docker.io/apecloud/kubeblocks-console:v2.3.2
+docker.io/apecloud/kubeblocks-console:v2.3.2-rds
+docker.io/apecloud/apiserver:v2.3.2
+docker.io/apecloud/cr4w:v2.3.2
+docker.io/apecloud/kb-cloud-hook:v2.3.2
+docker.io/apecloud/kb-cloud-docs:v2.3.2
+docker.io/apecloud/kubeblocks-installer:v2.3.2-offline
+docker.io/apecloud/kb-cloud-installer:v2.3.2
 docker.io/apecloud/dms:0.0.4-alpha.38
 docker.io/apecloud/hermes-agent:0.0.1-alpha.4
 docker.io/apecloud/ob-grpc-server:0.1.6
@@ -138,7 +138,7 @@ docker.io/apecloud/ape-dts:2.0.26
 docker.io/apecloud/postgresql:14
 docker.io/apecloud/mysql:8.0.33
 docker.io/apecloud/mongo:6.0.6
-docker.io/apecloud/oteld:0.13.0
+docker.io/apecloud/oteld:0.13.1
 # Minio v1.0.3
 docker.io/apecloud/minio:RELEASE.2025-10-15T17-29-55Z
 # Loki v1.0.3

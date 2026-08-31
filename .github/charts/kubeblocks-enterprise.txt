@@ -1,7 +1,7 @@
 kubeblocks:0.9.6-beta.10
 kubeblocks:1.0.3-beta.10
-kubeblocks-cloud:v2.3.1
-kb-cloud-installer:2.3.1
+kubeblocks-cloud:v2.3.2
+kb-cloud-installer:2.3.2
 gemini:0.13.1
 gemini-monitor:0.13.1
 casdoor-helm-charts:v1.753.0
@@ -94,5 +94,5 @@ tdengine:0.9.1
 tdengine:1.0.3
 oracle:0.9.0
 oracle:1.0.7
-kubebench:0.0.18
+kubebench:0.0.19
 mariadb:1.0.2
