@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
       - name: auto release images
         run: |
-          for filePath in $( git diff --name-only HEAD HEAD^ ); do
+          for filePath in $( git diff --name-only HEAD HEAD~2 ); do
               if [[ "$filePath" == ".github/images/0.9/"*".txt" || "$filePath" == ".github/images/1.0/"*".txt" 
                   || "$filePath" == ".github/images/kubebench.txt" || "$filePath" == ".github/images/ape-local-csi-driver.txt"
                   || "$filePath" == ".github/images/cert-manager.txt" || "$filePath" == ".github/images/ingress-nginx.txt"
