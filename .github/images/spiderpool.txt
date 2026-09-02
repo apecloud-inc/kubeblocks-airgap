@@ -1,6 +1,5 @@
-# spiderpool v0.9.3
-docker.io/apecloud/spiderpool-agent:53a00dcca484c05ab380f126be77e660201f6f6c
-docker.io/apecloud/spiderpool-controller:v0.9.3
-docker.io/apecloud/spiderpool-controller:53a00dcca484c05ab380f126be77e660201f6f6c
-docker.io/apecloud/multus-cni:v3.9.3
-docker.io/apecloud/spiderpool-plugins:v0.9.2
+# spiderpool v1.2.0
+docker.io/apecloud/spiderpool-plugins:19f19457ae7cec86457b0411543a3cf21dd9f95a
+docker.io/apecloud/spiderpool-agent:v1.2.0
+docker.io/apecloud/spiderpool-controller:v1.2.0
+docker.io/apecloud/multus-cni:v4.1.4

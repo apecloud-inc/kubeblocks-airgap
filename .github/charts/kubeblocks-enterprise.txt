@@ -10,7 +10,7 @@ metallb:0.14.4
 ape-local-csi-driver:0.4.3
 servicemirror:0.4.3
 servicemirror:0.3.1
-spiderpool:0.9.3
+spiderpool:1.2.0
 camellia-redis-proxy:1.0.3
 cert-manager:v1.17.2
 metrics-server:3.12.0
