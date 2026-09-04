@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - hermes-agent
           - benchmarksql
           - tidb-ent
           - damengdb-20260202
