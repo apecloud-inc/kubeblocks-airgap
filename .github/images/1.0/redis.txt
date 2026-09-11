@@ -13,4 +13,5 @@ docker.io/apecloud/redis:8.2.9
 docker.io/apecloud/redis:8.4.6
 docker.io/apecloud/redis:8.6.6
 docker.io/apecloud/redis:8.10.1
+docker.io/apecloud/redis:6.0.20
 docker.io/apecloud/syncer:0.7.4
