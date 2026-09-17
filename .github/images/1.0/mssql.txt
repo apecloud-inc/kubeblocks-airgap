@@ -3,3 +3,4 @@ docker.io/apecloud/mssql:2022-CU19
 docker.io/apecloud/mssql:2019-CU30
 docker.io/apecloud/prometheus-mssql-exporter:1.3.2
 docker.io/apecloud/syncer:0.7.7
+docker.io/apecloud/mssql-pitr:1.0.0-beta.0
