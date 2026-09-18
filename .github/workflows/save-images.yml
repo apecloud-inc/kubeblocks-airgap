@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - pulsar-4.0.12
           - hermes-agent
           - benchmarksql
           - tidb-ent
