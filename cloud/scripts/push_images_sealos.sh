@@ -74,4 +74,20 @@ while IFS= read -r image; do
 
 done < "$IMAGES_LIST_FILE"
 
+# 本地已有的 k8s 集群镜像一并推送，没有则跳过
+while IFS= read -r image; do
+    [[ -z "$image" || "$image" == *":<none>" ]] && continue
+    image_name=$(echo "$image" | cut -d":" -f1)
+    image_tag=$(echo "$image" | cut -d":" -f2)
+    name_prefix="${image_name%%/*}"
+    if [[ "$name_prefix" != "$image_name" ]]; then
+        new_image_name="${image_name/$name_prefix/$REGISTRY}"
+    else
+        new_image_name="${REGISTRY}/${image_name}"
+    fi
+    new_image="${new_image_name}:${image_tag}"
+    sealos tag "$image" "$new_image"
+    sealos push "$new_image"
+    echo "✅ $(tput -T xterm setaf 2) $new_image pushed successfully $(tput -T xterm sgr0)"
+done < <(sealos images | awk 'NR>1 {print $1":"$2}' | grep -E 'apecloud/kubernetes-airgap:|apecloud/calico-airgap:|labring/helm:|labring/metrics-server:|labring/openebs:|labring/coredns:' || true)
 echo "$(tput -T xterm setaf 2) All images pushed successfully $(tput -T xterm sgr0)"
