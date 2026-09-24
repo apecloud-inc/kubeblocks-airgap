@@ -52,6 +52,8 @@ on:
           - ape-local-csi-driver
           - spiderpool
           - selectdb
+          - valkey
+          - seaweedfs
           - metrics-server
           - kubechat
           - postgres-operator
