@@ -67,6 +67,8 @@ on:
           - starrocks-3.4.1
           - spiderpool
           - selectdb
+          - seaweedfs
+          - valkey
           - victoria-metrics
           - zookeeper
           - ingress-nginx
