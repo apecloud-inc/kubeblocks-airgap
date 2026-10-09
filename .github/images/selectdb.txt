@@ -1,0 +1,4 @@
+# selectdb v4.1.4
+docker.io/apecloud/selectdb-fe:4.1.4
+docker.io/apecloud/selectdb-be:4.1.4
+docker.io/apecloud/selectdb-ms:4.1.4
