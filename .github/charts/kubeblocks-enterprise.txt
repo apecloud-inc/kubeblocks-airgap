@@ -1,9 +1,9 @@
 kubeblocks:0.9.6-beta.10
-kubeblocks:1.0.3-beta.15
-kubeblocks-cloud:v2.3.32
-kb-cloud-installer:2.3.32
-gemini:0.13.5
-gemini-monitor:0.13.5
+kubeblocks:1.0.3-beta.16
+kubeblocks-cloud:v2.3.36
+kb-cloud-installer:2.3.36
+gemini:0.13.6
+gemini-monitor:0.13.6
 casdoor-helm-charts:v1.753.0
 ingress-nginx:4.12.1
 metallb:0.14.4
@@ -25,7 +25,7 @@ damengdb:0.9.3
 damengdb:1.0.4
 doris:1.0.3
 elasticsearch:0.9.1
-elasticsearch:1.0.7
+elasticsearch:1.0.8
 gaussdb:0.9.2
 gaussdb:1.0.3
 greatdb:0.9.1
@@ -36,7 +36,7 @@ hive:1.0.2
 kafka:0.9.2
 kafka:1.0.3
 kingbase:0.9.1
-kingbase:1.0.7
+kingbase:1.0.8
 loki:0.9.2
 loki:1.0.3
 minio:0.9.1
