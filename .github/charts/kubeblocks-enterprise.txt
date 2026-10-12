@@ -1,7 +1,7 @@
 kubeblocks:0.9.6-beta.10
 kubeblocks:1.0.3-beta.10
-kubeblocks-cloud:v2.2.131
-kb-cloud-installer:2.2.131
+kubeblocks-cloud:v2.2.132
+kb-cloud-installer:2.2.132
 gemini:0.12.8
 gemini-monitor:0.12.8
 casdoor-helm-charts:v1.753.0
@@ -23,7 +23,7 @@ clickhouse:0.9.4
 clickhouse:1.0.4
 damengdb:0.9.3
 damengdb:1.0.4
-doris:1.0.3
+doris:1.0.4
 elasticsearch:0.9.1
 elasticsearch:1.0.7
 gaussdb:0.9.2
@@ -65,7 +65,7 @@ rocketmq:0.9.2
 rocketmq:1.0.3
 starrocks:0.9.1
 starrocks:1.0.3
-selectdb:1.0.2
+selectdb:1.0.3
 foundationdb:1.0.3
 tidb:0.9.0
 tidb:1.0.3
