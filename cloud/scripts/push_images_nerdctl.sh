@@ -76,9 +76,9 @@ done < "$IMAGES_LIST_FILE"
 
 # 本地已有的 k8s 集群镜像一并推送，没有则跳过
 while IFS= read -r image; do
-    [[ -z "$image" || "$image" == *":<none>" ]] && continue
-    image_name=$(echo "$image" | cut -d":" -f1)
-    image_tag=$(echo "$image" | cut -d":" -f2)
+    [[ -z "$image" || "$image" == *":<none>" || "$image" == "$REGISTRY/"* ]] && continue
+    image_name="${image%:*}"
+    image_tag="${image##*:}"
     name_prefix="${image_name%%/*}"
     if [[ "$name_prefix" != "$image_name" ]]; then
         new_image_name="${image_name/$name_prefix/$REGISTRY}"
