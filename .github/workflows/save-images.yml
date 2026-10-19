@@ -114,34 +114,31 @@ jobs:
     name: save app images
     runs-on: ubuntu-22.04
     steps:
-      - name: Free disk space
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        continue-on-error: true
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: true
+
+      - name: chown Runner
         run: |
-          if [[ "${{ inputs.APP_NAME }}" == "mysql" || "${{ inputs.APP_NAME }}" == "starrocks" || "${{ inputs.APP_NAME }}" == "goldendb" || "${{ inputs.APP_NAME }}" == "dbdrag" || "${{ inputs.APP_NAME }}" == "elasticsearch" || "${{ inputs.APP_NAME }}" == "xinference-gpu" ]]; then
-              sudo apt-get autoremove -y >/dev/null 2>&1
-              sudo apt-get autoclean -y >/dev/null 2>&1
-              sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
-              docker rmi $(docker image ls -aq) >/dev/null 2>&1
-              sudo swapoff -a
-              sudo rm -f /swapfile
-              df -h
-          
-              sudo mkdir -p /mnt/new-storage
-              sudo touch /etc/docker/daemon.json
-              sudo tee /etc/docker/daemon.json <<EOF
-          {
-            "data-root": "/mnt/new-storage"
-          }
-          EOF
-              sudo systemctl restart docker
-          elif [[ "${{ inputs.APP_NAME }}" == "kubeblocks-enterprise" || "${{ inputs.APP_NAME }}" == "starrocks"* || "${{ inputs.APP_NAME }}" == "mongodb" ]]; then
-              sudo apt-get autoremove -y >/dev/null 2>&1
-              sudo apt-get autoclean -y >/dev/null 2>&1
-              sudo rm -rf /usr/local/lib/android >/dev/null 2>&1
-              docker rmi $(docker image ls -aq) >/dev/null 2>&1
-              sudo swapoff -a
-              sudo rm -f /swapfile
-              df -h
-          fi
+          df -h
+          echo "sudo mkdir -p /mnt/setup-docker-action"
+          sudo mkdir -p /mnt/setup-docker-action
+          echo "sudo chown -R $USER:$USER /mnt/setup-docker-action"
+          sudo chown -R $USER:$USER /mnt/setup-docker-action
+
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          runtime-basedir: /mnt/setup-docker-action
+          version: ${{ env.DOCKER_VERSION }}
 
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3
