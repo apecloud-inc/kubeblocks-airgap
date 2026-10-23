@@ -9,6 +9,7 @@ on:
         default: 'kubeblocks-enterprise'
         type: choice
         options:
+          - bash-busybox
           - selectdb
           - pulsar-4.0.12
           - hermes-agent
