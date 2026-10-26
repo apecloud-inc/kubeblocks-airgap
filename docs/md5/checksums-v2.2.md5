@@ -73,6 +73,8 @@ b30fb61ac2e37c399eb6441851ba1fff  zookeeper-v0.9.1-arm64.tar.gz
 70eed0a4e6a7a5236213458e583be063  clickhouse-v1.0.4-arm64.tar.gz
 941110e12d8c267821af244436bcb06f  damengdb-v1.0.4.tar.gz
 7a57f859ec760deb0cf494dda3114618  damengdb-arm-v1.0.4-arm64.tar.gz
+0f7559304a34f5559808cc79dd91fe19  doris-v1.0.4.tar.gz
+327a493e176d9d770aa90e9320ba14d1  doris-v1.0.4-arm64.tar.gz
 fb0025420853c8cc5396a537cbd41cce  elasticsearch-v1.0.7.tar.gz
 1c97f3902618f95abb1e93c9a5ebcab6  elasticsearch-arm-v1.0.7-arm64.tar.gz
 234b9601dcb200a1a9e732aeb432b857  etcd-v1.0.3.tar.gz
@@ -92,8 +94,8 @@ c6c308363f40459c1abe466e54adf116  influxdb-v1.0.4.tar.gz
 df5d0ccdf6f96039c9b7d40e90a3c312  influxdb-v1.0.4-arm64.tar.gz
 8295d3284958f2775b82f198f70a95d0  kafka-v1.0.3.tar.gz
 5c0352c8a7c1b89f2a6bb121f2eb4430  kafka-v1.0.3-arm64.tar.gz
-359601e77cace1d6e3c9ea70cbca6b6d  kingbase-v1.0.8.tar.gz
-3dfaf0db7d9c0877ccaf741990993c50  kingbase-v1.0.8-arm64.tar.gz
+bfff7bbe8e2f940c00ee76f447297d06  kingbase-v1.0.8.tar.gz
+66e05761e88ba859a993ffc39896fc1e  kingbase-v1.0.8-arm64.tar.gz
 936f458d7cef97233a5039da6fe168dc  loki-v1.0.3.tar.gz
 226bdc7eab05ca6b886a2f097bf7d88f  loki-v1.0.3-arm64.tar.gz
 d5daee51c7d414a46c25ddf7d7c9e8de  milvus-v1.0.3.tar.gz
@@ -125,6 +127,8 @@ d0233416fce7fa7a48d5323334dd637e  redis-v1.0.4.tar.gz
 f63b74cf47521f9ac6db18b77336c17d  redis-v1.0.4-arm64.tar.gz
 44790efa3475977c95108871e2ca7a86  rocketmq-v1.0.3.tar.gz
 6dcbfdb1cb88c3419cb7aa87235636a9  rocketmq-v1.0.3-arm64.tar.gz
+19b4035b851919174dba9f5f53f2fdf0  selectdb-v1.0.3.tar.gz
+29011fab9d442eec66c85cdcd0ec1c78  selectdb-v1.0.3-arm64.tar.gz
 7ac0955ec9b82685d62fc138273d673d  starrocks-v1.0.3.tar.gz
 a5b44f36cc793c9fc017eb6b19cc87e0  starrocks-v1.0.3-arm64.tar.gz
 a2caf1fb141ba36e2a779a0333db1f80  tdengine-v1.0.3.tar.gz
@@ -151,10 +155,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 fedef14f6b76f8b4f2990ead19124cb5  kubebench-v0.0.19.tar.gz
 cfd139d9912f933232065796189d77cd  kubebench-v0.0.19-arm64.tar.gz
-b00b0ae71edfa02adcf73dde9c836537  kubeblocks-enterprise-v2.2.132.tar.gz
-8a287bb7efe79cc780145128f6daac41  kubeblocks-enterprise-v2.2.132-arm64.tar.gz
-2bf388121dd24a9ae83431b6171facce  kubeblocks-enterprise-patch-v2.2.132.tar.gz
-c60847058e73d665112698f1becbfa20  kubeblocks-enterprise-patch-v2.2.132-arm64.tar.gz
+b6e41ebfbc9431a1e893cc2ca0a341b3  kubeblocks-enterprise-v2.2.137.tar.gz
+7e9219a00442db4661e15884f2315e0a  kubeblocks-enterprise-v2.2.137-arm64.tar.gz
+9f2168df8d059f9b091f275f43554c7c  kubeblocks-enterprise-patch-v2.2.137.tar.gz
+10b7aba0c25c2872345089971a61872e  kubeblocks-enterprise-patch-v2.2.137-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz
