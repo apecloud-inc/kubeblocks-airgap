@@ -514,7 +514,8 @@ check_manifests_version() {
         OFFLINE_INSTALLER_VERSION="${OFFLINE_INSTALLER_IMAGE#*:}"
     fi
 
-    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep -m 1 "apecloud/dms:" || true))
+    DMS_IMAGE=$(yq e ".kubeblocks-cloud[0].images[]"  ${MANIFESTS_FILE} | (grep "apecloud/dms:" || true))
+    DMS_IMAGE="${DMS_IMAGE%%$'\n'*}"
     if [[ -n "$DMS_IMAGE" ]]; then
         DMS_VERSION="${DMS_IMAGE#*:}"
     fi
