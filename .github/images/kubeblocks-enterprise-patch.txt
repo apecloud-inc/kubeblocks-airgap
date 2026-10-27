@@ -1,14 +1,14 @@
-# kubeblocks-enterprise-patch v2.3.47
-# KubeBlocks-Cloud v2.3.47
-docker.io/apecloud/kubeblocks-console:v2.3.47
-docker.io/apecloud/kubeblocks-console:v2.3.47-rds
-docker.io/apecloud/apiserver:v2.3.47
-docker.io/apecloud/cr4w:v2.3.47
-docker.io/apecloud/kb-cloud-installer:v2.3.47
-docker.io/apecloud/kb-cloud-hook:v2.3.47
-docker.io/apecloud/kb-cloud-docs:v2.3.47
-docker.io/apecloud/kubeblocks-installer:v2.3.47-offline
-docker.io/apecloud/dms:0.0.4-alpha.43
+# kubeblocks-enterprise-patch v2.3.57
+# KubeBlocks-Cloud v2.3.57
+docker.io/apecloud/kubeblocks-console:v2.3.57
+docker.io/apecloud/kubeblocks-console:v2.3.57-rds
+docker.io/apecloud/apiserver:v2.3.57
+docker.io/apecloud/cr4w:v2.3.57
+docker.io/apecloud/kb-cloud-installer:v2.3.57
+docker.io/apecloud/kb-cloud-hook:v2.3.57
+docker.io/apecloud/kb-cloud-docs:v2.3.57
+docker.io/apecloud/kubeblocks-installer:v2.3.57-offline
+docker.io/apecloud/dms:0.0.4-alpha.45
 # KubeBlocks v0.9.6-beta.10
 docker.io/apecloud/kubeblocks:0.9.6-beta.10
 docker.io/apecloud/kubeblocks-dataprotection:0.9.6-beta.10
@@ -20,9 +20,9 @@ docker.io/apecloud/kubeblocks:1.0.3-beta.17
 docker.io/apecloud/kubeblocks-dataprotection:1.0.3-beta.17
 docker.io/apecloud/kubeblocks-tools:1.0.3-beta.17
 docker.io/apecloud/kubeblocks-charts:1.0.3-beta.17
-# Gemini v0.13.8
-docker.io/apecloud/gemini:0.13.8
-docker.io/apecloud/gemini-tools:0.13.8
-docker.io/apecloud/easymetrics:0.13.8
-docker.io/apecloud/sla:0.13.8
-docker.io/apecloud/oteld:0.13.5
+# Gemini v0.13.9
+docker.io/apecloud/gemini:0.13.9
+docker.io/apecloud/gemini-tools:0.13.9
+docker.io/apecloud/easymetrics:0.13.9
+docker.io/apecloud/sla:0.13.9
+docker.io/apecloud/oteld:0.13.7

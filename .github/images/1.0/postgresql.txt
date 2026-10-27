@@ -1,13 +1,14 @@
-# postgresql v1.0.5
+# postgresql v1.0.7
 docker.io/apecloud/dbctl:0.2.0
 docker.io/apecloud/wal-g-pg:3.0.0
 docker.io/apecloud/pgbouncer:1.19.0
+docker.io/apecloud/pgbouncer:1.25.2
 docker.io/apecloud/postgres-exporter:v0.15.0
 docker.io/apecloud/spilo-init:0.2
 docker.io/apecloud/spilo:12.22
 docker.io/apecloud/spilo:13.23
-docker.io/apecloud/spilo:14.23
-docker.io/apecloud/spilo:15.18
-docker.io/apecloud/spilo:16.14
-docker.io/apecloud/spilo:17.10
-docker.io/apecloud/spilo:18.4
+docker.io/apecloud/spilo:14.24
+docker.io/apecloud/spilo:15.19
+docker.io/apecloud/spilo:16.15
+docker.io/apecloud/spilo:17.11
+docker.io/apecloud/spilo:18.6

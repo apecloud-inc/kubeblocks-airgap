@@ -1,3 +1,5 @@
-# vastbase v1.0.2
+# vastbase v1.0.3
 docker.io/apecloud/vastbase:0.0.20
 docker.io/apecloud/opengauss-prometheus-exporter:1.1.2
+docker.io/apecloud/vastbase:v3.0.9.2-ape1
+docker.io/apecloud/vbagent:0.1.0
