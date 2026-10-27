@@ -98,4 +98,5 @@ oracle:1.0.7
 kubebench:0.0.19
 mariadb:1.0.2
 valkey:1.0.3
+polardb-pg:1.0.1
 
