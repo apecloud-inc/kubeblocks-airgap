@@ -20,6 +20,7 @@ on:
           - elasticsearch-custom-plugins
           - xtrabackup-minimal
           - oceanbase-ent
+          - oceanbase-pingan
           - syncer
           - dbctl
           - apecloud-addon-charts

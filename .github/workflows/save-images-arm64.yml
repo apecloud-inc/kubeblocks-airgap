@@ -51,6 +51,7 @@ on:
           - nebula
           - oceanbase
           - oceanbase-arm
+          - oceanbase-pingan
           - postgresql
           - qdrant
           - redis
