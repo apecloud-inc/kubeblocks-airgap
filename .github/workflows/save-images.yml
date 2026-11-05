@@ -16,6 +16,7 @@ on:
           - benchmarksql
           - tidb-ent
           - damengdb-20260202
+          - damengdb-8.1.5
           - elasticsearch-7.7.1
           - elasticsearch-custom-plugins
           - xtrabackup-minimal
