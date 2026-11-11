@@ -1,4 +1,4 @@
-# selectdb v1.0.3
+# selectdb v1.0.4
 docker.io/apecloud/selectdb-be:3.0.10-rc01
 docker.io/apecloud/selectdb-fe:3.0.10-rc01
 docker.io/apecloud/selectdb-ms:3.0.10-rc01
