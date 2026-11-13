@@ -1,4 +1,4 @@
-# clickhouse v1.0.3
+# clickhouse v1.0.4
 docker.io/apecloud/bash-busybox:1.37.0-musl-curl
 docker.io/apecloud/clickhouse-backup-full:2.7.0
 docker.io/apecloud/clickhouse-backup-full:2.7.4
@@ -7,3 +7,4 @@ docker.io/apecloud/clickhouse:24.7.2.13
 docker.io/apecloud/clickhouse:24.8.3-debian-12-r1
 docker.io/apecloud/clickhouse:24.12.2.29
 docker.io/apecloud/clickhouse:25.9.7
+docker.io/apecloud/clickhouse:26.3.33
