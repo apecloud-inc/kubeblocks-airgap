@@ -1,0 +1,6 @@
+# valkey v1.0.3
+docker.io/apecloud/valkey:8.1.8
+docker.io/apecloud/valkey:8.0.9
+docker.io/apecloud/valkey:9.0.4
+docker.io/apecloud/valkey:9.1.0
+docker.io/apecloud/redis_exporter:v1.80.1

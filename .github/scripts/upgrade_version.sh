@@ -569,7 +569,9 @@ update_addon_images_from_manifest() {
                     # damengdb-arm: exclude known amd64-only images
                     if [[ "$addon_name" == "damengdb" ]]; then
                         if [[ "$img" == *"dm:8.1.4-20260202"* ]] || \
-                           [[ "$img" == *"dmdb-tool:8.1.4-x86"* ]]; then
+                           [[ "$img" == *"dm:8.1.5.60"* ]] || \
+                           [[ "$img" == *"dmdb-tool:8.1.4-x86"* ]] || \
+                           [[ "$img" == *"dmdb-tool:8.1.5-x86"* ]]; then
                             should_include=0
                         fi
                     fi
@@ -1369,6 +1371,10 @@ update_kubebench_images_from_manifest() {
 }
 
 generate_release_note() {
+    release_note_dir="./docs/release-notes"
+    if [[ ! -d "${release_note_dir}" ]]; then
+        mkdir -p ${release_note_dir}
+    fi
     release_note_file="./docs/release-notes/${CLOUD_VERSION}.md"
     kubeblocks_enterprise_txt="./.github/images/kubeblocks-enterprise.txt"
     cp -r "$kubeblocks_enterprise_txt" "$release_note_file"

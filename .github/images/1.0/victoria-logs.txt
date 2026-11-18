@@ -1,2 +1,3 @@
-# victoria-logs v1.0.1
-docker.io/apecloud/victoria-logs:v1.43.1
+# victoria-logs v1.0.5
+docker.io/apecloud/victoria-logs:v1.50.0
+docker.io/apecloud/vlogscli:v1.50.0

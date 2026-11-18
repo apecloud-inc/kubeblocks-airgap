@@ -28,6 +28,7 @@ on:
           - goldendb
           - greatdb
           - hadoop
+          - he3sql
           - hive
           - kafka
           - kata
@@ -37,6 +38,7 @@ on:
           - k3s
           - kubernetes
           - loki
+          - mariadb
           - milvus
           - minio
           - mongodb
@@ -55,6 +57,7 @@ on:
           - rabbitmq
           - rocketmq
           - redis
+          - rustfs
           - camellia-redis-proxy
           - starrocks
           - starrocks-3.2.2
@@ -64,6 +67,8 @@ on:
           - starrocks-3.4.1
           - spiderpool
           - selectdb
+          - seaweedfs
+          - valkey
           - victoria-metrics
           - zookeeper
           - ingress-nginx
@@ -79,6 +84,7 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
+          - polardb-pg
       APP_DIR:
         description: 'select addon dir'
         required: false
@@ -133,7 +139,7 @@ env:
   OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
-  OSS_DIR: "images/cloud2.2"
+  OSS_DIR: "images/cloud2.3"
   DOCKER_VERSION: "v28.0.4"
 
 jobs:

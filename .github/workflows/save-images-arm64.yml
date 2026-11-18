@@ -25,6 +25,7 @@ on:
           - gaussdb
           - greatdb
           - hadoop
+          - he3sql
           - hive
           - influxdb
           - etcd
@@ -33,6 +34,7 @@ on:
           - kata
           - kubebench
           - loki
+          - mariadb
           - milvus
           - minio
           - metallb
@@ -44,11 +46,14 @@ on:
           - postgresql
           - qdrant
           - redis
+          - rustfs
           - starrocks
           - ingress-nginx
           - ape-local-csi-driver
           - spiderpool
           - selectdb
+          - valkey
+          - seaweedfs
           - metrics-server
           - kubechat
           - postgres-operator
@@ -68,6 +73,7 @@ on:
           - csi-driver-nfs
           - dbdrag
           - pv-migrate
+          - polardb-pg
       APP_DIR:
         description: 'select addon dir'
         required: false
@@ -121,7 +127,7 @@ env:
   OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
   OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
   OSS_BUCKET: "kubeblocks-oss"
-  OSS_DIR: "images/cloud2.2/arm64"
+  OSS_DIR: "images/cloud2.3/arm64"
   DOCKER_VERSION: "v28.0.4"
 
 jobs:
