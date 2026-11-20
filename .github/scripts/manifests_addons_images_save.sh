@@ -10,6 +10,13 @@ pull_chart_images() {
     image_name_tmp=${2:-""}
 
     for image in $(echo "$chart_images_tmp"); do
+        # Per airgap scheme: skip apecloud-addon-charts* for addon image packages
+        # (centralized in kubeblocks-enterprise package/txt; manifest now lists per-addon with cloud suffix)
+        if [[ "$image" == *"apecloud-addon-charts"* ]]; then
+            echo "    [AIRGAP-SCHEME] Skipping chart image $image for addon ${image_name_tmp} (centralized in enterprise)"
+            continue
+        fi
+
         if [[ "${ARM64_IMAGE}" == "true" && "$image_name_tmp" == "mysql" ]]; then
             if [[ "${image}" == "apecloud/mysql:5.7.44" || "${image}" == "apecloud/mysql_audit_log:5.7.44" || "${image}" == "apecloud/percona-xtrabackup:2.4" || "${image}" == "apecloud/xtrabackup:2.4" ]]; then
                 continue
