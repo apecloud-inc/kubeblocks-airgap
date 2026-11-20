@@ -889,6 +889,17 @@ update_addon_image_chart_versions_from_manifest() {
                 continue
             fi
             
+            # Determine Cloud suffix for new manifest structure (e.g. -v2.3.73)
+            # This fixes the bug where chart images in kubeblocks-enterprise.txt were not getting the Cloud suffix
+            # New manifest puts full suffixed tag in per-addon images[]; we append here for enterprise.txt
+            # Old manifests (no suffix) remain unchanged for compatibility
+            local cloud_suffix=""
+            if [[ -n "${CLOUD_VERSION:-}" ]]; then
+                local cv="${CLOUD_VERSION#v}"
+                cloud_suffix="-v${cv}"
+                echo "    [CLOUD-SUFFIX] Using cloud suffix '${cloud_suffix}' for ${addon_name} chart images"
+            fi
+            
             # Check if this addon exists in charts file
             if [[ -f "$charts_file" ]]; then
                 local charts_lines=$(grep "^${addon_name}:" "$charts_file" || true)
@@ -954,16 +965,17 @@ update_addon_image_chart_versions_from_manifest() {
                 local existing_ver="${existing_line#*${addon_name}-}"
                 existing_ver="${existing_ver%% *}"  # Extract version
                 
+                local new_tag="${addon_name}-${manifest_ver}${cloud_suffix}"
                 if [[ "$manifest_ver" != "$existing_ver" ]]; then
-                    echo "    Updating ${existing_line} -> docker.io/apecloud/apecloud-addon-charts:${addon_name}-${manifest_ver}"
+                    echo "    Updating ${existing_line} -> docker.io/apecloud/apecloud-addon-charts:${new_tag}"
                     # Use fixed string replacement instead of regex to avoid escaping issues
                     if [[ "$UNAME" == "Darwin" ]]; then
                         local tmp_images=$(mktemp)
-                        awk -v old="$existing_line" -v new="docker.io/apecloud/apecloud-addon-charts:${addon_name}-${manifest_ver}" '{if ($0 == old) print new; else print}' "$images_file" > "$tmp_images"
+                        awk -v old="$existing_line" -v new="docker.io/apecloud/apecloud-addon-charts:${new_tag}" '{if ($0 == old) print new; else print}' "$images_file" > "$tmp_images"
                         mv "$tmp_images" "$images_file"
                     else
                         local tmp_images=$(mktemp)
-                        awk -v old="$existing_line" -v new="docker.io/apecloud/apecloud-addon-charts:${addon_name}-${manifest_ver}" '{if ($0 == old) print new; else print}' "$images_file" > "$tmp_images"
+                        awk -v old="$existing_line" -v new="docker.io/apecloud/apecloud-addon-charts:${new_tag}" '{if ($0 == old) print new; else print}' "$images_file" > "$tmp_images"
                         mv "$tmp_images" "$images_file"
                     fi
                 fi
@@ -972,7 +984,8 @@ update_addon_image_chart_versions_from_manifest() {
             # Add new image chart versions (only if manifest has more versions than existing)
             if [[ $manifest_count -gt $existing_count ]]; then
                 for ver in "${versions_to_add[@]}"; do
-                    echo "    Adding docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}"
+                    local new_tag="${addon_name}-${ver}${cloud_suffix}"
+                    echo "    Adding docker.io/apecloud/apecloud-addon-charts:${new_tag}"
                     
                     # Find the insertion point: before the first comment line that's not a version comment at the beginning
                     # We want to insert before lines like "# casdoor", "# KubeBlocks", etc.
@@ -991,12 +1004,12 @@ update_addon_image_chart_versions_from_manifest() {
                     
                     if [[ -z "$insert_line" ]]; then
                         # If no suitable comment found, append to end
-                        echo "docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}" >> "$images_file"
+                        echo "docker.io/apecloud/apecloud-addon-charts:${new_tag}" >> "$images_file"
                     else
                         # Insert before the comment line
                         local tmp_images=$(mktemp)
                         head -n "$insert_line" "$images_file" > "$tmp_images"
-                        echo "docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}" >> "$tmp_images"
+                        echo "docker.io/apecloud/apecloud-addon-charts:${new_tag}" >> "$tmp_images"
                         tail -n +$((insert_line + 1)) "$images_file" >> "$tmp_images"
                         mv "$tmp_images" "$images_file"
                     fi
@@ -1006,7 +1019,8 @@ update_addon_image_chart_versions_from_manifest() {
             # Remove obsolete image chart versions (only if existing has more versions than manifest)
             if [[ $existing_count -gt $manifest_count ]]; then
                 for ver in "${versions_to_remove[@]}"; do
-                    echo "    Removing docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}"
+                    echo "    Removing docker.io/apecloud/apecloud-addon-charts:${addon_name}-${ver}*"
+                    # Broader pattern to match both old (no suffix) and new (with Cloud suffix) lines
                     if [[ "$UNAME" == "Darwin" ]]; then
                         sed -i '' "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-${ver}/d" "$images_file"
                     else
