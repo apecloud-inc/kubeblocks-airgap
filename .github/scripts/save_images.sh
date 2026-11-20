@@ -897,8 +897,10 @@ update_addon_image_chart_versions_from_manifest() {
             for line in "${existing_lines[@]}"; do
                 if [[ -n "$line" ]]; then
                     # Extract version from line like docker.io/apecloud/apecloud-addon-charts:addon_name-version
+                    # Strip Cloud suffix for comparison (so old no-suffix lines get updated to new suffixed version)
                     local ver="${line#*${addon_name}-}"
                     ver="${ver%% *}"  # Remove any trailing spaces
+                    ver="${ver%%-v*}"  # NEW: normalize suffix for base version comparison
                     existing_versions+=("$ver")
                 fi
             done
@@ -945,7 +947,7 @@ update_addon_image_chart_versions_from_manifest() {
                 existing_ver="${existing_ver%% *}"  # Extract version
                 
                 local new_tag="${addon_name}-${manifest_ver}${cloud_suffix}"
-                if [[ "$manifest_ver" != "$existing_ver" ]]; then
+                if [[ "$manifest_ver" != "$existing_ver" ]] || [[ -n "$cloud_suffix" && "$existing_line" != *"${cloud_suffix}"* ]]; then
                     echo "    Updating ${existing_line} -> docker.io/apecloud/apecloud-addon-charts:${new_tag}"
                     # Use fixed string replacement instead of regex to avoid escaping issues
                     if [[ "$UNAME" == "Darwin" ]]; then
