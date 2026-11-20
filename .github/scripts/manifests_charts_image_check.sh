@@ -223,7 +223,13 @@ check_addon_charts_images() {
             echo "check image: $repository"
             check_flag=0
             for chart_image in $( echo "$chart_images_tmp" ); do
-                if [[ "$chart_image" == "$repository" ]]; then
+                local normalized_chart_image="$chart_image"
+                # Adapt for new airgap scheme (CLOUD_SUFFIX): manifest uses cloud-suffixed 
+                # chart images e.g. xxx-1.0.4-v2.3.73 while list uses base; normalize suffix
+                if [[ "$normalized_chart_image" == *"apecloud-addon-charts:"* ]]; then
+                    normalized_chart_image=$(echo "$normalized_chart_image" | sed 's/\(-v[0-9][^ ]*\)$//')
+                fi
+                if [[ "$normalized_chart_image" == "$repository" ]] || [[ "$chart_image" == "$repository" ]]; then
                     check_flag=1
                     break
                 fi

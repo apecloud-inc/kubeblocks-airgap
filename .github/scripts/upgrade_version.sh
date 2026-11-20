@@ -535,10 +535,22 @@ update_addon_images_from_manifest() {
                 continue
             fi
             
-            # Apply special filtering rules for ARM-specific files
+            # Apply special filtering rules for ARM-specific files + airgap chart image scheme
+            # Per updated scheme: manifest disperses apecloud-addon-charts (with Cloud suffix)
+            # under each isAddon:true && type:engine entry; but airgap txts for addons (0.9/1.0)
+            # MUST NOT include chart images. All apecloud-addon-charts* are centrally maintained
+            # in kubeblocks-enterprise.txt ONLY. upgrade_version.sh, build scripts, consistency
+            # checks (airgap_charts_image_check.sh) use enterprise.txt as authoritative source.
+            # resolve-addon-chart-images.sh only appends Cloud suffix to normal tags.
             local filtered_images=()
             for img in "${manifest_images[@]}"; do
                 local should_include=1
+                
+                # Filter for new airgap scheme: skip chart images from addon txt files
+                if [[ "$img" == *"apecloud-addon-charts"* ]]; then
+                    should_include=0
+                    echo "    [AIRGAP-SCHEME] Skipping chart image from ${addon_name} txt: $img (centralized in kubeblocks-enterprise.txt)"
+                fi
                 
                 # Check if this is an ARM-specific file
                 if [[ "$txt_file" == *"-arm.txt" ]]; then
