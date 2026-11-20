@@ -52,6 +52,12 @@ check_service_version_images() {
                 continue
             fi
 
+            # Per airgap scheme: chart images (apecloud-addon-charts) are not in addon txt files;
+            # they are authoritative in kubeblocks-enterprise.txt. Skip check here.
+            if [[ "$repository" == *"apecloud-addon-charts"* ]]; then
+                continue
+            fi
+
             echo "check engine image: $repository"
             repository=docker.io/apecloud/${repository##*/}
             check_flag=0
