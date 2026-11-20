@@ -494,7 +494,7 @@ update_addon_images_from_manifest() {
             has_arm_files=1
             arm_only=1  # Only update arm file
             ;;
-        elasticsearch|mysql|oceanbase)
+        elasticsearch|mysql|oceanbase|dolphindb)
             has_arm_files=1
             ;;
     esac
@@ -596,6 +596,12 @@ update_addon_images_from_manifest() {
                            [[ "$img" == *"dm:8.1.5.60"* ]] || \
                            [[ "$img" == *"dmdb-tool:8.1.4-x86"* ]] || \
                            [[ "$img" == *"dmdb-tool:8.1.5-x86"* ]]; then
+                            should_include=0
+                        fi
+                    fi
+                    # dolphindb-arm: exclude versions without arm64 support (v3.00.6.4 and v3.00.5.QRT)
+                    if [[ "$addon_name" == "dolphindb" ]]; then
+                        if [[ "$img" == *"dolphindb:v3.00.6.4"* ]] || [[ "$img" == *"dolphindb:v3.00.5.QRT"* ]]; then
                             should_include=0
                         fi
                     fi

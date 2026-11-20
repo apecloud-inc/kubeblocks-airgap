@@ -74,7 +74,7 @@ on:
           - dbdrag
           - pv-migrate
           - polardb-pg
-          - dolphindb
+          - dolphindb-arm
       APP_DIR:
         description: 'select addon dir'
         required: false

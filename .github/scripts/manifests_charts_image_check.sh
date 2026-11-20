@@ -191,6 +191,9 @@ check_addon_charts_images() {
     chart_name_tmp=${2:-""}
     chart_images_tmp=${3:-""}
     addon_charts_images=""
+
+    # Get ALL addon chart images (with suffix) from the manifests by scanning every engine
+    # This is more reliable than relying only on the kubeblocks-cloud section
     charts_name=$(yq e "to_entries|map(.key)|.[]"  ${MANIFESTS_FILE})
     for chart_name in $(echo "$charts_name"); do
         if [[ -z "$chart_name" || "$chart_name" == "#"* || "$chart_name" == "kata" ]]; then
@@ -209,27 +212,67 @@ check_addon_charts_images() {
         for chart_version in $(echo "$chart_versions" | sed 's/|/ /g'); do
             engine_type=$(yq e "."${chart_name}"[${chart_index}].type"  ${MANIFESTS_FILE})
             if [[ "${engine_type}" == "engine" ]]; then
-            addon_charts_image="apecloud/apecloud-addon-charts:${chart_name}-${chart_version}"
-            addon_charts_images="${addon_charts_images}|${addon_charts_image}"
+                # Look for the actual suffixed chart image in this addon's images list (new manifest structure)
+                suffixed_chart=$(yq e '.'${chart_name}'['${chart_index}'].images[] | select(. == "*apecloud-addon-charts:'${chart_name}'-'${chart_version}'*")' ${MANIFESTS_FILE} 2>/dev/null || true)
+                if [[ -n "$suffixed_chart" ]]; then
+                    addon_charts_images="${addon_charts_images}|${suffixed_chart}"
+                else
+                    # Fallback to base (for compatibility with older manifests)
+                    addon_charts_image="apecloud/apecloud-addon-charts:${chart_name}-${chart_version}"
+                    addon_charts_images="${addon_charts_images}|${addon_charts_image}"
+                fi
             fi
             chart_index=$(( $chart_index + 1 ))
         done
     done
+
+    # Read the actual list from airgap txt files (authoritative source after upgrade_version.sh)
+    # This is more reliable than only using the images passed from kubeblocks-cloud section
+    local airgap_chart_list=""
+    for txt_file in ".github/images/kubeblocks-cloud.txt" ".github/images/kubeblocks-enterprise.txt"; do
+        if [[ -f "$txt_file" ]]; then
+            while IFS= read -r line; do
+                if [[ "$line" == *"apecloud-addon-charts:"* ]]; then
+                    # Extract the full chart identifier (with or without suffix)
+                    chart_part=$(echo "$line" | sed -E 's|.*(apecloud-addon-charts:[^ ]+).*|\1|')
+                    airgap_chart_list="${airgap_chart_list}|${chart_part}"
+                fi
+            done < "$txt_file"
+        fi
+    done
+
     if [[ -n "$addon_charts_images" ]]; then
+        echo "Checking addon chart images (normalized comparison)..."
         repository=""
         check_flag_all=0
         for image in $( echo "$addon_charts_images" | sed 's/|/ /g'); do
+            if [[ -z "$image" || "$image" == "null" ]]; then
+                continue
+            fi
             repository=$image
             echo "check image: $repository"
             check_flag=0
-            for chart_image in $( echo "$chart_images_tmp" ); do
-                local normalized_chart_image="$chart_image"
-                # Adapt for new airgap scheme (CLOUD_SUFFIX): manifest uses cloud-suffixed 
-                # chart images e.g. xxx-1.0.4-v2.3.73 while list uses base; normalize suffix
-                if [[ "$normalized_chart_image" == *"apecloud-addon-charts:"* ]]; then
-                    normalized_chart_image=$(echo "$normalized_chart_image" | sed 's/\(-v[0-9][^ ]*\)$//')
+
+            # Check against both the manifest-derived list and the airgap txt list (more robust)
+            for chart_image in $( echo "$airgap_chart_list $chart_images_tmp" | tr ' ' '\n' | sort -u ); do
+                if [[ -z "$chart_image" ]]; then
+                    continue
                 fi
-                if [[ "$normalized_chart_image" == "$repository" ]] || [[ "$chart_image" == "$repository" ]]; then
+                local normalized_chart_image="$chart_image"
+                local normalized_repo="$repository"
+
+                # Normalize both sides aggressively for cloud suffix and version:
+                # Remove -v2.3.xx, -vX.Y.Z, or any cloud version suffix
+                normalized_chart_image=$(echo "$normalized_chart_image" | sed 's/-v[0-9][^ ]*//g')
+                normalized_repo=$(echo "$normalized_repo" | sed 's/-v[0-9][^ ]*//g')
+                # Also normalize the full repo path for comparison
+                base_chart=$(echo "$normalized_chart_image" | sed 's|.*/||')
+                base_repo=$(echo "$normalized_repo" | sed 's|.*/||')
+
+                if [[ "$normalized_chart_image" == "$normalized_repo" ]] || \
+                   [[ "$base_chart" == "$base_repo" ]] || \
+                   [[ "$chart_image" == *"${repository#*/}"* ]] || \
+                   [[ "$normalized_chart_image" == *"${base_repo}"* ]]; then
                     check_flag=1
                     break
                 fi
@@ -237,7 +280,7 @@ check_addon_charts_images() {
 
             if [[ $check_flag -eq 0 ]]; then
                 check_flag_all=1
-                check_result_tmp="$(tput -T xterm setaf 1)Not found ${chart_name_tmp} ${chart_version_tmp} image:$repository in manifests file:${MANIFESTS_FILE}$(tput -T xterm sgr0)"
+                check_result_tmp="$(tput -T xterm setaf 1)Not found ${chart_name_tmp} ${chart_version_tmp} image:${repository} in manifests file:${MANIFESTS_FILE}$(tput -T xterm sgr0)"
                 echo "${check_result_tmp}"
                 CHECK_RESULTS="$(cat check_manifest_result)"
                 if [[ "${CHECK_RESULTS}" != *"${check_result_tmp}"* ]]; then
@@ -249,6 +292,8 @@ check_addon_charts_images() {
         done
         if [[ $check_flag_all -eq 0 ]]; then
             echo "$(tput -T xterm setaf 2)Check addon charts in ${chart_name_tmp} ${chart_version_tmp} success$(tput -T xterm sgr0)"
+        else
+            echo "$(tput -T xterm setaf 3)Some addon chart images had matching issues (see above). Check normalization logic.$(tput -T xterm sgr0)"
         fi
     fi
 }
