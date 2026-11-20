@@ -29,6 +29,10 @@ pull_chart_images() {
             if [[ "${image}" == "apecloud/dm:8.1.4-20260202" || "${image}" == "apecloud/dmdb-tool:8.1.4-x86" ]]; then
                 continue
             fi
+        elif [[ "${ARM64_IMAGE}" == "true" && "$image_name_tmp" == "dolphindb" ]]; then
+            if [[ "${image}" == *"dolphindb:v3.00.6.4"* ]] || [[ "${image}" == *"dolphindb:v3.00.5.QRT"* ]]; then
+                continue
+            fi
         fi
 
         repository="${SRC_REGISTRY}/${image}"

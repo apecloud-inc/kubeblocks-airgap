@@ -1,0 +1,5 @@
+# dolphindb v1.0.2
+docker.io/apecloud/dolphindb:v2.00.19
+docker.io/apecloud/dolphindb:v3.00.5
+docker.io/apecloud/dolphindb-runtime:0.2.0
+docker.io/apecloud/dolphindb_exporter:main-5689311

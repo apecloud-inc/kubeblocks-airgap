@@ -76,6 +76,7 @@ jobs:
                           || "${release_name}" == "elasticsearch"* 
                           || "${release_name}" == "mssql"* 
                           || "${release_name}" == "goldendb"* 
+                           || "${release_name}" == "dolphindb"* 
                           || ("${release_name}" == "oceanbase"* && "${release_name}" != "oceanbase-proxy"* && "$filePath" == ".github/images/1.0/"*".txt") ]]; then
                           cmd=$cmd"--workflow-id \"save-images.yml\" "
                       else
