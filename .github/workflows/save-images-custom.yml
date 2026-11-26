@@ -8,7 +8,7 @@ on:
         required: true
         default: ''
         type: string
-      APP_VERSION:
+      VERSION:
         description: 'release version (e.g. 1.0.0 or v1.0.0)'
         required: true
         default: ''
@@ -19,7 +19,7 @@ on:
         default: ''
         type: string
 
-run-name: save custom ${{ inputs.FILE_NAME }}:${{ inputs.APP_VERSION }}:${{ inputs.IMAGES }}
+run-name: save custom ${{ inputs.FILE_NAME }}:${{ inputs.VERSION }}:${{ inputs.IMAGES }}
 
 env:
   DOCKER_REGISTRY_URL: docker.io
@@ -77,7 +77,7 @@ jobs:
         id: generate-images-file
         env:
           RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
-          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          RAW_APP_VERSION: ${{ inputs.VERSION }}
           RAW_IMAGES: ${{ inputs.IMAGES }}
         run: |
           FILE_NAME="${RAW_FILE_NAME#"${RAW_FILE_NAME%%[![:space:]]*}"}"
@@ -310,7 +310,7 @@ jobs:
         id: generate-images-file
         env:
           RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
-          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          RAW_APP_VERSION: ${{ inputs.VERSION }}
           RAW_IMAGES: ${{ inputs.IMAGES }}
         run: |
           FILE_NAME="${RAW_FILE_NAME#"${RAW_FILE_NAME%%[![:space:]]*}"}"
@@ -517,7 +517,7 @@ jobs:
         id: get_save_result
         env:
           RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
-          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          RAW_APP_VERSION: ${{ inputs.VERSION }}
           AMD64_RESULT: ${{ needs.save-amd64-images.result }}
           AMD64_PKG: ${{ needs.save-amd64-images.outputs.image-pkg-name }}
         run: |
@@ -543,10 +543,12 @@ jobs:
       contents: read
     needs: [ save-amd64-result ]
     if: ${{ always() }}
-    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.6.0
     with:
       TYPE: "2"
       CONTENT: "save image ${{ needs.save-amd64-result.outputs.image-pkg-name }} ${{ needs.save-amd64-result.outputs.save-result }}"
+      BOT_TYPE: "specify"
+      BOT_WEBHOOK: "${{ vars.CICD_WEBHOOK }}"
     secrets: inherit
 
   save-arm64-result:
@@ -564,7 +566,7 @@ jobs:
         id: get_save_result
         env:
           RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
-          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          RAW_APP_VERSION: ${{ inputs.VERSION }}
           ARM64_RESULT: ${{ needs.save-arm64-images.result }}
           ARM64_PKG: ${{ needs.save-arm64-images.outputs.image-pkg-name }}
         run: |
@@ -590,8 +592,10 @@ jobs:
       contents: read
     needs: [ save-arm64-result ]
     if: ${{ always() }}
-    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.6.0
     with:
       TYPE: "2"
       CONTENT: "save image ${{ needs.save-arm64-result.outputs.image-pkg-name }} ${{ needs.save-arm64-result.outputs.save-result }}"
+      BOT_TYPE: "specify"
+      BOT_WEBHOOK: "${{ vars.CICD_WEBHOOK }}"
     secrets: inherit
