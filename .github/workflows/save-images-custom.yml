@@ -1,0 +1,597 @@
+name: Save Images Custom
+
+on:
+  workflow_dispatch:
+    inputs:
+      FILE_NAME:
+        description: 'txt file name without .txt suffix (e.g. my-app)'
+        required: true
+        default: ''
+        type: string
+      APP_VERSION:
+        description: 'release version (e.g. 1.0.0 or v1.0.0)'
+        required: true
+        default: ''
+        type: string
+      IMAGES:
+        description: 'images under docker.io/apecloud separated by | (e.g. imagename1:tag1|imagename2:tag2)'
+        required: true
+        default: ''
+        type: string
+
+run-name: save custom ${{ inputs.FILE_NAME }}:${{ inputs.APP_VERSION }}:${{ inputs.IMAGES }}
+
+env:
+  DOCKER_REGISTRY_URL: docker.io
+  DOCKER_USER: ${{ secrets.DOCKER_REGISTRY_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
+  OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+  OSS_ENDPOINT: "oss-cn-zhangjiakou.aliyuncs.com"
+  OSS_BUCKET: "kubeblocks-oss"
+  OSS_DIR_AMD64: "images"
+  OSS_DIR_ARM64: "images/arm64"
+  DOCKER_VERSION: "v28.0.4"
+
+jobs:
+  save-amd64-images:
+    name: save app images (amd64)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    outputs:
+      file-name: ${{ steps.generate-images-file.outputs.file-name }}
+      app-version: ${{ steps.generate-images-file.outputs.app-version }}
+      image-pkg-name: ${{ steps.generate-images-file.outputs.file-name }}-${{ steps.generate-images-file.outputs.app-version }}.tar.gz
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        continue-on-error: true
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: true
+
+      - name: chown Runner
+        run: |
+          df -h
+          echo "sudo mkdir -p /mnt/setup-docker-action"
+          sudo mkdir -p /mnt/setup-docker-action
+          echo "sudo chown -R $USER:$USER /mnt/setup-docker-action"
+          sudo chown -R $USER:$USER /mnt/setup-docker-action
+
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          runtime-basedir: /mnt/setup-docker-action
+          version: ${{ env.DOCKER_VERSION }}
+
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+
+      - name: Generate custom images file
+        id: generate-images-file
+        env:
+          RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
+          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          RAW_IMAGES: ${{ inputs.IMAGES }}
+        run: |
+          FILE_NAME="${RAW_FILE_NAME#"${RAW_FILE_NAME%%[![:space:]]*}"}"
+          FILE_NAME="${FILE_NAME%"${FILE_NAME##*[![:space:]]}"}"
+          FILE_NAME="${FILE_NAME%.txt}"
+
+          APP_VERSION="${RAW_APP_VERSION#"${RAW_APP_VERSION%%[![:space:]]*}"}"
+          APP_VERSION="${APP_VERSION%"${APP_VERSION##*[![:space:]]}"}"
+
+          if [[ -z "${FILE_NAME}" ]] || [[ "${FILE_NAME}" =~ [^a-zA-Z0-9._-] ]] || [[ "${FILE_NAME}" == *..* ]]; then
+              echo "Error: invalid FILE_NAME: ${RAW_FILE_NAME}"
+              exit 1
+          fi
+          if [[ -z "${APP_VERSION}" ]] || [[ "${APP_VERSION}" =~ [^a-zA-Z0-9._-] ]] || [[ "${APP_VERSION}" == *..* ]]; then
+              echo "Error: invalid APP_VERSION: ${RAW_APP_VERSION}"
+              exit 1
+          fi
+
+          mkdir -p .github/images/custom
+          IMAGES_FILE=".github/images/custom/${FILE_NAME}.txt"
+          echo "# ${FILE_NAME} ${APP_VERSION}" > "${IMAGES_FILE}"
+
+          IMAGE_COUNT=0
+          IFS='|' read -ra _images <<< "${RAW_IMAGES}"
+          for image in "${_images[@]}"; do
+              image="${image#"${image%%[![:space:]]*}"}"
+              image="${image%"${image##*[![:space:]]}"}"
+              [[ -z "${image}" ]] && continue
+
+              if [[ "${image}" != *":"* ]] || [[ -z "${image%:*}" ]] || [[ -z "${image##*:}" ]]; then
+                  echo "Error: invalid image (missing name or tag): ${image}"
+                  exit 1
+              fi
+              if [[ "${image}" =~ [^a-zA-Z0-9._:/@-] ]]; then
+                  echo "Error: invalid image (contains illegal characters): ${image}"
+                  exit 1
+              fi
+
+              name_part="${image%:*}"
+              slash_count=$(awk -F'/' '{print NF-1}' <<< "${name_part}")
+              if [[ ${slash_count} -eq 0 ]]; then
+                  image="docker.io/apecloud/${image}"
+              elif [[ ${slash_count} -eq 1 ]]; then
+                  image="docker.io/${image}"
+              fi
+
+              if ! grep -Fxq "${image}" "${IMAGES_FILE}"; then
+                  echo "${image}" >> "${IMAGES_FILE}"
+                  IMAGE_COUNT=$((IMAGE_COUNT + 1))
+              fi
+          done
+
+          if [[ ${IMAGE_COUNT} -eq 0 ]]; then
+              echo "Error: no valid images provided in IMAGES"
+              exit 1
+          fi
+
+          # 保证文件末尾有空行，避免最后一行镜像未被正确读取
+          echo "" >> "${IMAGES_FILE}"
+
+          echo "Generated ${IMAGES_FILE} (${IMAGE_COUNT} images):"
+          cat "${IMAGES_FILE}"
+
+          echo "file-name=${FILE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "app-version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "images-file=${IMAGES_FILE}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DOCKER_REGISTRY_URL }}
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Save amd64 images
+        env:
+          add_images: ""
+          app_name: ${{ steps.generate-images-file.outputs.file-name }}
+          app_version: ${{ steps.generate-images-file.outputs.app-version }}
+          kubeblocks_version: ""
+          gemini_version: ""
+          oteld_version: ""
+          installer_version: ""
+          dms_version: ""
+          apecloud_mcp_version: ""
+          images_file: ${{ steps.generate-images-file.outputs.images-file }}
+          platform: "linux/amd64"
+        run: |
+          bash .github/scripts/save_images.sh
+
+      - name: Check amd64 images size
+        env:
+          FILE_NAME: ${{ steps.generate-images-file.outputs.file-name }}
+          APP_VERSION: ${{ steps.generate-images-file.outputs.app-version }}
+        run: |
+          docker images
+          IMAGE_PKG="${FILE_NAME}-${APP_VERSION}.tar.gz"
+          du -sh "${IMAGE_PKG}"
+          SIZE=$(du -b "${IMAGE_PKG}" | awk '{print $1}')
+          if [[ "${SIZE}" -le 4096 ]]; then
+              echo "Error: ${IMAGE_PKG} size is ${SIZE} bytes, which indicates the save failed. Exiting."
+              exit 1
+          fi
+
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
+
+      - name: Upload amd64 images to oss
+        id: upload_to_oss
+        env:
+          FILE_NAME: ${{ steps.generate-images-file.outputs.file-name }}
+          APP_VERSION: ${{ steps.generate-images-file.outputs.app-version }}
+          OSS_DIR: ${{ env.OSS_DIR_AMD64 }}
+        run: |
+          echo "Free space:"
+          df -h
+          IMAGE_PKG_NAME="${FILE_NAME}-${APP_VERSION}.tar.gz"
+
+          upload_ret=0
+          for i in {1..10}; do
+              echo "ossutil cp ${IMAGE_PKG_NAME} to oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME} ..."
+              ossutil cp -rf "./${IMAGE_PKG_NAME}" "oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME}"
+              upload_ret=$?
+
+              if [[ -d "ossutil_output" ]]; then
+                  for report in ossutil_output/ossutil_report_*.report; do
+                      if [[ -f "${report}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME} to oss error, retry..."
+                          cat "${report}"
+                          rm -f "${report}"
+                          upload_ret=1
+                      fi
+                  done
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME} to oss successfully"
+          else
+              exit 1
+          fi
+
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum "${IMAGE_PKG_NAME}" > "${IMAGE_PKG_NAME_MD}"
+              md5sum_check=$(md5sum -c "${IMAGE_PKG_NAME_MD}")
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf "./${IMAGE_PKG_NAME_MD}" "oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME_MD}"
+              upload_ret=$?
+
+              if [[ -d "ossutil_output" ]]; then
+                  for report in ossutil_output/ossutil_report_*.report; do
+                      if [[ -f "${report}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_MD} to oss error, retry..."
+                          cat "${report}"
+                          rm -f "${report}"
+                          upload_ret=1
+                      fi
+                  done
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          else
+              exit 1
+          fi
+
+  save-arm64-images:
+    name: save app images (arm64)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    outputs:
+      file-name: ${{ steps.generate-images-file.outputs.file-name }}
+      app-version: ${{ steps.generate-images-file.outputs.app-version }}
+      image-pkg-name: ${{ steps.generate-images-file.outputs.file-name }}-${{ steps.generate-images-file.outputs.app-version }}-arm64.tar.gz
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        continue-on-error: true
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: true
+
+      - name: chown Runner
+        run: |
+          df -h
+          echo "sudo mkdir -p /mnt/setup-docker-action"
+          sudo mkdir -p /mnt/setup-docker-action
+          echo "sudo chown -R $USER:$USER /mnt/setup-docker-action"
+          sudo chown -R $USER:$USER /mnt/setup-docker-action
+
+      - name: Install Docker ${{ env.DOCKER_VERSION }}
+        uses: docker/setup-docker-action@v4
+        with:
+          runtime-basedir: /mnt/setup-docker-action
+          version: ${{ env.DOCKER_VERSION }}
+
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+
+      - name: Generate custom images file
+        id: generate-images-file
+        env:
+          RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
+          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          RAW_IMAGES: ${{ inputs.IMAGES }}
+        run: |
+          FILE_NAME="${RAW_FILE_NAME#"${RAW_FILE_NAME%%[![:space:]]*}"}"
+          FILE_NAME="${FILE_NAME%"${FILE_NAME##*[![:space:]]}"}"
+          FILE_NAME="${FILE_NAME%.txt}"
+
+          APP_VERSION="${RAW_APP_VERSION#"${RAW_APP_VERSION%%[![:space:]]*}"}"
+          APP_VERSION="${APP_VERSION%"${APP_VERSION##*[![:space:]]}"}"
+
+          if [[ -z "${FILE_NAME}" ]] || [[ "${FILE_NAME}" =~ [^a-zA-Z0-9._-] ]] || [[ "${FILE_NAME}" == *..* ]]; then
+              echo "Error: invalid FILE_NAME: ${RAW_FILE_NAME}"
+              exit 1
+          fi
+          if [[ -z "${APP_VERSION}" ]] || [[ "${APP_VERSION}" =~ [^a-zA-Z0-9._-] ]] || [[ "${APP_VERSION}" == *..* ]]; then
+              echo "Error: invalid APP_VERSION: ${RAW_APP_VERSION}"
+              exit 1
+          fi
+
+          mkdir -p .github/images/custom
+          IMAGES_FILE=".github/images/custom/${FILE_NAME}.txt"
+          echo "# ${FILE_NAME} ${APP_VERSION}" > "${IMAGES_FILE}"
+
+          IMAGE_COUNT=0
+          IFS='|' read -ra _images <<< "${RAW_IMAGES}"
+          for image in "${_images[@]}"; do
+              image="${image#"${image%%[![:space:]]*}"}"
+              image="${image%"${image##*[![:space:]]}"}"
+              [[ -z "${image}" ]] && continue
+
+              if [[ "${image}" != *":"* ]] || [[ -z "${image%:*}" ]] || [[ -z "${image##*:}" ]]; then
+                  echo "Error: invalid image (missing name or tag): ${image}"
+                  exit 1
+              fi
+              if [[ "${image}" =~ [^a-zA-Z0-9._:/@-] ]]; then
+                  echo "Error: invalid image (contains illegal characters): ${image}"
+                  exit 1
+              fi
+
+              name_part="${image%:*}"
+              slash_count=$(awk -F'/' '{print NF-1}' <<< "${name_part}")
+              if [[ ${slash_count} -eq 0 ]]; then
+                  image="docker.io/apecloud/${image}"
+              elif [[ ${slash_count} -eq 1 ]]; then
+                  image="docker.io/${image}"
+              fi
+
+              if ! grep -Fxq "${image}" "${IMAGES_FILE}"; then
+                  echo "${image}" >> "${IMAGES_FILE}"
+                  IMAGE_COUNT=$((IMAGE_COUNT + 1))
+              fi
+          done
+
+          if [[ ${IMAGE_COUNT} -eq 0 ]]; then
+              echo "Error: no valid images provided in IMAGES"
+              exit 1
+          fi
+
+          # 保证文件末尾有空行，避免最后一行镜像未被正确读取
+          echo "" >> "${IMAGES_FILE}"
+
+          echo "Generated ${IMAGES_FILE} (${IMAGE_COUNT} images):"
+          cat "${IMAGES_FILE}"
+
+          echo "file-name=${FILE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "app-version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "images-file=${IMAGES_FILE}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DOCKER_REGISTRY_URL }}
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Save arm64 images
+        env:
+          add_images: ""
+          app_name: ${{ steps.generate-images-file.outputs.file-name }}
+          app_version: ${{ steps.generate-images-file.outputs.app-version }}
+          kubeblocks_version: ""
+          gemini_version: ""
+          oteld_version: ""
+          installer_version: ""
+          dms_version: ""
+          apecloud_mcp_version: ""
+          images_file: ${{ steps.generate-images-file.outputs.images-file }}
+          platform: "linux/arm64"
+        run: |
+          bash .github/scripts/save_images.sh
+
+      - name: Check arm64 images size
+        env:
+          FILE_NAME: ${{ steps.generate-images-file.outputs.file-name }}
+          APP_VERSION: ${{ steps.generate-images-file.outputs.app-version }}
+        run: |
+          docker images
+          IMAGE_PKG="${FILE_NAME}-${APP_VERSION}.tar.gz"
+          du -sh "${IMAGE_PKG}"
+          SIZE=$(du -b "${IMAGE_PKG}" | awk '{print $1}')
+          if [[ "${SIZE}" -le 4096 ]]; then
+              echo "Error: ${IMAGE_PKG} size is ${SIZE} bytes, which indicates the save failed. Exiting."
+              exit 1
+          fi
+
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          access-key-id: "${{ env.OSS_KEY_ID }}"
+          access-key-secret: "${{ env.OSS_KEY_SECRET }}"
+          endpoint: "${{ env.OSS_ENDPOINT }}"
+
+      - name: Upload arm64 images to oss
+        id: upload_to_oss
+        env:
+          FILE_NAME: ${{ steps.generate-images-file.outputs.file-name }}
+          APP_VERSION: ${{ steps.generate-images-file.outputs.app-version }}
+          OSS_DIR: ${{ env.OSS_DIR_ARM64 }}
+        run: |
+          echo "Free space:"
+          df -h
+          IMAGE_PKG_NAME="${FILE_NAME}-${APP_VERSION}.tar.gz"
+          IMAGE_PKG_NAME_ARM64="${FILE_NAME}-${APP_VERSION}-arm64.tar.gz"
+          mv "${IMAGE_PKG_NAME}" "${IMAGE_PKG_NAME_ARM64}"
+
+          upload_ret=0
+          for i in {1..10}; do
+              echo "ossutil cp ${IMAGE_PKG_NAME_ARM64} to oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME_ARM64} ..."
+              ossutil cp -rf "./${IMAGE_PKG_NAME_ARM64}" "oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME_ARM64}"
+              upload_ret=$?
+
+              if [[ -d "ossutil_output" ]]; then
+                  for report in ossutil_output/ossutil_report_*.report; do
+                      if [[ -f "${report}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_ARM64} to oss error, retry..."
+                          cat "${report}"
+                          rm -f "${report}"
+                          upload_ret=1
+                      fi
+                  done
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_ARM64} to oss successfully"
+          else
+              exit 1
+          fi
+
+          IMAGE_PKG_NAME_MD="${IMAGE_PKG_NAME_ARM64}.md5"
+          echo "upload ${IMAGE_PKG_NAME_MD} to oss ..."
+          upload_ret=0
+          for i in {1..10}; do
+              md5sum "${IMAGE_PKG_NAME_ARM64}" > "${IMAGE_PKG_NAME_MD}"
+              md5sum_check=$(md5sum -c "${IMAGE_PKG_NAME_MD}")
+              check_ret=$?
+              if [[ $check_ret -eq 0 && "${md5sum_check}" == *"OK" ]]; then
+                  echo "${md5sum_check}"
+              else
+                  sleep 1
+                  continue
+              fi
+
+              echo "ossutil cp ${IMAGE_PKG_NAME_MD} to oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME_MD} ..."
+              ossutil cp -rf "./${IMAGE_PKG_NAME_MD}" "oss://${OSS_BUCKET}/${OSS_DIR}/${IMAGE_PKG_NAME_MD}"
+              upload_ret=$?
+
+              if [[ -d "ossutil_output" ]]; then
+                  for report in ossutil_output/ossutil_report_*.report; do
+                      if [[ -f "${report}" ]]; then
+                          echo "cp ${IMAGE_PKG_NAME_MD} to oss error, retry..."
+                          cat "${report}"
+                          rm -f "${report}"
+                          upload_ret=1
+                      fi
+                  done
+              fi
+              if [[ $upload_ret -eq 0 ]]; then
+                  break
+              fi
+              sleep 1
+          done
+
+          if [[ $upload_ret -eq 0 ]]; then
+              echo "upload ${IMAGE_PKG_NAME_MD} to oss successfully"
+          else
+              exit 1
+          fi
+
+  save-amd64-result:
+    name: save result (amd64)
+    runs-on: ubuntu-latest
+    needs: [ save-amd64-images ]
+    if: ${{ always() }}
+    permissions:
+      contents: read
+    outputs:
+      image-pkg-name: ${{ steps.get_save_result.outputs.image_pkg_name }}
+      save-result: ${{ steps.get_save_result.outputs.save_result }}
+    steps:
+      - name: get amd64 save result
+        id: get_save_result
+        env:
+          RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
+          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          AMD64_RESULT: ${{ needs.save-amd64-images.result }}
+          AMD64_PKG: ${{ needs.save-amd64-images.outputs.image-pkg-name }}
+        run: |
+          FILE_NAME="${RAW_FILE_NAME#"${RAW_FILE_NAME%%[![:space:]]*}"}"
+          FILE_NAME="${FILE_NAME%"${FILE_NAME##*[![:space:]]}"}"
+          FILE_NAME="${FILE_NAME%.txt}"
+          APP_VERSION="${RAW_APP_VERSION#"${RAW_APP_VERSION%%[![:space:]]*}"}"
+          APP_VERSION="${APP_VERSION%"${APP_VERSION##*[![:space:]]}"}"
+
+          SAVE_RESULT="error"
+          IMAGE_PKG_NAME="${AMD64_PKG:-${FILE_NAME}-${APP_VERSION}.tar.gz}"
+          if [[ "${AMD64_RESULT}" == "success" ]]; then
+              SAVE_RESULT="success"
+              IMAGE_PKG_NAME="http://${OSS_BUCKET}.${OSS_ENDPOINT}/${OSS_DIR_AMD64}/${IMAGE_PKG_NAME}"
+          fi
+          echo "save_result=${SAVE_RESULT}" >> "$GITHUB_OUTPUT"
+          echo "image_pkg_name=${IMAGE_PKG_NAME}" >> "$GITHUB_OUTPUT"
+
+  send-amd64-message:
+    name: send message (amd64)
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-amd64-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "save image ${{ needs.save-amd64-result.outputs.image-pkg-name }} ${{ needs.save-amd64-result.outputs.save-result }}"
+    secrets: inherit
+
+  save-arm64-result:
+    name: save result (arm64)
+    runs-on: ubuntu-latest
+    needs: [ save-arm64-images ]
+    if: ${{ always() }}
+    permissions:
+      contents: read
+    outputs:
+      image-pkg-name: ${{ steps.get_save_result.outputs.image_pkg_name }}
+      save-result: ${{ steps.get_save_result.outputs.save_result }}
+    steps:
+      - name: get arm64 save result
+        id: get_save_result
+        env:
+          RAW_FILE_NAME: ${{ inputs.FILE_NAME }}
+          RAW_APP_VERSION: ${{ inputs.APP_VERSION }}
+          ARM64_RESULT: ${{ needs.save-arm64-images.result }}
+          ARM64_PKG: ${{ needs.save-arm64-images.outputs.image-pkg-name }}
+        run: |
+          FILE_NAME="${RAW_FILE_NAME#"${RAW_FILE_NAME%%[![:space:]]*}"}"
+          FILE_NAME="${FILE_NAME%"${FILE_NAME##*[![:space:]]}"}"
+          FILE_NAME="${FILE_NAME%.txt}"
+          APP_VERSION="${RAW_APP_VERSION#"${RAW_APP_VERSION%%[![:space:]]*}"}"
+          APP_VERSION="${APP_VERSION%"${APP_VERSION##*[![:space:]]}"}"
+
+          SAVE_RESULT="error"
+          IMAGE_PKG_NAME="${ARM64_PKG:-${FILE_NAME}-${APP_VERSION}-arm64.tar.gz}"
+          if [[ "${ARM64_RESULT}" == "success" ]]; then
+              SAVE_RESULT="success"
+              IMAGE_PKG_NAME="http://${OSS_BUCKET}.${OSS_ENDPOINT}/${OSS_DIR_ARM64}/${IMAGE_PKG_NAME}"
+          fi
+          echo "save_result=${SAVE_RESULT}" >> "$GITHUB_OUTPUT"
+          echo "image_pkg_name=${IMAGE_PKG_NAME}" >> "$GITHUB_OUTPUT"
+
+  send-arm64-message:
+    name: send message (arm64)
+    permissions:
+      id-token: write
+      contents: read
+    needs: [ save-arm64-result ]
+    if: ${{ always() }}
+    uses: apecloud-inc/apecloud-cd/.github/workflows/feishui-message.yml@v0.1.0
+    with:
+      TYPE: "2"
+      CONTENT: "save image ${{ needs.save-arm64-result.outputs.image-pkg-name }} ${{ needs.save-arm64-result.outputs.save-result }}"
+    secrets: inherit

@@ -58,7 +58,6 @@ on:
           - rocketmq
           - redis
           - rustfs
-          - camellia-redis-proxy
           - starrocks
           - starrocks-3.2.2
           - starrocks-3.3.0
