@@ -948,19 +948,30 @@ update_addon_chart_versions_from_manifest() {
 update_addon_image_chart_versions_from_manifest() {
     local images_files=(".github/images/kubeblocks-enterprise.txt" ".github/images/kubeblocks-cloud.txt")
     local charts_file=".github/charts/kubeblocks-enterprise.txt"
-    
+    local deploy_values_file="$(dirname "${MANIFESTS_FILE}")/deploy-values.yaml"
+
     echo "$(tput -T xterm setaf 3)Updating addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt$(tput -T xterm sgr0)"
-    
+
     # Dynamically extract all engine addons from manifest
     mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
-    
+
     for images_file in "${images_files[@]}"; do
         if [[ ! -f "$images_file" ]]; then
             echo "  WARNING: Images file not found: $images_file, skipping"
             continue
         fi
-        
+
         for addon_name in "${engine_addons[@]}"; do
+            # Skip addons disabled in deploy-values.yaml (e.g. oceanbase-proxy, goldendb, tdsql),
+            # consistent with the enable:false exclusion in manifests_charts_image_check.sh
+            if [[ -f "${deploy_values_file}" ]]; then
+                enable_val=$(yq e ".${addon_name}.enable" "${deploy_values_file}" 2>/dev/null || echo "true")
+                if [[ "${enable_val}" == "false" ]]; then
+                    echo "  Skip ${addon_name} chart images, enable is false in deploy-values.yaml"
+                    continue
+                fi
+            fi
+
             # Get versions from manifest
             mapfile -t manifest_versions < <(yq e ".${addon_name}[].version" ${MANIFESTS_FILE} 2>/dev/null || true)
             
