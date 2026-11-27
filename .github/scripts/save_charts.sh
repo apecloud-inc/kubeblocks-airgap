@@ -974,8 +974,9 @@ update_addon_image_chart_versions_from_manifest() {
             # New manifest puts full suffixed tag in per-addon images[]; we append here for enterprise.txt
             # Old manifests (no suffix) remain unchanged for compatibility
             local cloud_suffix=""
-            if [[ -n "${CLOUD_VERSION:-}" ]]; then
-                local cv="${CLOUD_VERSION#v}"
+            if [[ -n "${CLOUD_VERSION:-}" || -n "${APP_VERSION:-}" ]]; then
+                local cv="${CLOUD_VERSION:-${APP_VERSION}}"
+                cv="${cv#v}"
                 cloud_suffix="-v${cv}"
                 echo "    [CLOUD-SUFFIX] Using cloud suffix '${cloud_suffix}' for ${addon_name} chart images"
             fi
