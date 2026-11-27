@@ -869,11 +869,23 @@ update_addon_image_chart_versions_from_manifest() {
 
         for addon_name in "${engine_addons[@]}"; do
             # Skip addons disabled in deploy-values.yaml (e.g. oceanbase-proxy, goldendb, tdsql),
-            # consistent with the enable:false exclusion in manifests_charts_image_check.sh
+            # consistent with the enable:false exclusion in manifests_charts_image_check.sh.
+            # Stale entries for disabled addons are also removed so the txt files self-heal —
+            # otherwise the disabled addon's chart image (which is never published) would be
+            # pulled by save_images.sh and fail with "manifest unknown".
             if [[ -f "${deploy_values_file}" ]]; then
                 enable_val=$(yq e ".${addon_name}.enable" "${deploy_values_file}" 2>/dev/null || echo "true")
                 if [[ "${enable_val}" == "false" ]]; then
-                    echo "  Skip ${addon_name} chart images, enable is false in deploy-values.yaml"
+                    if grep -q "docker.io/apecloud/apecloud-addon-charts:${addon_name}-" "$images_file" 2>/dev/null; then
+                        echo "  Removing disabled addon ${addon_name} chart images from $images_file"
+                        if [[ "$UNAME" == "Darwin" ]]; then
+                            sed -i '' "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-/d" "$images_file"
+                        else
+                            sed -i "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-/d" "$images_file"
+                        fi
+                    else
+                        echo "  Skip ${addon_name} chart images, enable is false in deploy-values.yaml"
+                    fi
                     continue
                 fi
             fi
