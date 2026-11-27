@@ -854,19 +854,42 @@ update_addon_chart_versions_from_manifest() {
 update_addon_image_chart_versions_from_manifest() {
     local images_files=(".github/images/kubeblocks-enterprise.txt" ".github/images/kubeblocks-cloud.txt")
     local charts_file=".github/charts/kubeblocks-enterprise.txt"
-    
+    local deploy_values_file="$(dirname "${MANIFESTS_FILE}")/deploy-values.yaml"
+
     echo "$(tput -T xterm setaf 3)Updating addon image chart versions in kubeblocks-enterprise.txt and kubeblocks-cloud.txt$(tput -T xterm sgr0)"
-    
+
     # Dynamically extract all engine addons from manifest
     mapfile -t engine_addons < <(yq e 'with_entries(select(.value[0].type == "engine" and .value[0].isAddon == true)) | keys | .[]' "${MANIFESTS_FILE}" 2>/dev/null || true)
-    
+
     for images_file in "${images_files[@]}"; do
         if [[ ! -f "$images_file" ]]; then
             echo "  WARNING: Images file not found: $images_file, skipping"
             continue
         fi
-        
+
         for addon_name in "${engine_addons[@]}"; do
+            # Skip addons disabled in deploy-values.yaml (e.g. oceanbase-proxy, goldendb, tdsql),
+            # consistent with the enable:false exclusion in manifests_charts_image_check.sh.
+            # Stale entries for disabled addons are also removed so the txt files self-heal —
+            # otherwise the disabled addon's chart image (which is never published) would be
+            # pulled by save_images.sh and fail with "manifest unknown".
+            if [[ -f "${deploy_values_file}" ]]; then
+                enable_val=$(yq e ".${addon_name}.enable" "${deploy_values_file}" 2>/dev/null || echo "true")
+                if [[ "${enable_val}" == "false" ]]; then
+                    if grep -q "docker.io/apecloud/apecloud-addon-charts:${addon_name}-" "$images_file" 2>/dev/null; then
+                        echo "  Removing disabled addon ${addon_name} chart images from $images_file"
+                        if [[ "$UNAME" == "Darwin" ]]; then
+                            sed -i '' "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-/d" "$images_file"
+                        else
+                            sed -i "/docker.io\/apecloud\/apecloud-addon-charts:${addon_name}-/d" "$images_file"
+                        fi
+                    else
+                        echo "  Skip ${addon_name} chart images, enable is false in deploy-values.yaml"
+                    fi
+                    continue
+                fi
+            fi
+
             # Get versions from manifest
             mapfile -t manifest_versions < <(yq e ".${addon_name}[].version" ${MANIFESTS_FILE} 2>/dev/null || true)
             
