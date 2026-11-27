@@ -48,7 +48,7 @@ ef114e40ae411ace350db778e373e68e  loki-v1.0.3.tar.gz
 42ae447b8c3bc301f15feaab2fbe25cb  minio-v1.0.3-arm64.tar.gz
 ff648f3468aff6ca08b6acfd45cf4fbf  mongodb-v1.0.5.tar.gz
 a95e579198fd63da302accaf450f8be8  mongodb-v1.0.5-arm64.tar.gz
-e03903933fa0dd085fe8f0bc12e8a982  mssql-v1.0.8.tar.gz
+bf0c534c858f2dfae4df1365d5eb880a  mssql-v1.0.8.tar.gz
 c5978a5bb7840f4d552689c10afce98f  mysql-v1.0.6.tar.gz
 26479aa1339118449b39a8d669f25b96  mysql-arm-v1.0.6-arm64.tar.gz
 d6dbc6656fdb832d0b7642fafc7ea5c0  nacos-v1.0.3.tar.gz
@@ -88,8 +88,8 @@ eb6ac21af2a42a6c7200749c17bf084c  tdsql-v1.0.2.tar.gz
 51744964fdaf4bfaf32bcee251bcc8f2  tidb-v1.0.3-arm64.tar.gz
 604ebc39c512944bf32a7f3b21de1672  valkey-v1.0.3.tar.gz
 e46785499e83c269171157e0eb4886cc  valkey-v1.0.3-arm64.tar.gz
-8403c0ff0c84a08a766c164283334c65  vastbase-v1.0.3.tar.gz
-a71b87d0a36e6dc4afdfa24eb3e823e0  vastbase-v1.0.3-arm64.tar.gz
+0c6aa951d08d752e0daccf6a1ae07d50  vastbase-v1.0.3.tar.gz
+6af83c5b27cc9da08415eb06676b4b28  vastbase-v1.0.3-arm64.tar.gz
 8a5c7ec71213e8ddc001b0be85dae823  victoria-logs-v1.0.5.tar.gz
 fc90923057ef3987b777442b84a87447  victoria-logs-v1.0.5-arm64.tar.gz
 008b03bfd8bf6b9d03ec8fe12fe97f7b  victoria-metrics-v1.0.4.tar.gz
@@ -107,10 +107,10 @@ d9b96353f51c70429cc245a50f52ca1b  csi-driver-nfs-v4.10.0.tar.gz
 f45696ba18b7d3ce34a9a628cf5b5261  ingress-nginx-v4.12.1-arm64.tar.gz
 d5e82f18c0af8d5341f62972758d017d  kubebench-v0.0.20.tar.gz
 84c2dfcd276cdf98a4412c638c2dbdb3  kubebench-v0.0.20-arm64.tar.gz
-aaf2c893db5780965a99a6e457a67a6b  kubeblocks-enterprise-v2.3.84.tar.gz
-720197a1c7d30986f60734c000afc09c  kubeblocks-enterprise-v2.3.84-arm64.tar.gz
-0db9e48adedf2ca11a761cd7820ef298  kubeblocks-enterprise-patch-v2.3.84.tar.gz
-d389df7319e4963c2315a9ab117604ec  kubeblocks-enterprise-patch-v2.3.84-arm64.tar.gz
+615134739b7c02cacfa29a0a6f3e30dc  kubeblocks-enterprise-v2.3.84.tar.gz
+db9a2bcc758191876ba7fa4fd5d5301e  kubeblocks-enterprise-v2.3.84-arm64.tar.gz
+64ba8c63524e55608e8efef5996b9639  kubeblocks-enterprise-patch-v2.3.84.tar.gz
+ecf59dae41c85900af070d40ea3b39d2  kubeblocks-enterprise-patch-v2.3.84-arm64.tar.gz
 04b477bfa986fe6d4616030b60365429  metallb-v0.14.4.tar.gz
 551992bea629849bbd6d04edb4647ec6  metallb-v0.14.4-arm64.tar.gz
 bed0605b434ccc70625c1289fbb557fc  metrics-server-v3.12.0.tar.gz
